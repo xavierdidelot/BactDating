@@ -1,0 +1,13 @@
+Package: CreDating
+Type: Package
+Title: CreDating project
+Version: 0.1
+Date: 2017-09-22
+Author: Xavier Didelot <xavier.didelot@gmail.com>
+Maintainer: Xavier Didelot <xavier.didelot@gmail.com>
+Depends: 
+Suggests: ape, knitr
+Description: CreDating project
+VignetteBuilder: knitr
+License: GPL (>=2)
+RoxygenNote: 6.0.1
