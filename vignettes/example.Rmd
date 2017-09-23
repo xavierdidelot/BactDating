@@ -45,13 +45,13 @@ where $l$ is the branch length and
 $r=10$ per year is the real substitution rate.
 ```{r}
 obsphy=phy
-obsphy$edge.length=unlist(lapply(obsphy$edge.length*100,function (x) rpois(1,x)))
+obsphy$edge.length=unlist(lapply(obsphy$edge.length*10,function (x) rpois(1,x)))
 plot(obsphy)
 axisPhylo(backward = F)
 ```
 
 ```{r}
-res=credating(obsphy,dates,nbIts = 10000,rate=100,useCoalPrior = F,updateRate = T)
+res=credating(obsphy,dates,nbIts = 10000,rate=10,useCoalPrior = T,updateRate = 1)
 plot(res$tree)
 axisPhylo(backward = F)
 ```

@@ -52,13 +52,15 @@ credating = function(tree, date, rate = 1, nbIts = 1000, useCoalPrior = F, updat
         record[i / 10, j] = tab[j, 3]
     }
 
-    if (updateRate == T) {
+    if (updateRate == 1) {
       #Gibbs move assuming Exp(1) prior on rate
-#      lengths=tab[-(n+1),3]-tab[tab[-(n+1),4],3]
-#      muts=tab[-(n+1),2]
-#      rate=rgamma(1,1+sum(muts),sum(lengths))
-#      l=likelihood(tab,rate,n)
+      lengths=tab[-(n+1),3]-tab[tab[-(n+1),4],3]
+      muts=tab[-(n+1),2]
+      rate=rgamma(1,1+sum(muts),sum(lengths))
+      l=likelihood(tab,rate,n)
+    }
 
+    if (updateRate == 2) {
       #MH move assuming flat prior
       rate2=abs(rate+runif(1)-0.5)
       l2=likelihood(tab,rate2,n)
@@ -107,8 +109,9 @@ likelihood = function(tab, rate, n) {
 #'@return The log-prior in Eq (1) of Drummond et al (2002) Genetics
 coalprior = function(tab, neg, n) {
   p = -log(neg) * (n - 1)
-  MySort <- sort(tab[, 3], index.return = TRUE)
+  MySort <- sort(tab[, 3], decreasing = T, index.return = TRUE)
   ind <- MySort$ix
+  s <- MySort$x
   k = 1
   for (i in 2:length(s)) {
     p = p - (k * (k - 1) / (2 * neg) * (s[i] - s[i - 1]))
