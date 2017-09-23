@@ -4,14 +4,21 @@
 \alias{credating}
 \title{Main function}
 \usage{
-credating(tree, date, rate)
+credating(tree, date, rate = 1, nbIts = 1000, useCoalPrior = F,
+  updateRate = F)
 }
 \arguments{
 \item{tree}{Tree wih branches measured in unit of substitutions}
 
 \item{date}{Sampling dates for the leaves of the tree}
 
-\item{rate}{Rate per genome (not per site)}
+\item{rate}{Rate of substitutions per genome (not per site)}
+
+\item{nbIts}{Number of MCMC iterations to perform}
+
+\item{updateRate}{Whether or not to update the substitution rate}
+
+\item{usePrior}{Whether or not to use a coalescent prior on the tree}
 }
 \value{
 Dating results

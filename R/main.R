@@ -2,12 +2,15 @@
 #' @param tree Tree wih branches measured in unit of substitutions
 #' @param date Sampling dates for the leaves of the tree
 #' @param rate Rate of substitutions per genome (not per site)
+#' @param nbIts Number of MCMC iterations to perform
+#' @param usePrior Whether or not to use a coalescent prior on the tree
+#' @param updateRate Whether or not to update the substitution rate
 #' @return Dating results
 #' @export
-credating = function(tree, date, rate, nbIts = 1000, usePrior = F, updateRate = F)
+credating = function(tree, date, rate = 1, nbIts = 1000, useCoalPrior = F, updateRate = F)
 {
   prior=function(tab,neg,n) return(0)
-  if (usePrior) prior=coalprior
+  if (useCoalPrior) prior=coalprior
   n = length(tree$tip.label)
 
   #Create table of nodes (col1=name,col2=expected mutation on branch above,col3=date,col4=father)
@@ -49,12 +52,17 @@ credating = function(tree, date, rate, nbIts = 1000, usePrior = F, updateRate = 
         record[i / 10, j] = tab[j, 3]
     }
 
-    #Gibbs move to update rate which assumes Exp(1) prior on rate
     if (updateRate == T) {
-      lengths=tab[-(n+1),3]-tab[tab[-(n+1),4],3]
-      muts=tab[-(n+1),2]
-      rate=rgamma(1,1+sum(muts),sum(lengths))
-      l=likelihood(tab,rate,n)
+      #Gibbs move assuming Exp(1) prior on rate
+#      lengths=tab[-(n+1),3]-tab[tab[-(n+1),4],3]
+#      muts=tab[-(n+1),2]
+#      rate=rgamma(1,1+sum(muts),sum(lengths))
+#      l=likelihood(tab,rate,n)
+
+      #MH move assuming flat prior
+      rate2=abs(rate+runif(1)-0.5)
+      l2=likelihood(tab,rate2,n)
+      if (log(runif(1))<l2-l) {l=l2;rate=rate2}
     }
 
     #MH to update dates
@@ -62,20 +70,13 @@ credating = function(tree, date, rate, nbIts = 1000, usePrior = F, updateRate = 
       old = tab[j, 3]
       tab[j, 3] = old + runif(1) - 0.5
       l2 = likelihood(tab, rate, n)
-      p2 = likelihood(tab, 1, n)
+      p2 = prior(tab, 1, n)
       if (log(runif(1)) < l2 - l + p2 - p)
         {l = l2; p = p2}
       else
         tab[j, 3] = old
     }
   }
-
-  #Plot
-  #  par(mfrow=c(2,2))
-  #  plot(record[,nrow(tab)+1],main='Likelihood',type='l',xlab='Sampled iterations',ylab='')
-  #  plot(record[,n+1],main='Date of root',type='l',xlab='Sampled iterations',ylab='')
-  #  plot(record[,nrow(tab)+2],main='Rate',type='l',xlab='Sampled iterations',ylab='')
-  #  par(mfrow=c(1,1))
 
   #Output
   meanRec = colMeans(record[(nrow(record) / 2):nrow(record), ])
