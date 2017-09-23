@@ -24,7 +24,7 @@ plot(phy)
 axisPhylo(root.time = 2000,backward = F)
 ```
 
-![](example_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-2-1.png)
+![](example_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-14-1.png)
 
 We can compute the age of the leaves.
 
@@ -45,13 +45,28 @@ On each branch we observe a number of substitutions which is distributed *P**o**
 
 ``` r
 obsphy=phy
-obsphy$edge.length=unlist(lapply(obsphy$edge.length*10,function (x) rpois(1,x)))
+obsphy$edge.length=unlist(lapply(obsphy$edge.length*20,function (x) rpois(1,x)))
 plot(obsphy)
 axisPhylo(backward = F)
 ```
 
-![](example_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-4-1.png)
+![](example_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-16-1.png)
 
 ``` r
-res=credating(obsphy,dates)
+res=credating(obsphy,dates,nbIts = 1000,rate=10,useCoalPrior = T,updateRate = 1)
+plot(res$tree)
+axisPhylo(backward = F)
 ```
+
+![](example_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-17-1.png)
+
+``` r
+  nc=ncol(res$record)
+  par(mfrow=c(2,2))
+  plot(res$record[,nc-1],main='Likelihood',type='l',xlab='Sampled iterations',ylab='')
+  plot(res$record[,nc-2],main='Date of root',type='l',xlab='Sampled iterations',ylab='')
+  plot(res$record[,nc],main='Rate',type='l',xlab='Sampled iterations',ylab='')
+  par(mfrow=c(1,1))
+```
+
+![](example_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-18-1.png)

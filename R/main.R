@@ -53,18 +53,18 @@ credating = function(tree, date, rate = 1, nbIts = 1000, useCoalPrior = F, updat
     }
 
     if (updateRate == 1) {
+      #MH move assuming flat prior
+      rate2=abs(rate+runif(1)-0.5)
+      l2=likelihood(tab,rate2,n)
+      if (log(runif(1))<l2-l) {l=l2;rate=rate2}
+    }
+
+    if (updateRate == 2) {
       #Gibbs move assuming Exp(1) prior on rate
       lengths=tab[-(n+1),3]-tab[tab[-(n+1),4],3]
       muts=tab[-(n+1),2]
       rate=rgamma(1,1+sum(muts),sum(lengths))
       l=likelihood(tab,rate,n)
-    }
-
-    if (updateRate == 2) {
-      #MH move assuming flat prior
-      rate2=abs(rate+runif(1)-0.5)
-      l2=likelihood(tab,rate2,n)
-      if (log(runif(1))<l2-l) {l=l2;rate=rate2}
     }
 
     #MH to update dates
@@ -114,7 +114,7 @@ coalprior = function(tab, neg, n) {
   s <- MySort$x
   k = 1
   for (i in 2:length(s)) {
-    p = p - (k * (k - 1) / (2 * neg) * (s[i] - s[i - 1]))
+    p = p - (k * (k - 1) / (2 * neg) * (s[i-1] - s[i]))
     if (ind[i] <= n)
       k = k + 1
     else
