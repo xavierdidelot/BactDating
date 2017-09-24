@@ -142,4 +142,5 @@ for (i in 1:nsam) {
     w=phy$edge[r,1]
   }
 }
+return(dates)
 }
