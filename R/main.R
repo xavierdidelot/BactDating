@@ -7,7 +7,7 @@
 #' @param updateRate Whether or not to update the substitution rate
 #' @return Dating results
 #' @export
-credating = function(tree, date, rate = 1, nbIts = 1000, useCoalPrior = F, updateRate = F)
+credating = function(tree, date, rate = 1, nbIts = 1000, useCoalPrior = F, updateRate = F, neg = 1, updateNeg = F)
 {
   prior=function(tab,neg,n) return(0)
   if (useCoalPrior) prior=coalprior
@@ -41,13 +41,14 @@ credating = function(tree, date, rate = 1, nbIts = 1000, useCoalPrior = F, updat
 
   #MCMC
   l = likelihood(tab, rate, n)
-  p = prior(tab, 1, n)
-  record = matrix(NA, nbIts / 10, 2 + nrow(tab))
+  p = prior(tab, neg, n)
+  record = matrix(NA, nbIts / 10, 3 + nrow(tab))
   for (i in 1:nbIts) {
     #Record
     if (i %% 10 == 0) {
       record[i / 10, nrow(tab) + 1] = l
       record[i / 10, nrow(tab) + 2] = rate
+      record[i / 10, nrow(tab) + 3] = neg
       for (j in 1:nrow(tab))
         record[i / 10, j] = tab[j, 3]
     }
@@ -67,14 +68,21 @@ credating = function(tree, date, rate = 1, nbIts = 1000, useCoalPrior = F, updat
       l=likelihood(tab,rate,n)
     }
 
+    if (updateNeg == T) {
+      #MH move assuming flat prior
+      neg2=abs(neg+runif(1)-0.5)
+      p2=prior(tab,neg2,n)
+      if (log(runif(1))<p2-p) {p=p2;neg=neg2}
+    }
+
     #MH to update dates
     for (j in (n + 1):nrow(tab)) {
       old = tab[j, 3]
       tab[j, 3] = old + runif(1) - 0.5
       l2 = likelihood(tab, rate, n)
-      p2 = prior(tab, 1, n)
+      p2 = prior(tab, neg, n)
       if (log(runif(1)) < l2 - l + p2 - p)
-        {l = l2; p = p2}
+      {l = l2; p = p2}
       else
         tab[j, 3] = old
     }
@@ -131,16 +139,16 @@ coalprior = function(tab, neg, n) {
 #' @return Dates of leaves
 #' @export
 leafDates = function (phy,rootdate=0) {
-nsam=length(phy$tip.label)
-dates=rep(rootdate,nsam)
-for (i in 1:nsam) {
-  w=i
-  while (1) {
-    r=which(phy$edge[,2]==w)
-    if (length(r)==0) break
-    dates[i]=dates[i]+phy$edge.length[r]
-    w=phy$edge[r,1]
+  nsam=length(phy$tip.label)
+  dates=rep(rootdate,nsam)
+  for (i in 1:nsam) {
+    w=i
+    while (1) {
+      r=which(phy$edge[,2]==w)
+      if (length(r)==0) break
+      dates[i]=dates[i]+phy$edge.length[r]
+      w=phy$edge[r,1]
+    }
   }
-}
-return(dates)
+  return(dates)
 }
