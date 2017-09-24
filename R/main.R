@@ -124,3 +124,22 @@ coalprior = function(tab, neg, n) {
     print('error')
   return(p)
 }
+
+#' Compute dates of leaves for a given tree and date of root
+#' @param phy Tree
+#' @param rootdate Date of root
+#' @return Dates of leaves
+#' @export
+leafDates = function (phy,rootdate=0) {
+nsam=length(phy$tip.label)
+dates=rep(rootdate,nsam)
+for (i in 1:nsam) {
+  w=i
+  while (1) {
+    r=which(phy$edge[,2]==w)
+    if (length(r)==0) break
+    dates[i]=dates[i]+phy$edge.length[r]
+    w=phy$edge[r,1]
+  }
+}
+}

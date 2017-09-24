@@ -28,16 +28,7 @@ axisPhylo(root.time = 2000,backward = F)
 
 We can compute the age of the leaves.
 ```{r}
-dates=rep(2000,nsam)
-  for (i in 1:nsam) {
-    w=i
-    while (1) {
-      r=which(phy$edge[,2]==w)
-      if (length(r)==0) break
-      dates[i]=dates[i]+phy$edge.length[r]
-      w=phy$edge[r,1]
-    }
-  }
+dates=leafDates(phy,2000)
 ```
 
 On each branch we observe a number of substitutions which is distributed $\mathrm{Poisson}(rl)$
