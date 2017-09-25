@@ -5,7 +5,7 @@
 \title{Main function}
 \usage{
 credating(tree, date, rate = 1, nbIts = 1000, useCoalPrior = F,
-  updateRate = F)
+  updateRate = F, neg = 1, updateNeg = F)
 }
 \arguments{
 \item{tree}{Tree wih branches measured in unit of substitutions}
@@ -16,9 +16,13 @@ credating(tree, date, rate = 1, nbIts = 1000, useCoalPrior = F,
 
 \item{nbIts}{Number of MCMC iterations to perform}
 
+\item{useCoalPrior}{Whether or not to use a coalescent prior on the tree}
+
 \item{updateRate}{Whether or not to update the substitution rate}
 
-\item{usePrior}{Whether or not to use a coalescent prior on the tree}
+\item{neg}{Rate of coalescence, equal to Ne*g}
+
+\item{updateNeg}{Whether or not to update the neg parameter}
 }
 \value{
 Dating results

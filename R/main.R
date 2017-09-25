@@ -3,8 +3,10 @@
 #' @param date Sampling dates for the leaves of the tree
 #' @param rate Rate of substitutions per genome (not per site)
 #' @param nbIts Number of MCMC iterations to perform
-#' @param usePrior Whether or not to use a coalescent prior on the tree
+#' @param useCoalPrior Whether or not to use a coalescent prior on the tree
 #' @param updateRate Whether or not to update the substitution rate
+#' @param neg Rate of coalescence, equal to Ne*g
+#' @param updateNeg Whether or not to update the neg parameter
 #' @return Dating results
 #' @export
 credating = function(tree, date, rate = 1, nbIts = 1000, useCoalPrior = F, updateRate = F, neg = 1, updateNeg = F)
@@ -100,6 +102,9 @@ credating = function(tree, date, rate = 1, nbIts = 1000, useCoalPrior = F, updat
 }
 
 #' Likelihood function
+#' @param tab Table of nodes
+#' @param rate Substitution rate
+#' @param n Number of samples
 #' @return log-likelihood
 likelihood = function(tab, rate, n) {
   if (rate < 0)
@@ -114,6 +119,9 @@ likelihood = function(tab, rate, n) {
 }
 
 #' Coalescent prior function
+#' @param tab Table of nodes
+#' @param neg Coalescent rate
+#' @param n Number of samples
 #'@return The log-prior in Eq (1) of Drummond et al (2002) Genetics
 coalprior = function(tab, neg, n) {
   p = -log(neg) * (n - 1)
@@ -133,22 +141,4 @@ coalprior = function(tab, neg, n) {
   return(p)
 }
 
-#' Compute dates of leaves for a given tree and date of root
-#' @param phy Tree
-#' @param rootdate Date of root
-#' @return Dates of leaves
-#' @export
-leafDates = function (phy,rootdate=0) {
-  nsam=length(phy$tip.label)
-  dates=rep(rootdate,nsam)
-  for (i in 1:nsam) {
-    w=i
-    while (1) {
-      r=which(phy$edge[,2]==w)
-      if (length(r)==0) break
-      dates[i]=dates[i]+phy$edge.length[r]
-      w=phy$edge[r,1]
-    }
-  }
-  return(dates)
-}
+

@@ -26,7 +26,7 @@ plot(phy)
 axisPhylo(root.time = 2000,backward = F)
 ```
 
-We can compute the age of the leaves.
+We can compute the sampling dates.
 ```{r}
 dates=leafDates(phy,2000)
 ```
@@ -36,10 +36,16 @@ where $l$ is the branch length and
 $r=10$ per year is the real substitution rate.
 ```{r}
 obsphy=phy
-obsphy$edge.length=unlist(lapply(obsphy$edge.length*20,function (x) rpois(1,x)))
+obsphy$edge.length=unlist(lapply(obsphy$edge.length*10,function (x) rpois(1,x)))
 plot(obsphy)
 axisPhylo(backward = F)
 ```
+Let's do a root-to-tip regression analysis:
+
+```{r}
+res=roottotip(obsphy,dates)
+```
+
 
 ```{r}
 res=credating(obsphy,dates,nbIts = 10000,rate=10,useCoalPrior = T,updateRate = 2, updateNeg = T)

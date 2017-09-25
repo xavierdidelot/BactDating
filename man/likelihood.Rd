@@ -6,6 +6,13 @@
 \usage{
 likelihood(tab, rate, n)
 }
+\arguments{
+\item{tab}{Table of nodes}
+
+\item{rate}{Substitution rate}
+
+\item{n}{Number of samples}
+}
 \value{
 log-likelihood
 }
