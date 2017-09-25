@@ -4,12 +4,10 @@
 \alias{leafDates}
 \title{Compute dates of leaves for a given tree and date of root}
 \usage{
-leafDates(phy, rootdate = 0)
+leafDates(phy)
 }
 \arguments{
 \item{phy}{Tree}
-
-\item{rootdate}{Date of root}
 }
 \value{
 Dates of leaves

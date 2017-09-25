@@ -19,10 +19,11 @@ roottotip = function(tree,date)
 
 #' Compute dates of leaves for a given tree and date of root
 #' @param phy Tree
-#' @param rootdate Date of root
 #' @return Dates of leaves
 #' @export
-leafDates = function (phy,rootdate=0) {
+leafDates = function (phy) {
+  rootdate=phy$root.time
+  if (is.null(rootdate)) rootdate=0
   nsam=length(phy$tip.label)
   dates=rep(rootdate,nsam)
   for (i in 1:nsam) {

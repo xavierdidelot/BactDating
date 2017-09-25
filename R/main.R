@@ -94,10 +94,19 @@ credating = function(tree, date, rate = 1, nbIts = 1000, useCoalPrior = F, updat
   meanRec = colMeans(record[(nrow(record) / 2):nrow(record), ])
   for (i in 1:nrow(tree$edge))
     tree$edge.length[i] = meanRec[tree$edge[i, 2]] - meanRec[tree$edge[i, 1]]
+  tree$root.time = max(date)-max(leafDates(tree))
+  CI = matrix(NA, tree$Nnode, 2)
+  for (i in (n+1):nrow(tab)) {
+    s=sort(record[(nrow(record)/2):nrow(record),i])
+    CI[i-n,1]=s[floor(length(s)*0.025)]
+    CI[i-n,2]=s[ceiling(length(s)*0.975)]
+  }
+  CI = max(dates) - CI
   return(list(
     tree = tree,
     record = record,
-    rootdate = meanRec[n + 1]
+    rootdate = meanRec[n + 1],
+    CI = CI
   ))
 }
 

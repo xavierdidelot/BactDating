@@ -10,6 +10,7 @@ output: html_notebook
 ```{r}
 library(CreDating)
 library(ape)
+library(phytools)
 set.seed(0)
 ```
 
@@ -20,13 +21,14 @@ We consider a random timed tree with 20 leaves, with the root in 2000.
 ```{r}
 nsam <- 20
 phy <- rtree(nsam, br = rexp)
+phy$root.time <- 2000
 plot(phy)
-axisPhylo(root.time = 2000, backward = F)
+axisPhylo(backward = F)
 ```
 
-We can compute the sampling dates.
+We can extract the sampling dates.
 ```{r}
-dates = leafDates(phy, 2000)
+dates = leafDates(phy)
 ```
 
 On each branch we observe a number of substitutions which is distributed $\mathrm{Poisson}(rl)$
@@ -34,6 +36,7 @@ where $l$ is the branch length and
 $r=10$ per year is the real substitution rate.
 ```{r}
 obsphy=phy
+obsphy$root.time=NULL
 obsphy$edge.length=unlist(lapply(obsphy$edge.length*10,function (x) rpois(1,x)))
 plot(obsphy)
 axisPhylo(backward = F)
@@ -54,6 +57,11 @@ res=credating(obsphy,dates,nbIts = 1000,rate=10,useCoalPrior = T,updateRate = 2,
 plot(res$tree)
 axisPhylo(backward = F)
 ```
+Plot with credibility bars:
+```{r}
+plotTree.errorbars(res$tree,res$CI)
+```
+
 
 We can see what the MCMC traces look like:
 
