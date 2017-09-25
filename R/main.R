@@ -9,7 +9,7 @@
 #' @param updateNeg Whether or not to update the neg parameter
 #' @return Dating results
 #' @export
-credating = function(tree, date, rate = 1, nbIts = 1000, useCoalPrior = F, updateRate = F, neg = 1, updateNeg = F)
+credating = function(tree, date, rate = 1, nbIts = 1000, useCoalPrior = T, updateRate = 2, neg = 1, updateNeg = T)
 {
   prior=function(tab,neg,n) return(0)
   if (useCoalPrior) prior=coalprior
@@ -101,7 +101,7 @@ credating = function(tree, date, rate = 1, nbIts = 1000, useCoalPrior = F, updat
     CI[i-n,1]=s[floor(length(s)*0.025)]
     CI[i-n,2]=s[ceiling(length(s)*0.975)]
   }
-  CI = max(dates) - CI
+  CI = max(date) - CI
   return(list(
     tree = tree,
     record = record,
