@@ -2,9 +2,7 @@
 title: "Example of using CreDating"
 author: "Xavier Didelot"
 date: "`r Sys.Date()`"
-output: 
-  github_document:
-    html_preview: false
+output: html_notebook
 ---
 
 ##Initialisation
@@ -23,12 +21,12 @@ We consider a random timed tree with 20 leaves, with the root in 2000.
 nsam <- 20
 phy <- rtree(nsam, br = rexp)
 plot(phy)
-axisPhylo(root.time = 2000,backward = F)
+axisPhylo(root.time = 2000, backward = F)
 ```
 
 We can compute the sampling dates.
 ```{r}
-dates=leafDates(phy,2000)
+dates = leafDates(phy, 2000)
 ```
 
 On each branch we observe a number of substitutions which is distributed $\mathrm{Poisson}(rl)$
@@ -40,18 +38,25 @@ obsphy$edge.length=unlist(lapply(obsphy$edge.length*10,function (x) rpois(1,x)))
 plot(obsphy)
 axisPhylo(backward = F)
 ```
+
 Let's do a root-to-tip regression analysis:
 
 ```{r}
 res=roottotip(obsphy,dates)
 ```
 
+##Analysis
+
+We run CreDating as follows:
 
 ```{r}
-res=credating(obsphy,dates,nbIts = 10000,rate=10,useCoalPrior = T,updateRate = 2, updateNeg = T)
+res=credating(obsphy,dates,nbIts = 1000,rate=10,useCoalPrior = T,updateRate = 2, updateNeg = T)
 plot(res$tree)
 axisPhylo(backward = F)
 ```
+
+We can see what the MCMC traces look like:
+
 ```{r}
   nc=ncol(res$record)
   par(mfrow=c(2,2))
@@ -59,5 +64,4 @@ axisPhylo(backward = F)
   plot(res$record[,nc-3],main='Date of root',type='l',xlab='Sampled iterations',ylab='')
   plot(res$record[,nc-1],main='Rate',type='l',xlab='Sampled iterations',ylab='')
   plot(res$record[,nc],main='Neg',type='l',xlab='Sampled iterations',ylab='')
-  par(mfrow=c(1,1))
 ```
