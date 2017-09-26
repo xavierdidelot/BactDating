@@ -1,6 +1,7 @@
 #' Root to tip correlation
 #' @param tree Phylogenetic tree
 #' @param date Dates of sampling
+#' @importFrom graphics abline
 #' @export
 roottotip = function(tree,date)
 {
@@ -13,7 +14,7 @@ roottotip = function(tree,date)
   plot(date,ys,xlab='Sampling date',ylab='Root-to-tip distance',xaxs='i',yaxs='i',pch=19,ylim=c(0,max(ys)),xlim=c(ori,max(date)))
   par(xpd=F)
   abline(res,lwd=2)
-  text(ori+(max(date)-ori)*0.5,max(ys)*0.9,sprintf('Rate=%.2e,MRCA=%.2f,R2=%.2f,p=%.2e',rate,ori,summary(res)$r.squared,summary(res)$coefficients[,4][2]))
+  title(sprintf('Rate=%.2e,MRCA=%.2f,R2=%.2f,p=%.2e',rate,ori,summary(res)$r.squared,summary(res)$coefficients[,4][2]))
   return(list(rate=rate,ori=ori))
 }
 

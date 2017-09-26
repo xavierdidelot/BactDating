@@ -52,7 +52,7 @@ res=roottotip(obsphy,dates)
 We run CreDating as follows:
 
 ```{r}
-res=credating(obsphy,dates,nbIts = 1000,rate=10)
+res=credating(obsphy,dates,nbIts = 10000)
 plot(res)
 ```
 Plot with credibility bars:

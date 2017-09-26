@@ -44,15 +44,15 @@ credating = function(tree, date, rate = 1, nbIts = 1000, useCoalPrior = T, updat
   #MCMC
   l = likelihood(tab, rate, n)
   p = prior(tab, neg, n)
-  record = matrix(NA, nbIts / 10, 3 + nrow(tab))
+  record = matrix(NA, nbIts / 10, 4 + nrow(tab))
   for (i in 1:nbIts) {
     #Record
     if (i %% 10 == 0) {
       record[i / 10, nrow(tab) + 1] = l
       record[i / 10, nrow(tab) + 2] = rate
       record[i / 10, nrow(tab) + 3] = neg
-      for (j in 1:nrow(tab))
-        record[i / 10, j] = tab[j, 3]
+      record[i / 10, nrow(tab) + 4] = p
+      record[i / 10, 1:nrow(tab)] = tab[1:nrow(tab), 3]
     }
 
     if (updateRate == 1) {
@@ -135,18 +135,12 @@ likelihood = function(tab, rate, n) {
 #'@return The log-prior in Eq (1) of Drummond et al (2002) Genetics
 coalprior = function(tab, neg, n) {
   p = -log(neg) * (n - 1)
-  MySort <- sort(tab[, 3], decreasing = T, index.return = TRUE)
-  ind <- MySort$ix
-  s <- MySort$x
-  k = 1
-  for (i in 2:length(s)) {
-    p = p - (k * (k - 1) / (2 * neg) * (s[i-1] - s[i]))
-    if (ind[i] <= n)
-      k = k + 1
-    else
-      k = k - 1
-  }
-  if (k != 1)
+  l=nrow(tab)
+  s <- sort(tab[, 3], decreasing = T, index.return = TRUE)
+  k=cumsum(2*(s$ix<=n)-1)
+  difs=s$x[1:(l-1)]-s$x[2:l]
+  p=p-sum(k[2:l]*(k[2:l]-1)*difs)/(2*neg)
+  if (k[length(k)] != 1)
     print('error')
   return(p)
 }
@@ -156,20 +150,20 @@ coalprior = function(tab, neg, n) {
 #' @param type Type of plot to do. Currently either 'tree' or 'treeCI' or 'trace'
 #' @param ... Additional parameters are passed on to plot.phylo
 #' @return Nothing
+#' @importFrom grDevices rgb
 #' @export
 plot.resCreDating = function(x, type='tree', ...) {
 
   if (type=='tree') {
-    plot.phylo(x$tree, show.tip.label = F,...)
+    plot.phylo(x$tree, ...)
     axisPhylo(backward = F)
   }
 
   if (type=='treeCI') {
-    plot.phylo(x$tree, show.tip.label = F,x.lim=c(min(x$CI),max(leafDates(x$tree)))-x$tree$root.time,...)
+    plot.phylo(x$tree, x.lim=c(min(x$CI),max(leafDates(x$tree)))-x$tree$root.time,...)
     axisPhylo(backward = F)
     obj<-get("last_plot.phylo",envir=.PlotPhyloEnv)
-    transblue=col2rgb("blue")[,1]/255
-    transblue=rgb(transblue[1],transblue[2],transblue[3],0.4)
+    transblue=rgb(0,0,1,0.4)
     for(i in (1+Ntip(x$tree)):(x$tree$Nnode+Ntip(x$tree)))
       lines(x=c(x$CI[i-Ntip(x$tree),1],x$CI[i-Ntip(x$tree),2])-x$tree$root.time,
             y=rep(obj$yy[i],2),lwd=11,lend=0,
@@ -181,10 +175,11 @@ plot.resCreDating = function(x, type='tree', ...) {
 
   if (type=='trace') {
     nc=ncol(x$record)
-    par(mfrow=c(2,2))
-    plot(x$record[,nc-2],main='Likelihood',type='l',xlab='Sampled iterations',ylab='')
-    plot(x$record[,nc-3],main='Date of root',type='l',xlab='Sampled iterations',ylab='')
-    plot(x$record[,nc-1],main='Rate',type='l',xlab='Sampled iterations',ylab='')
-    plot(x$record[,nc],main='Neg',type='l',xlab='Sampled iterations',ylab='')
+    par(mfrow=c(2,3))
+    plot(x$record[,nc-3],main='Likelihood',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,nc  ],main='Prior',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,nc-4],main='Date of root',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,nc-2],main='Rate',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,nc-1],main='Neg',type='l',xlab='Sampled iterations',ylab='')
   }
 }
