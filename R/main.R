@@ -101,13 +101,14 @@ credating = function(tree, date, rate = 1, nbIts = 1000, useCoalPrior = T, updat
     CI[i-n,1]=s[floor(length(s)*0.025)]
     CI[i-n,2]=s[ceiling(length(s)*0.975)]
   }
-  CI = max(date) - CI
-  return(list(
+  out = list(
     tree = tree,
     record = record,
     rootdate = meanRec[n + 1],
     CI = CI
-  ))
+  )
+  class(out) <- 'resCreDating'
+  return(out)
 }
 
 #' Likelihood function
@@ -150,4 +151,38 @@ coalprior = function(tab, neg, n) {
   return(p)
 }
 
+#' Plotting methods
+#' @param res Output from running function credating
+#' @param type Type of plot to do. Currently either 'tree' or 'treeCI' or 'trace'
+#' @return Nothing
+#' @export
+plot.resCreDating = function(res,type='tree') {
+
+  if (type=='tree') {
+    plot(res$tree, show.tip.label = F)
+    axisPhylo(backward = F)
+  }
+
+  if (type=='treeCI') {
+    plot(res$tree, show.tip.label = F,x.lim=c(min(res$CI),max(res$CI))-res$tree$root.time)
+    axisPhylo(backward = F)
+    obj<-get("last_plot.phylo",envir=.PlotPhyloEnv)
+    for(i in (1+Ntip(res$tree)):(res$tree$Nnode+Ntip(res$tree)))
+      lines(x=c(res$CI[i-Ntip(res$tree),1],res$CI[i-Ntip(res$tree),2])-res$tree$root.time,
+            y=rep(obj$yy[i],2),lwd=11,lend=0,
+            col=make.transparent("blue",0.4))
+    points(obj$xx[1:res$tree$Nnode+Ntip(res$tree)],
+           obj$yy[1:res$tree$Nnode+Ntip(res$tree)],pch=19,col="blue",
+           cex=1.8)
+  }
+
+  if (type=='trace') {
+    nc=ncol(res$record)
+    par(mfrow=c(2,2))
+    plot(res$record[,nc-2],main='Likelihood',type='l',xlab='Sampled iterations',ylab='')
+    plot(res$record[,nc-3],main='Date of root',type='l',xlab='Sampled iterations',ylab='')
+    plot(res$record[,nc-1],main='Rate',type='l',xlab='Sampled iterations',ylab='')
+    plot(res$record[,nc],main='Neg',type='l',xlab='Sampled iterations',ylab='')
+  }
+}
 

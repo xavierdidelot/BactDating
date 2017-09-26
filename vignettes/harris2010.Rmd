@@ -10,7 +10,6 @@ output: html_notebook
 ```{r}
 library(CreDating)
 library(ape)
-library(phytools)
 set.seed(0)
 data(harris2010)
 plot(harris2010$tree, show.tip.label = F)
@@ -31,23 +30,17 @@ We run CreDating as follows:
 
 ```{r}
 res=credating(harris2010$tree,harris2010$dates,nbIts = 2000,rate=6, neg=50)
-plot(res$tree, show.tip.label = F)
-axisPhylo(backward = F)
+plot(res)
 ```
 
 Plot with credibility bars:
 ```{r}
-plotTree.errorbars(res$tree,res$CI,ftype="off")
+plot(res,'treeCI')
 ```
 
 
 We can see what the MCMC traces look like:
 
 ```{r}
-  nc=ncol(res$record)
-  par(mfrow=c(2,2))
-  plot(res$record[,nc-2],main='Likelihood',type='l',xlab='Sampled iterations',ylab='')
-  plot(res$record[,nc-3],main='Date of root',type='l',xlab='Sampled iterations',ylab='')
-  plot(res$record[,nc-1],main='Rate',type='l',xlab='Sampled iterations',ylab='')
-  plot(res$record[,nc],main='Neg',type='l',xlab='Sampled iterations',ylab='')
+  plot(res,'trace')
 ```

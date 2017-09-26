@@ -4,8 +4,8 @@
 \alias{credating}
 \title{Main function}
 \usage{
-credating(tree, date, rate = 1, nbIts = 1000, useCoalPrior = F,
-  updateRate = F, neg = 1, updateNeg = F)
+credating(tree, date, rate = 1, nbIts = 1000, useCoalPrior = T,
+  updateRate = 2, neg = 1, updateNeg = T)
 }
 \arguments{
 \item{tree}{Tree wih branches measured in unit of substitutions}
