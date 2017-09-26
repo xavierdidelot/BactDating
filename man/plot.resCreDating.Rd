@@ -2,16 +2,20 @@
 % Please edit documentation in R/main.R
 \name{plot.resCreDating}
 \alias{plot.resCreDating}
-\title{Plotting method}
+\title{Plotting methods}
 \usage{
-\method{plot}{resCreDating}(res)
+\method{plot}{resCreDating}(x, type = "tree", ...)
 }
 \arguments{
-\item{res}{Output from running function credating}
+\item{x}{Output from running function credating}
+
+\item{type}{Type of plot to do. Currently either 'tree' or 'treeCI' or 'trace'}
+
+\item{...}{Additional parameters are passed on to plot.phylo}
 }
 \value{
 Nothing
 }
 \description{
-Plotting method
+Plotting methods
 }

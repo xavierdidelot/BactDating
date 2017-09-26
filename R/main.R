@@ -152,37 +152,39 @@ coalprior = function(tab, neg, n) {
 }
 
 #' Plotting methods
-#' @param res Output from running function credating
+#' @param x Output from running function credating
 #' @param type Type of plot to do. Currently either 'tree' or 'treeCI' or 'trace'
+#' @param ... Additional parameters are passed on to plot.phylo
 #' @return Nothing
 #' @export
-plot.resCreDating = function(res,type='tree') {
+plot.resCreDating = function(x, type='tree', ...) {
 
   if (type=='tree') {
-    plot(res$tree, show.tip.label = F)
+    plot.phylo(x$tree, show.tip.label = F,...)
     axisPhylo(backward = F)
   }
 
   if (type=='treeCI') {
-    plot(res$tree, show.tip.label = F,x.lim=c(min(res$CI),max(res$CI))-res$tree$root.time)
+    plot.phylo(x$tree, show.tip.label = F,x.lim=c(min(x$CI),max(leafDates(x$tree)))-x$tree$root.time,...)
     axisPhylo(backward = F)
     obj<-get("last_plot.phylo",envir=.PlotPhyloEnv)
-    for(i in (1+Ntip(res$tree)):(res$tree$Nnode+Ntip(res$tree)))
-      lines(x=c(res$CI[i-Ntip(res$tree),1],res$CI[i-Ntip(res$tree),2])-res$tree$root.time,
+    transblue=col2rgb("blue")[,1]/255
+    transblue=rgb(transblue[1],transblue[2],transblue[3],0.4)
+    for(i in (1+Ntip(x$tree)):(x$tree$Nnode+Ntip(x$tree)))
+      lines(x=c(x$CI[i-Ntip(x$tree),1],x$CI[i-Ntip(x$tree),2])-x$tree$root.time,
             y=rep(obj$yy[i],2),lwd=11,lend=0,
-            col=make.transparent("blue",0.4))
-    points(obj$xx[1:res$tree$Nnode+Ntip(res$tree)],
-           obj$yy[1:res$tree$Nnode+Ntip(res$tree)],pch=19,col="blue",
+            col=transblue)
+    points(obj$xx[1:x$tree$Nnode+Ntip(x$tree)],
+           obj$yy[1:x$tree$Nnode+Ntip(x$tree)],pch=19,col="blue",
            cex=1.8)
   }
 
   if (type=='trace') {
-    nc=ncol(res$record)
+    nc=ncol(x$record)
     par(mfrow=c(2,2))
-    plot(res$record[,nc-2],main='Likelihood',type='l',xlab='Sampled iterations',ylab='')
-    plot(res$record[,nc-3],main='Date of root',type='l',xlab='Sampled iterations',ylab='')
-    plot(res$record[,nc-1],main='Rate',type='l',xlab='Sampled iterations',ylab='')
-    plot(res$record[,nc],main='Neg',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,nc-2],main='Likelihood',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,nc-3],main='Date of root',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,nc-1],main='Rate',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,nc],main='Neg',type='l',xlab='Sampled iterations',ylab='')
   }
 }
-
