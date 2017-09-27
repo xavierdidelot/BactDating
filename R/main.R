@@ -178,8 +178,8 @@ plot.resCreDating = function(x, type='tree', ...) {
     par(mfrow=c(2,3))
     plot(x$record[,nc-3],main='Likelihood',type='l',xlab='Sampled iterations',ylab='')
     plot(x$record[,nc  ],main='Prior',type='l',xlab='Sampled iterations',ylab='')
-    plot(x$record[,nc-4],main='Date of root',type='l',xlab='Sampled iterations',ylab='')
-    plot(x$record[,nc-2],main='Rate',type='l',xlab='Sampled iterations',ylab='')
-    plot(x$record[,nc-1],main='Neg',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,Ntip(x$tree)+1],main='Date of root',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,nc-2],main='Substitution rate',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,nc-1],main='Coalescent rate',type='l',xlab='Sampled iterations',ylab='')
   }
 }

@@ -36,7 +36,7 @@ $r=10$ per year is the real substitution rate.
 ```{r}
 obsphy=phy
 obsphy$root.time=NULL
-obsphy$edge.length=unlist(lapply(obsphy$edge.length*10,function (x) rpois(1,x)))
+obsphy$edge.length=unlist(lapply(obsphy$edge.length*1,function (x) rpois(1,x)))
 plot(obsphy)
 axisPhylo(backward = F)
 ```
