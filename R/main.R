@@ -119,13 +119,29 @@ credating = function(tree, date, rate = 1, nbIts = 1000, useCoalPrior = T, updat
 likelihood = function(tab, rate, n) {
   if (rate < 0)
     return(-Inf)
-  #n=ceiling(nrow(tab)/2)
   t2 = tab[-(n + 1), ]
   lengths = t2[, 3] - tab[t2[, 4], 3]
   if (min(lengths) < 0)
     return(-Inf)
   muts = t2[, 2]
   return(sum(-lengths * rate + muts * log(lengths * rate)))
+}
+
+#' Relaxed likelihood function
+#' @param tab Table of nodes
+#' @param rate r parameter
+#' @param phi phi parameter
+#' @param n Number of samples
+#' @return log-likelihood
+relaxedLikelihood = function(tab, r, phi, n) {
+  if (r < 0 || phi < 0)
+    return(-Inf)
+  t2 = tab[-(n + 1), ]
+  lengths = t2[, 3] - tab[t2[, 4], 3]
+  if (min(lengths) < 0)
+    return(-Inf)
+  muts = t2[, 2]
+  return(sum(dnbinom(muts,r,1-phi*lengths/(1+phi*lengths),log=T)))
 }
 
 #' Coalescent prior function
