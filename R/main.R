@@ -1,19 +1,21 @@
 #' Main function
 #' @param tree Tree wih branches measured in unit of substitutions
 #' @param date Sampling dates for the leaves of the tree
-#' @param rate Rate of substitutions per genome (not per site)
+#' @param initRate Initial rate of substitutions per genome (not per site)
 #' @param nbIts Number of MCMC iterations to perform
 #' @param useCoalPrior Whether or not to use a coalescent prior on the tree
 #' @param updateRate Whether or not to update the substitution rate
-#' @param neg Rate of coalescence, equal to Ne*g
+#' @param initNeg Initial rate of coalescence, equal to Ne*g
 #' @param updateNeg Whether or not to update the neg parameter
 #' @return Dating results
 #' @export
-credating = function(tree, date, rate = 1, nbIts = 1000, useCoalPrior = T, updateRate = 2, neg = 1, updateNeg = T)
+credating = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, updateRate = 2, initNeg = 1, updateNeg = 2)
 {
   prior=function(tab,neg,n) return(0)
   if (useCoalPrior) prior=coalprior
   n = length(tree$tip.label)
+  rate = initRate
+  neg = initNeg
 
   #Create table of nodes (col1=name,col2=expected mutation on branch above,col3=date,col4=father)
   tab = matrix(NA, n + tree$Nnode, 4)
@@ -70,11 +72,22 @@ credating = function(tree, date, rate = 1, nbIts = 1000, useCoalPrior = T, updat
       l=likelihood(tab,rate,n)
     }
 
-    if (updateNeg == T) {
+    if (updateNeg == 1) {
       #MH move assuming flat prior
       neg2=abs(neg+runif(1)-0.5)
       p2=prior(tab,neg2,n)
       if (log(runif(1))<p2-p) {p=p2;neg=neg2}
+    }
+
+    if (updateNeg == 2) {
+      #Gibbs move assuming inverse-gamma prior
+      s <- sort(tab[, 3], decreasing = T, index.return = TRUE)
+      k=cumsum(2*(s$ix<=n)-1)
+      difs=s$x[1:(nrow(tab)-1)]-s$x[2:nrow(tab)]
+      b=sum(k[2:nrow(tab)]*(k[2:nrow(tab)]-1)*difs)/2
+      neg=1/rgamma(1,shape=n-1,scale=1/b)
+      #print(sprintf('neg=%f, shape=%f, scale=%f\n',neg,n-1,1/b))
+      p=prior(tab,neg,n)
     }
 
     #MH to update dates
@@ -129,7 +142,7 @@ likelihood = function(tab, rate, n) {
 
 #' Relaxed likelihood function
 #' @param tab Table of nodes
-#' @param rate r parameter
+#' @param r r parameter
 #' @param phi phi parameter
 #' @param n Number of samples
 #' @return log-likelihood

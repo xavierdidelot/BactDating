@@ -9,11 +9,11 @@ relaxedLikelihood(tab, r, phi, n)
 \arguments{
 \item{tab}{Table of nodes}
 
+\item{r}{r parameter}
+
 \item{phi}{phi parameter}
 
 \item{n}{Number of samples}
-
-\item{rate}{r parameter}
 }
 \value{
 log-likelihood

@@ -4,15 +4,15 @@
 \alias{credating}
 \title{Main function}
 \usage{
-credating(tree, date, rate = 1, nbIts = 1000, useCoalPrior = T,
-  updateRate = 2, neg = 1, updateNeg = T)
+credating(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T,
+  updateRate = 2, initNeg = 1, updateNeg = 2)
 }
 \arguments{
 \item{tree}{Tree wih branches measured in unit of substitutions}
 
 \item{date}{Sampling dates for the leaves of the tree}
 
-\item{rate}{Rate of substitutions per genome (not per site)}
+\item{initRate}{Initial rate of substitutions per genome (not per site)}
 
 \item{nbIts}{Number of MCMC iterations to perform}
 
@@ -20,7 +20,7 @@ credating(tree, date, rate = 1, nbIts = 1000, useCoalPrior = T,
 
 \item{updateRate}{Whether or not to update the substitution rate}
 
-\item{neg}{Rate of coalescence, equal to Ne*g}
+\item{initNeg}{Initial rate of coalescence, equal to Ne*g}
 
 \item{updateNeg}{Whether or not to update the neg parameter}
 }
