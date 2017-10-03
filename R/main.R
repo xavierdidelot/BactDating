@@ -7,15 +7,21 @@
 #' @param updateRate Whether or not to update the substitution rate
 #' @param initNeg Initial rate of coalescence, equal to Ne*g
 #' @param updateNeg Whether or not to update the neg parameter
+#' @param model Which model to use (1=Poisson, 2=NegBin, 3=Gamma)
 #' @return Dating results
 #' @export
-credating = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, updateRate = 2, initNeg = 1, updateNeg = 2)
+credating = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, updateRate = 2, initNeg = 1, updateNeg = 2, model = 1)
 {
-  prior=function(tab,neg,n) return(0)
-  if (useCoalPrior) prior=coalprior
-  n = length(tree$tip.label)
+  n = Ntip(tree)
   rate = initRate
   neg = initNeg
+
+  prior=function(tab,neg) return(0)
+  if (useCoalPrior) prior=coalprior
+
+  likelihood=likelihoodPoisson
+  if (model == 2) likelihood=function(tab,rate) return(likelihoodNegbin(tab,r=rate,phi=1))
+  if (model == 3) likelihood=function(tab,rate) return(likelihoodGamma(tab,rate))
 
   #Create table of nodes (col1=name,col2=expected mutation on branch above,col3=date,col4=father)
   tab = matrix(NA, n + tree$Nnode, 4)
@@ -23,7 +29,8 @@ credating = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, u
     i = tree$edge[r, 2]
     tab[i, 1] = i
     tab[i, 4] = tree$edge[r, 1]
-    tab[i, 2] = round(tree$edge.length[r])
+    if (model == 1 || model == 2) tab[i, 2] = round(tree$edge.length[r])
+    else tab[i, 2] = tree$edge.length[r]
     if (i <= n)
       tab[i, 3] = date[i]
   }
@@ -44,8 +51,8 @@ credating = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, u
   tab[i, 3] = min(tab[children, 3]) - 1
 
   #MCMC
-  l = likelihood(tab, rate, n)
-  p = prior(tab, neg, n)
+  l = likelihood(tab, rate)
+  p = prior(tab, neg)
   record = matrix(NA, nbIts / 10, 4 + nrow(tab))
   for (i in 1:nbIts) {
     #Record
@@ -60,7 +67,7 @@ credating = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, u
     if (updateRate == 1) {
       #MH move assuming flat prior
       rate2=abs(rate+runif(1)-0.5)
-      l2=likelihood(tab,rate2,n)
+      l2=likelihood(tab,rate2)
       if (log(runif(1))<l2-l) {l=l2;rate=rate2}
     }
 
@@ -69,13 +76,13 @@ credating = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, u
       lengths=tab[-(n+1),3]-tab[tab[-(n+1),4],3]
       muts=tab[-(n+1),2]
       rate=rgamma(1,1+sum(muts),sum(lengths))
-      l=likelihood(tab,rate,n)
+      l=likelihood(tab,rate)
     }
 
     if (updateNeg == 1) {
       #MH move assuming flat prior
       neg2=abs(neg+runif(1)-0.5)
-      p2=prior(tab,neg2,n)
+      p2=prior(tab,neg2)
       if (log(runif(1))<p2-p) {p=p2;neg=neg2}
     }
 
@@ -87,15 +94,15 @@ credating = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, u
       b=sum(k[2:nrow(tab)]*(k[2:nrow(tab)]-1)*difs)/2
       neg=1/rgamma(1,shape=n-1,scale=1/b)
       #print(sprintf('neg=%f, shape=%f, scale=%f\n',neg,n-1,1/b))
-      p=prior(tab,neg,n)
+      p=prior(tab,neg)
     }
 
     #MH to update dates
     for (j in (n + 1):nrow(tab)) {
       old = tab[j, 3]
       tab[j, 3] = old + runif(1) - 0.5
-      l2 = likelihood(tab, rate, n)
-      p2 = prior(tab, neg, n)
+      l2 = likelihood(tab, rate)
+      p2 = prior(tab, neg)
       if (log(runif(1)) < l2 - l + p2 - p)
       {l = l2; p = p2}
       else
@@ -124,12 +131,12 @@ credating = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, u
   return(out)
 }
 
-#' Likelihood function
+#' Poisson likelihood function
 #' @param tab Table of nodes
 #' @param rate Substitution rate
-#' @param n Number of samples
 #' @return log-likelihood
-likelihood = function(tab, rate, n) {
+likelihoodPoisson = function(tab, rate) {
+  n = ceiling(nrow(tab)/2)
   if (rate < 0)
     return(-Inf)
   t2 = tab[-(n + 1), ]
@@ -140,13 +147,13 @@ likelihood = function(tab, rate, n) {
   return(sum(-lengths * rate + muts * log(lengths * rate)))
 }
 
-#' Relaxed likelihood function
+#' Negative-binomial likelihood function
 #' @param tab Table of nodes
 #' @param r r parameter
 #' @param phi phi parameter
-#' @param n Number of samples
 #' @return log-likelihood
-relaxedLikelihood = function(tab, r, phi, n) {
+likelihoodNegbin = function(tab, r, phi) {
+  n = ceiling(nrow(tab)/2)
   if (r < 0 || phi < 0)
     return(-Inf)
   t2 = tab[-(n + 1), ]
@@ -157,12 +164,28 @@ relaxedLikelihood = function(tab, r, phi, n) {
   return(sum(dnbinom(muts,r,1-phi*lengths/(1+phi*lengths),log=T)))
 }
 
+#' Gamma likelihood function
+#' @param tab Table of nodes
+#' @param rate rate parameter
+#' @return log-likelihood
+likelihoodGamma = function(tab, rate) {
+  n = ceiling(nrow(tab)/2)
+  if (rate < 0)
+    return(-Inf)
+  t2 = tab[-(n + 1), ]
+  lengths = t2[, 3] - tab[t2[, 4], 3]
+  if (min(lengths) < 0)
+    return(-Inf)
+  muts = t2[, 2]
+  return(sum(dgamma(muts,shape=rate,scale=1,log=T)))
+}
+
 #' Coalescent prior function
 #' @param tab Table of nodes
 #' @param neg Coalescent rate
-#' @param n Number of samples
 #'@return The log-prior in Eq (1) of Drummond et al (2002) Genetics
-coalprior = function(tab, neg, n) {
+coalprior = function(tab, neg) {
+  n = ceiling(nrow(tab)/2)
   p = -log(neg) * (n - 1)
   l=nrow(tab)
   s <- sort(tab[, 3], decreasing = T, index.return = TRUE)

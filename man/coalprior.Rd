@@ -4,14 +4,12 @@
 \alias{coalprior}
 \title{Coalescent prior function}
 \usage{
-coalprior(tab, neg, n)
+coalprior(tab, neg)
 }
 \arguments{
 \item{tab}{Table of nodes}
 
 \item{neg}{Coalescent rate}
-
-\item{n}{Number of samples}
 }
 \value{
 The log-prior in Eq (1) of Drummond et al (2002) Genetics

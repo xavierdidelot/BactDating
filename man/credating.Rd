@@ -5,7 +5,7 @@
 \title{Main function}
 \usage{
 credating(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T,
-  updateRate = 2, initNeg = 1, updateNeg = 2)
+  updateRate = 2, initNeg = 1, updateNeg = 2, model = 1)
 }
 \arguments{
 \item{tree}{Tree wih branches measured in unit of substitutions}
@@ -23,6 +23,8 @@ credating(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T,
 \item{initNeg}{Initial rate of coalescence, equal to Ne*g}
 
 \item{updateNeg}{Whether or not to update the neg parameter}
+
+\item{model}{Which model to use (1=Poisson, 2=NegBin, 3=Gamma)}
 }
 \value{
 Dating results
