@@ -19,7 +19,7 @@ credating = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, u
   prior=function(tab,neg) return(0)
   if (useCoalPrior) prior=coalprior
 
-  likelihood=likelihoodPoisson
+  if (model == 1) likelihood=likelihoodPoisson
   if (model == 2) likelihood=function(tab,rate) return(likelihoodNegbin(tab,r=rate,phi=1))
   if (model == 3) likelihood=function(tab,rate) return(likelihoodGamma(tab,rate))
 
@@ -30,7 +30,7 @@ credating = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, u
     tab[i, 1] = i
     tab[i, 4] = tree$edge[r, 1]
     if (model == 1 || model == 2) tab[i, 2] = round(tree$edge.length[r])
-    else tab[i, 2] = tree$edge.length[r]
+    else tab[i, 2] = pmax(1e-7,tree$edge.length[r])#NOTE THIS NEEDS TO BE CONFIRMED
     if (i <= n)
       tab[i, 3] = date[i]
   }
@@ -72,7 +72,7 @@ credating = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, u
     }
 
     if (updateRate == 2) {
-      #Gibbs move assuming Exp(1) prior on rate
+      #Gibbs move assuming Poisson model and Exp(1) prior on rate
       lengths=tab[-(n+1),3]-tab[tab[-(n+1),4],3]
       muts=tab[-(n+1),2]
       rate=rgamma(1,1+sum(muts),sum(lengths))
@@ -93,7 +93,6 @@ credating = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, u
       difs=s$x[1:(nrow(tab)-1)]-s$x[2:nrow(tab)]
       b=sum(k[2:nrow(tab)]*(k[2:nrow(tab)]-1)*difs)/2
       neg=1/rgamma(1,shape=n-1,scale=1/b)
-      #print(sprintf('neg=%f, shape=%f, scale=%f\n',neg,n-1,1/b))
       p=prior(tab,neg)
     }
 
@@ -177,7 +176,7 @@ likelihoodGamma = function(tab, rate) {
   if (min(lengths) < 0)
     return(-Inf)
   muts = t2[, 2]
-  return(sum(dgamma(muts,shape=rate,scale=1,log=T)))
+  return(sum(dgamma(muts,shape=rate*lengths,scale=1,log=T)))
 }
 
 #' Coalescent prior function

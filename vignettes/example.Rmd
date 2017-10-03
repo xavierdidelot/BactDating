@@ -39,6 +39,7 @@ $r=1$ per year is the real substitution rate.
 obsphy=phy
 obsphy$root.time=NULL
 obsphy$edge.length=unlist(lapply(obsphy$edge.length*1,function (x) rpois(1,x)))
+#obsphy$edge.length=unlist(lapply(obsphy$edge.length*10,function (x) rgamma(1,x,1)))
 plot(obsphy)
 axisPhylo(backward = F)
 ```
@@ -54,7 +55,7 @@ res=roottotip(obsphy,dates)
 We run CreDating as follows:
 
 ```{r}
-res=credating(obsphy,dates,nbIts = 1000,model=2)
+res=credating(obsphy,dates,nbIts = 10000,model=3,updateRate=1)
 plot(res)
 ```
 
