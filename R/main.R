@@ -10,7 +10,7 @@
 #' @param model Which model to use (1=Poisson, 2=NegBin, 3=Gamma)
 #' @return Dating results
 #' @export
-credating = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, updateRate = 2, initNeg = 1, updateNeg = 2, model = 1)
+credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, updateRate = 2, initNeg = 1, updateNeg = 2, model = 1)
 {
   n = Ntip(tree)
   rate = initRate

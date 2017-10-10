@@ -55,7 +55,7 @@ res=roottotip(obsphy,dates)
 We run CreDating as follows:
 
 ```{r}
-res=credating(obsphy,dates,nbIts = 10000,model=3,updateRate=1)
+res=credate(obsphy,dates,nbIts = 1000)
 plot(res)
 ```
 
