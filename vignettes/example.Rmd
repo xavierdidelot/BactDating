@@ -30,6 +30,7 @@ axisPhylo(backward = F)
 We can extract the sampling dates.
 ```{r}
 dates = leafDates(phy)
+dates[1]=NA#Oops, just lost a date!
 ```
 
 On each branch we observe a number of substitutions which is distributed $\mathrm{Poisson}(rl)$
@@ -55,7 +56,7 @@ res=roottotip(obsphy,dates)
 We run CreDating as follows:
 
 ```{r}
-res=credate(obsphy,dates,nbIts = 1000)
+res=credate(obsphy,dates,nbIts = 10000)
 plot(res)
 ```
 

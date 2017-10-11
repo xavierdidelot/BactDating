@@ -23,6 +23,10 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
   if (model == 2) likelihood=function(tab,rate) return(likelihoodNegbin(tab,r=rate,phi=1))
   if (model == 3) likelihood=function(tab,rate) return(likelihoodGamma(tab,rate))
 
+  #Deal with missing dates
+  misDates=which(is.na(date))
+  date[misDates]=mean(date,na.rm = T)
+
   #Create table of nodes (col1=name,col2=expected mutation on branch above,col3=date,col4=father)
   tab = matrix(NA, n + tree$Nnode, 4)
   for (r in 1:(nrow(tree$edge))) {
@@ -90,16 +94,19 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
       #Gibbs move assuming inverse-gamma prior
       s <- sort(tab[, 3], decreasing = T, index.return = TRUE)
       k=cumsum(2*(s$ix<=n)-1)
-      difs=s$x[1:(nrow(tab)-1)]-s$x[2:nrow(tab)]
+      difs=-diff(s$x)#s$x[1:(nrow(tab)-1)]-s$x[2:nrow(tab)]
       b=sum(k[2:nrow(tab)]*(k[2:nrow(tab)]-1)*difs)/2
       neg=1/rgamma(1,shape=n-1,scale=1/b)
       p=prior(tab,neg)
     }
 
     #MH to update dates
-    for (j in (n + 1):nrow(tab)) {
+    for (j in c(misDates,(n + 1):nrow(tab))) {
       old = tab[j, 3]
-      tab[j, 3] = old + runif(1) - 0.5
+      ru=runif(1)
+      tab[j, 3] = old + ru - 0.5
+      if (ru<0.5&&(!is.na(tab[j,4])&&tab[j,3]<tab[tab[j,4],3])) {tab[j,3]=old;next}
+      if (ru>0.5&&j>n&&tab[j,3]>min(tab[which(tab[,4]==j),3])) {tab[j,3]=old;next}
       l2 = likelihood(tab, rate)
       p2 = prior(tab, neg)
       if (log(runif(1)) < l2 - l + p2 - p)
@@ -114,11 +121,11 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
   for (i in 1:nrow(tree$edge))
     tree$edge.length[i] = meanRec[tree$edge[i, 2]] - meanRec[tree$edge[i, 1]]
   tree$root.time = max(date)-max(leafDates(tree))
-  CI = matrix(NA, tree$Nnode, 2)
-  for (i in (n+1):nrow(tab)) {
+  CI = matrix(NA, nrow(tab), 2)
+  for (i in 1:nrow(tab)) {
     s=sort(record[(nrow(record)/2):nrow(record),i])
-    CI[i-n,1]=s[floor(length(s)*0.025)]
-    CI[i-n,2]=s[ceiling(length(s)*0.975)]
+    CI[i,1]=s[floor(length(s)*0.025)]
+    CI[i,2]=s[ceiling(length(s)*0.975)]
   }
   out = list(
     tree = tree,
@@ -141,7 +148,7 @@ likelihoodPoisson = function(tab, rate) {
   t2 = tab[-(n + 1), ]
   lengths = t2[, 3] - tab[t2[, 4], 3]
   if (min(lengths) < 0)
-    return(-Inf)
+    print('error')
   muts = t2[, 2]
   return(sum(-lengths * rate + muts * log(lengths * rate)))
 }
@@ -158,7 +165,7 @@ likelihoodNegbin = function(tab, r, phi) {
   t2 = tab[-(n + 1), ]
   lengths = t2[, 3] - tab[t2[, 4], 3]
   if (min(lengths) < 0)
-    return(-Inf)
+    print('error')
   muts = t2[, 2]
   return(sum(dnbinom(muts,r,1-phi*lengths/(1+phi*lengths),log=T)))
 }
@@ -170,11 +177,11 @@ likelihoodNegbin = function(tab, r, phi) {
 likelihoodGamma = function(tab, rate) {
   n = ceiling(nrow(tab)/2)
   if (rate < 0)
-    return(-Inf)
+    print('error')
   t2 = tab[-(n + 1), ]
   lengths = t2[, 3] - tab[t2[, 4], 3]
   if (min(lengths) < 0)
-    return(-Inf)
+    print('error')
   muts = t2[, 2]
   return(sum(dgamma(muts,shape=rate*lengths,scale=1,log=T)))
 }
@@ -189,7 +196,7 @@ coalprior = function(tab, neg) {
   l=nrow(tab)
   s <- sort(tab[, 3], decreasing = T, index.return = TRUE)
   k=cumsum(2*(s$ix<=n)-1)
-  difs=s$x[1:(l-1)]-s$x[2:l]
+  difs=-diff(s$x)#s$x[1:(l-1)]-s$x[2:l]
   p=p-sum(k[2:l]*(k[2:l]-1)*difs)/(2*neg)
   if (k[length(k)] != 1)
     print('error')
@@ -199,7 +206,7 @@ coalprior = function(tab, neg) {
 #' Plotting methods
 #' @param x Output from running function credating
 #' @param type Type of plot to do. Currently either 'tree' or 'treeCI' or 'trace'
-#' @param ... Additional parameters are passed on to plot.phylo
+#' @param ... Additional parameters are passed on
 #' @return Nothing
 #' @importFrom grDevices rgb
 #' @export
@@ -215,8 +222,9 @@ plot.resCreDating = function(x, type='tree', ...) {
     axisPhylo(backward = F)
     obj<-get("last_plot.phylo",envir=.PlotPhyloEnv)
     transblue=rgb(0,0,1,0.4)
-    for(i in (1+Ntip(x$tree)):(x$tree$Nnode+Ntip(x$tree)))
-      lines(x=c(x$CI[i-Ntip(x$tree),1],x$CI[i-Ntip(x$tree),2])-x$tree$root.time,
+    for(i in 1:(Nnode(x$tree)+Ntip(x$tree)))
+      if (x$CI[i,1]!=x$CI[i,2])
+      lines(x=c(x$CI[i,1],x$CI[i,2])-x$tree$root.time,
             y=rep(obj$yy[i],2),lwd=11,lend=0,
             col=transblue)
     points(obj$xx[1:x$tree$Nnode+Ntip(x$tree)],
