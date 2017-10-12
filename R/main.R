@@ -8,9 +8,10 @@
 #' @param initNeg Initial rate of coalescence, equal to Ne*g
 #' @param updateNeg Whether or not to update the neg parameter
 #' @param model Which model to use (1=Poisson, 2=NegBin, 3=Gamma)
+#' @param findRoot Root finding algorithm (0=none, 1=on preset branch, 2=anywhere)
 #' @return Dating results
 #' @export
-credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, updateRate = 2, initNeg = 1, updateNeg = 2, model = 1)
+credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, updateRate = 2, initNeg = 1, updateNeg = 2, model = 1, findRoot = 0)
 {
   n = Ntip(tree)
   rate = initRate
@@ -20,6 +21,7 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
   if (useCoalPrior) prior=coalprior
 
   if (model == 1) likelihood=likelihoodPoisson
+  if (model>1 && updateRate==2) updateRate=1
   if (model == 2) likelihood=function(tab,rate) return(likelihoodNegbin(tab,r=rate,phi=1))
   if (model == 3) likelihood=function(tab,rate) return(likelihoodGamma(tab,rate))
 
@@ -57,15 +59,16 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
   #MCMC
   l = likelihood(tab, rate)
   p = prior(tab, neg)
-  record = matrix(NA, nbIts / 10, 4 + nrow(tab))
+  thin = nbIts/1000
+  record = matrix(NA, nbIts / thin, 4 + nrow(tab))
   for (i in 1:nbIts) {
     #Record
-    if (i %% 10 == 0) {
-      record[i / 10, nrow(tab) + 1] = l
-      record[i / 10, nrow(tab) + 2] = rate
-      record[i / 10, nrow(tab) + 3] = neg
-      record[i / 10, nrow(tab) + 4] = p
-      record[i / 10, 1:nrow(tab)] = tab[1:nrow(tab), 3]
+    if (i %% thin == 0) {
+      record[i / thin, nrow(tab) + 1] = l
+      record[i / thin, nrow(tab) + 2] = rate
+      record[i / thin, nrow(tab) + 3] = neg
+      record[i / thin, nrow(tab) + 4] = p
+      record[i / thin, 1:nrow(tab)] = tab[1:nrow(tab), 3]
     }
 
     if (updateRate == 1) {
@@ -107,6 +110,7 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
       tab[j, 3] = old + ru - 0.5
       if (ru<0.5&&(!is.na(tab[j,4])&&tab[j,3]<tab[tab[j,4],3])) {tab[j,3]=old;next}
       if (ru>0.5&&j>n&&tab[j,3]>min(tab[which(tab[,4]==j),3])) {tab[j,3]=old;next}
+      if (j<=n&&(tab[j,3]==max(tab[,3])||tab[j,3]==min(tab[,3]))) {tab[j,3]=old;next}
       l2 = likelihood(tab, rate)
       p2 = prior(tab, neg)
       if (log(runif(1)) < l2 - l + p2 - p)
@@ -114,12 +118,47 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
       else
         tab[j, 3] = old
     }
+
+    if (findRoot>0) {
+      #Move root on its branch
+      root=which(tab[,3]==max(tab[,3]))
+      sides=which(tab[,4]==root)
+      old=tab[sides,2]
+      r=runif(1)
+      tab[sides,2]=c(sum(old)*r,sum(old)*(1-r))
+      if (model==1||model==2) tab[sides,2]=round(tab[sides,2])
+      l2=likelihood(tab,rate)
+      if (log(runif(1))<l2-l) l=l2 else tab[sides,2]=old
+    }
+
+    if (findRoot==2 && i<(nbIts/4)) {
+      #Move root branch
+      root=which(tab[,3]==min(tab[,3]))
+      sides=which(tab[,4]==root)
+      if (tab[sides[1],3]<tab[sides[2],3]) {left=sides[1];right=sides[2]} else {left=sides[2];right=sides[1]}
+      if (left>n) {
+        oldtab=tab
+        ab=which(tab[,4]==left)
+        if (runif(1)<0.5) {a=ab[1];b=ab[2]} else {a=ab[2];b=ab[1]}
+        tab[a,4]=root
+        tab[right,4]=left
+        r=runif(1)
+        tab[a,2]=oldtab[a,2]*r
+        tab[left,2]=oldtab[a,2]*(1-r)
+        if (model==1||model==2) {tab[a,2]=round(tab[a,2]);tab[left,2]=round(tab[left,2])}
+        tab[right,2]=oldtab[right,2]+oldtab[left,2]
+        l2=likelihood(tab,rate)
+        if (log(runif(1))<l2-l) l=l2 else tab=oldtab
+      }
+    }
   }
 
   #Output
   meanRec = colMeans(record[(nrow(record) / 2):nrow(record), ])
-  for (i in 1:nrow(tree$edge))
+  for (i in 1:nrow(tree$edge)) {
+    tree$edge[i,1]=tab[tree$edge[i,2],4]
     tree$edge.length[i] = meanRec[tree$edge[i, 2]] - meanRec[tree$edge[i, 1]]
+  }
   tree$root.time = max(date)-max(leafDates(tree))
   CI = matrix(NA, nrow(tab), 2)
   for (i in 1:nrow(tab)) {
@@ -143,13 +182,12 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
 #' @return log-likelihood
 likelihoodPoisson = function(tab, rate) {
   n = ceiling(nrow(tab)/2)
-  if (rate < 0)
-    return(-Inf)
+  if (rate < 0) stop('error1')
   t2 = tab[-(n + 1), ]
   lengths = t2[, 3] - tab[t2[, 4], 3]
-  if (min(lengths) < 0)
-    print('error')
+  if (min(lengths) < 0) stop('error2')
   muts = t2[, 2]
+  if (min(muts)<0) stop('error3')
   return(sum(-lengths * rate + muts * log(lengths * rate)))
 }
 
@@ -160,13 +198,12 @@ likelihoodPoisson = function(tab, rate) {
 #' @return log-likelihood
 likelihoodNegbin = function(tab, r, phi) {
   n = ceiling(nrow(tab)/2)
-  if (r < 0 || phi < 0)
-    return(-Inf)
+  if (r < 0 || phi < 0) stop('error1')
   t2 = tab[-(n + 1), ]
   lengths = t2[, 3] - tab[t2[, 4], 3]
-  if (min(lengths) < 0)
-    print('error')
+  if (min(lengths) < 0) stop('error2')
   muts = t2[, 2]
+  if (min(muts)<0) stop('error3')
   return(sum(dnbinom(muts,r,1-phi*lengths/(1+phi*lengths),log=T)))
 }
 
@@ -176,13 +213,12 @@ likelihoodNegbin = function(tab, r, phi) {
 #' @return log-likelihood
 likelihoodGamma = function(tab, rate) {
   n = ceiling(nrow(tab)/2)
-  if (rate < 0)
-    print('error')
+  if (rate < 0) stop('error1')
   t2 = tab[-(n + 1), ]
   lengths = t2[, 3] - tab[t2[, 4], 3]
-  if (min(lengths) < 0)
-    print('error')
+  if (min(lengths) < 0) stop('error2')
   muts = t2[, 2]
+  if (min(muts)<0) stop('error3')
   return(sum(dgamma(muts,shape=rate*lengths,scale=1,log=T)))
 }
 
@@ -199,7 +235,7 @@ coalprior = function(tab, neg) {
   difs=-diff(s$x)#s$x[1:(l-1)]-s$x[2:l]
   p=p-sum(k[2:l]*(k[2:l]-1)*difs)/(2*neg)
   if (k[length(k)] != 1)
-    print('error')
+    stop('error')
   return(p)
 }
 
@@ -218,7 +254,7 @@ plot.resCreDating = function(x, type='tree', ...) {
   }
 
   if (type=='treeCI') {
-    plot.phylo(x$tree, x.lim=c(min(x$CI),max(leafDates(x$tree)))-x$tree$root.time,...)
+    plot.phylo(x$tree, x.lim=c(min(x$CI),max(x$CI))-x$tree$root.time,...)
     axisPhylo(backward = F)
     obj<-get("last_plot.phylo",envir=.PlotPhyloEnv)
     transblue=rgb(0,0,1,0.4)

@@ -30,7 +30,7 @@ axisPhylo(backward = F)
 We can extract the sampling dates.
 ```{r}
 dates = leafDates(phy)
-dates[1]=NA#Oops, just lost a date!
+#dates[seq(2,20,2)]=NA#Oops, just lost half of the dates!
 ```
 
 On each branch we observe a number of substitutions which is distributed $\mathrm{Poisson}(rl)$
@@ -39,16 +39,17 @@ $r=1$ per year is the real substitution rate.
 ```{r}
 obsphy=phy
 obsphy$root.time=NULL
-obsphy$edge.length=unlist(lapply(obsphy$edge.length*1,function (x) rpois(1,x)))
-#obsphy$edge.length=unlist(lapply(obsphy$edge.length*10,function (x) rgamma(1,x,1)))
-plot(obsphy)
-axisPhylo(backward = F)
+#obsphy$edge.length=unlist(lapply(obsphy$edge.length*10,function (x) rpois(1,x)))
+obsphy$edge.length=unlist(lapply(obsphy$edge.length*100,function (x) rgamma(1,x,1)))
+res=roottotip(obsphy,dates,showTree=T)
 ```
 
-Let's do a root-to-tip regression analysis:
-
+##Unknown root
+Let's say we don't know where the root is, we might consider as a guess that it is at
+the midpoint:
 ```{r}
-res=roottotip(obsphy,dates)
+obsphy=phangorn::midpoint(obsphy)
+res=roottotip(obsphy,dates,showTree = T)
 ```
 
 ##Analysis
@@ -56,7 +57,7 @@ res=roottotip(obsphy,dates)
 We run CreDating as follows:
 
 ```{r}
-res=credate(obsphy,dates,nbIts = 10000)
+res=credate(obsphy,dates,nbIts = 100000,model=3,findRoot = 2)
 plot(res)
 ```
 

@@ -3,7 +3,7 @@
 #' @param date Dates of sampling
 #' @importFrom graphics abline
 #' @export
-roottotip = function(tree,date)
+roottotip = function(tree,date,showTree=F)
 {
   n=length(date)
   ys=leafDates(tree)
@@ -11,10 +11,15 @@ roottotip = function(tree,date)
   ori=-coef(res)[1]/coef(res)[2]
   rate=coef(res)[2]
   par(xpd=NA)
+  if (showTree) {
+    par(mfrow=c(1,2),oma = c(0, 0, 2, 0))
+    plot(obsphy)
+    axisPhylo(1,backward = T)
+  }
   plot(date,ys,xlab='Sampling date',ylab='Root-to-tip distance',xaxs='i',yaxs='i',pch=19,ylim=c(0,max(ys)),xlim=c(ori,max(date,na.rm = T)))
   par(xpd=F)
   abline(res,lwd=2)
-  title(sprintf('Rate=%.2e,MRCA=%.2f,R2=%.2f,p=%.2e',rate,ori,summary(res)$r.squared,summary(res)$coefficients[,4][2]))
+  mtext(sprintf('Rate=%.2e,MRCA=%.2f,R2=%.2f,p=%.2e',rate,ori,summary(res)$r.squared,summary(res)$coefficients[,4][2]), outer = TRUE, cex = 1.5)
   return(list(rate=rate,ori=ori))
 }
 
