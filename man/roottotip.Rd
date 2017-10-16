@@ -4,12 +4,14 @@
 \alias{roottotip}
 \title{Root to tip correlation}
 \usage{
-roottotip(tree, date)
+roottotip(tree, date, showTree = F)
 }
 \arguments{
 \item{tree}{Phylogenetic tree}
 
 \item{date}{Dates of sampling}
+
+\item{showTree}{Whether to show the tree or not}
 }
 \description{
 Root to tip correlation

@@ -1,9 +1,11 @@
 #' Root to tip correlation
 #' @param tree Phylogenetic tree
 #' @param date Dates of sampling
+#' @param predInt To show 95% confidence intervals, can be 'poisson' or 'gamma'
+#' @param showTree Whether to show the tree or not
 #' @importFrom graphics abline
 #' @export
-roottotip = function(tree,date,showTree=F)
+roottotip = function(tree,date,predInt=F,showTree=F)
 {
   n=length(date)
   ys=leafDates(tree)
@@ -13,12 +15,22 @@ roottotip = function(tree,date,showTree=F)
   par(xpd=NA)
   if (showTree) {
     par(mfrow=c(1,2),oma = c(0, 0, 2, 0))
-    plot(obsphy)
+    plot(tree)
     axisPhylo(1,backward = T)
   }
   plot(date,ys,xlab='Sampling date',ylab='Root-to-tip distance',xaxs='i',yaxs='i',pch=19,ylim=c(0,max(ys)),xlim=c(ori,max(date,na.rm = T)))
   par(xpd=F)
   abline(res,lwd=2)
+  xs=seq(ori,max(date),0.1)
+  plim=0.05
+  if (predInt=='poisson') {
+  lines(xs,qpois(  plim/2,(xs-ori)*rate),lty='dashed')
+  lines(xs,qpois(1-plim/2,(xs-ori)*rate),lty='dashed')
+  }
+  if (predInt=='gamma') {
+    lines(xs,qgamma(  plim/2,shape=(xs-ori)*rate,scale=1),lty='dashed')
+    lines(xs,qgamma(1-plim/2,shape=(xs-ori)*rate,scale=1),lty='dashed')
+  }
   mtext(sprintf('Rate=%.2e,MRCA=%.2f,R2=%.2f,p=%.2e',rate,ori,summary(res)$r.squared,summary(res)$coefficients[,4][2]), outer = TRUE, cex = 1.5)
   return(list(rate=rate,ori=ori))
 }

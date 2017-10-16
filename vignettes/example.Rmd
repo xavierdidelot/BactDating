@@ -35,13 +35,13 @@ dates = leafDates(phy)
 
 On each branch we observe a number of substitutions which is distributed $\mathrm{Poisson}(rl)$
 where $l$ is the branch length and 
-$r=1$ per year is the real substitution rate.
+$r=10$ per year is the real substitution rate.
 ```{r}
 obsphy=phy
 obsphy$root.time=NULL
 #obsphy$edge.length=unlist(lapply(obsphy$edge.length*10,function (x) rpois(1,x)))
-obsphy$edge.length=unlist(lapply(obsphy$edge.length*100,function (x) rgamma(1,x,1)))
-res=roottotip(obsphy,dates,showTree=T)
+obsphy$edge.length=unlist(lapply(obsphy$edge.length*10,function (x) rgamma(1,x,1)))
+res=roottotip(obsphy,dates,predInt='gamma',showTree=T)
 ```
 
 ##Unknown root
@@ -49,7 +49,7 @@ Let's say we don't know where the root is, we might consider as a guess that it 
 the midpoint:
 ```{r}
 obsphy=phangorn::midpoint(obsphy)
-res=roottotip(obsphy,dates,showTree = T)
+res=roottotip(obsphy, dates, predInt = 'gamma', showTree = T)
 ```
 
 ##Analysis
@@ -57,7 +57,7 @@ res=roottotip(obsphy,dates,showTree = T)
 We run CreDating as follows:
 
 ```{r}
-res=credate(obsphy,dates,nbIts = 100000,model=3,findRoot = 2)
+res=credate(obsphy,dates,nbIts = 10000,model=3,findRoot = 2)
 plot(res)
 ```
 
