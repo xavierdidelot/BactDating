@@ -41,7 +41,7 @@ $r=10$ per year is the real substitution rate.
 obsphy=phy
 obsphy$root.time=NULL
 #obsphy$edge.length=unlist(lapply(obsphy$edge.length*10,function (x) rpois(1,x)))
-obsphy$edge.length=unlist(lapply(obsphy$edge.length*100,function (x) rgamma(1,x,1)))
+obsphy$edge.length=unlist(lapply(obsphy$edge.length*10,function (x) rgamma(1,x,1)))
 res=roottotip(obsphy,dates,predInt='gamma',showTree=T)
 ```
 

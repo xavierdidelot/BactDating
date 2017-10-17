@@ -5,3 +5,11 @@ coalpriorC <- function(leaves, intnodes, neg) {
     .Call('_CreDating_coalpriorC', PACKAGE = 'CreDating', leaves, intnodes, neg)
 }
 
+likelihoodGammaC <- function(tab, rate) {
+    .Call('_CreDating_likelihoodGammaC', PACKAGE = 'CreDating', tab, rate)
+}
+
+likelihoodPoissonC <- function(tab, rate) {
+    .Call('_CreDating_likelihoodPoissonC', PACKAGE = 'CreDating', tab, rate)
+}
+

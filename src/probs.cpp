@@ -22,3 +22,24 @@ double coalpriorC(NumericVector leaves, NumericVector intnodes, double neg) {
   }
   return(p);
 }
+
+// [[Rcpp::export]]
+double likelihoodGammaC(NumericMatrix tab, double rate) {
+  int n = (tab.nrow()+1)/2;
+  double p=0;
+  for (int i=0;i<(n+n-1);i++) {
+    if (i!=n) p+=R::dgamma(tab(i,1),rate*(tab(i,2)-tab(tab(i,3)-1,2)),1,1);
+  }
+  return(p);
+}
+
+// [[Rcpp::export]]
+double likelihoodPoissonC(NumericMatrix tab, double rate) {
+  int n = (tab.nrow()+1)/2;
+  double p=0;
+  for (int i=0;i<(n+n-1);i++) {
+    if (i!=n) p+=R::dpois(tab(i,1),rate*(tab(i,2)-tab(tab(i,3)-1,2)),1);
+  }
+  return(p);
+}
+

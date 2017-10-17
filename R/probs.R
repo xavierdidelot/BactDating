@@ -62,6 +62,7 @@ coalprior = function(tab, neg) {
   return(p)
 }
 
+#Provide equivalent R function to the C prior function
   coalpriorNOC = function(leaves, intnodes, neg) {
   n = length(leaves)
   tab=matrix(0,n*2-1,4)

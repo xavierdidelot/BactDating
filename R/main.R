@@ -20,10 +20,10 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
   prior=function(...) return(0)
   if (useCoalPrior) prior=coalpriorC else updateNeg=0
 
-  if (model == 'poisson') likelihood=likelihoodPoisson
+  if (model == 'poisson') likelihood=likelihoodPoissonC
   if ((model == 'gamma'||model == 'negbin') && updateRate==2) updateRate=1
   if (model == 'negbin') likelihood=function(tab,rate) return(likelihoodNegbin(tab,r=rate,phi=1))
-  if (model == 'gamma') likelihood=function(tab,rate) return(likelihoodGamma(tab,rate))
+  if (model == 'gamma') likelihood=function(tab,rate) return(likelihoodGammaC(tab,rate))
 
   #Deal with missing dates
   misDates=which(is.na(date))
@@ -37,7 +37,7 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
     tab[i, 1] = i
     tab[i, 4] = tree$edge[r, 1]
     if (model == 'poisson' || model == 'negbin') tab[i, 2] = round(tree$edge.length[r])
-    else tab[i, 2] = pmax(1e-7,tree$edge.length[r])#NOTE THIS NEEDS TO BE CONFIRMED
+    else tab[i, 2] = tree$edge.length[r]
     if (i <= n)
       tab[i, 3] = date[i]
   }
