@@ -6,9 +6,12 @@ Date: 2017-09-22
 Author: Xavier Didelot <xavier.didelot@gmail.com>
 Maintainer: Xavier Didelot <xavier.didelot@gmail.com>
 Depends: R (>= 3.0.0)
-Imports: ape, stats, graphics
+Imports: Rcpp (>= 0.12.13), ape, stats, graphics
+LinkingTo: Rcpp
 Suggests: knitr
 Description: The CreDating project is still work in progress.
 VignetteBuilder: knitr
 License: MIT + file LICENSE
 RoxygenNote: 6.0.1
+Encoding: UTF-8
+LazyData: true

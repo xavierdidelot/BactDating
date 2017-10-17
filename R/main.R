@@ -7,27 +7,28 @@
 #' @param updateRate Whether or not to update the substitution rate
 #' @param initNeg Initial rate of coalescence, equal to Ne*g
 #' @param updateNeg Whether or not to update the neg parameter
-#' @param model Which model to use (1=Poisson, 2=NegBin, 3=Gamma)
+#' @param model Which model to use (poisson, negbin or gamma)
 #' @param findRoot Root finding algorithm (0=none, 1=on preset branch, 2=anywhere)
 #' @return Dating results
 #' @export
-credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, updateRate = 2, initNeg = 1, updateNeg = 2, model = 1, findRoot = 0)
+credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, updateRate = 2, initNeg = 1, updateNeg = 2, model = 'poisson', findRoot = 0)
 {
   n = Ntip(tree)
   rate = initRate
   neg = initNeg
 
-  prior=function(tab,neg) return(0)
-  if (useCoalPrior) prior=coalprior
+  prior=function(...) return(0)
+  if (useCoalPrior) prior=coalpriorC else updateNeg=0
 
-  if (model == 1) likelihood=likelihoodPoisson
-  if (model>1 && updateRate==2) updateRate=1
-  if (model == 2) likelihood=function(tab,rate) return(likelihoodNegbin(tab,r=rate,phi=1))
-  if (model == 3) likelihood=function(tab,rate) return(likelihoodGamma(tab,rate))
+  if (model == 'poisson') likelihood=likelihoodPoisson
+  if ((model == 'gamma'||model == 'negbin') && updateRate==2) updateRate=1
+  if (model == 'negbin') likelihood=function(tab,rate) return(likelihoodNegbin(tab,r=rate,phi=1))
+  if (model == 'gamma') likelihood=function(tab,rate) return(likelihoodGamma(tab,rate))
 
   #Deal with missing dates
   misDates=which(is.na(date))
   date[misDates]=mean(date,na.rm = T)
+  ordereddate=sort(date,decreasing = T)
 
   #Create table of nodes (col1=name,col2=expected mutation on branch above,col3=date,col4=father)
   tab = matrix(NA, n + tree$Nnode, 4)
@@ -35,7 +36,7 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
     i = tree$edge[r, 2]
     tab[i, 1] = i
     tab[i, 4] = tree$edge[r, 1]
-    if (model == 1 || model == 2) tab[i, 2] = round(tree$edge.length[r])
+    if (model == 'poisson' || model == 'negbin') tab[i, 2] = round(tree$edge.length[r])
     else tab[i, 2] = pmax(1e-7,tree$edge.length[r])#NOTE THIS NEEDS TO BE CONFIRMED
     if (i <= n)
       tab[i, 3] = date[i]
@@ -58,7 +59,7 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
 
   #MCMC
   l = likelihood(tab, rate)
-  p = prior(tab, neg)
+  p = prior(ordereddate, tab[(n+1):nrow(tab)], neg)
   thin = nbIts/1000
   record = matrix(NA, nbIts / thin, 4 + nrow(tab))
   for (i in 1:nbIts) {
@@ -89,7 +90,7 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
     if (updateNeg == 1) {
       #MH move assuming flat prior
       neg2=abs(neg+runif(1)-0.5)
-      p2=prior(tab,neg2)
+      p2=prior(ordereddate, tab[(n+1):nrow(tab)],neg2)
       if (log(runif(1))<p2-p) {p=p2;neg=neg2}
     }
 
@@ -100,21 +101,36 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
       difs=-diff(s$x)#s$x[1:(nrow(tab)-1)]-s$x[2:nrow(tab)]
       b=sum(k[2:nrow(tab)]*(k[2:nrow(tab)]-1)*difs)/2
       neg=1/rgamma(1,shape=n-1,scale=1/b)
-      p=prior(tab,neg)
+      p=prior(ordereddate, tab[(n+1):nrow(tab)],neg)
     }
 
-    #MH to update dates
-    for (j in c(misDates,(n + 1):nrow(tab))) {
+    #MH to update internal dates
+    for (j in c((n + 1):nrow(tab))) {
       old = tab[j, 3]
       ru=runif(1)
       tab[j, 3] = old + ru - 0.5
-      if (ru<0.5&&(!is.na(tab[j,4])&&tab[j,3]<tab[tab[j,4],3])) {tab[j,3]=old;next}
-      if (ru>0.5&&j>n&&tab[j,3]>min(tab[which(tab[,4]==j),3])) {tab[j,3]=old;next}
-      if (j<=n&&(tab[j,3]==max(tab[,3])||tab[j,3]==min(tab[,3]))) {tab[j,3]=old;next}
+      if (ru<0.5&&(!is.na(tab[j,4])&&tab[j,3]<tab[tab[j,4],3])) {tab[j,3]=old;next}#can't be older than father
+      if (ru>0.5&&j>n&&tab[j,3]>min(tab[which(tab[,4]==j),3])) {tab[j,3]=old;next}#can't be younger than sons
       l2 = likelihood(tab, rate)
-      p2 = prior(tab, neg)
+      p2 = prior(ordereddate, tab[(n+1):nrow(tab)], neg)
       if (log(runif(1)) < l2 - l + p2 - p)
       {l = l2; p = p2}
+      else
+        tab[j, 3] = old
+    }
+
+    #MH to update missing leaf dates
+    for (j in misDates) {
+      old = tab[j, 3]
+      ru=runif(1)
+      tab[j, 3] = old + ru - 0.5
+      if (ru<0.5&&(!is.na(tab[j,4])&&tab[j,3]<tab[tab[j,4],3])) {tab[j,3]=old;next}#can't be older than father
+      if (tab[j,3]==max(tab[,3])||tab[j,3]==min(tab[,3])) {tab[j,3]=old;next}#stay within prior range
+      l2 = likelihood(tab, rate)
+      ordereddate2=sort(tab[1:n,3],decreasing = T)
+      p2 = prior(ordereddate2, tab[(n+1):nrow(tab)], neg)
+      if (log(runif(1)) < l2 - l + p2 - p)
+      {l = l2; p = p2; ordereddate = ordereddate2}
       else
         tab[j, 3] = old
     }
@@ -126,7 +142,7 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
       old=tab[sides,2]
       r=runif(1)
       tab[sides,2]=c(sum(old)*r,sum(old)*(1-r))
-      if (model==1||model==2) tab[sides,2]=round(tab[sides,2])
+      if (model=='poisson'||model=='negbin') tab[sides,2]=round(tab[sides,2])
       l2=likelihood(tab,rate)
       if (log(runif(1))<l2-l) l=l2 else tab[sides,2]=old
     }
@@ -145,7 +161,7 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
         r=runif(1)
         tab[a,2]=oldtab[a,2]*r
         tab[left,2]=oldtab[a,2]*(1-r)
-        if (model==1||model==2) {tab[a,2]=round(tab[a,2]);tab[left,2]=round(tab[left,2])}
+        if (model=='poisson'||model=='negbin') {tab[a,2]=round(tab[a,2]);tab[left,2]=round(tab[left,2])}
         tab[right,2]=oldtab[right,2]+oldtab[left,2]
         l2=likelihood(tab,rate)
         if (log(runif(1))<l2-l) l=l2 else tab=oldtab

@@ -5,7 +5,8 @@
 \title{Main function}
 \usage{
 credate(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T,
-  updateRate = 2, initNeg = 1, updateNeg = 2, model = 1, findRoot = 0)
+  updateRate = 2, initNeg = 1, updateNeg = 2, model = "poisson",
+  findRoot = 0)
 }
 \arguments{
 \item{tree}{Tree wih branches measured in unit of substitutions}
@@ -24,7 +25,7 @@ credate(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T,
 
 \item{updateNeg}{Whether or not to update the neg parameter}
 
-\item{model}{Which model to use (1=Poisson, 2=NegBin, 3=Gamma)}
+\item{model}{Which model to use (poisson, negbin or gamma)}
 
 \item{findRoot}{Root finding algorithm (0=none, 1=on preset branch, 2=anywhere)}
 }

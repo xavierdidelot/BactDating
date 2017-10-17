@@ -23,7 +23,7 @@ axisPhylo(backward = F)
 Let's do a root-to-tip regression analysis:
 
 ```{r}
-res=roottotip(harris2010$tree,harris2010$dates)
+res=roottotip(harris2010$tree,harris2010$dates,predInt = 'gamma')
 ```
 
 ##Analysis
@@ -31,7 +31,7 @@ res=roottotip(harris2010$tree,harris2010$dates)
 We run CreDating as follows:
 
 ```{r}
-res=credate(harris2010$tree,harris2010$dates,nbIts = 10000,model=3)
+res=credate(harris2010$tree,harris2010$dates,nbIts = 10000,model='gamma')
 plot(res,show.tip.label = F)
 ```
 

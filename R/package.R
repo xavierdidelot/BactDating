@@ -15,6 +15,8 @@
 #' @references Xavier Didelot, Manuscript in prepration.
 #' @seealso https://github.com/xavierdidelot/CreDating
 
+#' @importFrom Rcpp evalCpp
+#' @useDynLib CreDating
 #' @import stats
 #' @import graphics
 #' @import ape

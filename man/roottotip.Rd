@@ -4,12 +4,14 @@
 \alias{roottotip}
 \title{Root to tip correlation}
 \usage{
-roottotip(tree, date, showTree = F)
+roottotip(tree, date, predInt = F, showTree = F)
 }
 \arguments{
 \item{tree}{Phylogenetic tree}
 
 \item{date}{Dates of sampling}
+
+\item{predInt}{To show 95percent confidence intervals, can be 'poisson' or 'gamma'}
 
 \item{showTree}{Whether to show the tree or not}
 }

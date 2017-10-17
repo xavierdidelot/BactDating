@@ -1,7 +1,7 @@
 #' Root to tip correlation
 #' @param tree Phylogenetic tree
 #' @param date Dates of sampling
-#' @param predInt To show 95% confidence intervals, can be 'poisson' or 'gamma'
+#' @param predInt To show 95percent confidence intervals, can be 'poisson' or 'gamma'
 #' @param showTree Whether to show the tree or not
 #' @importFrom graphics abline
 #' @export
@@ -21,7 +21,7 @@ roottotip = function(tree,date,predInt=F,showTree=F)
   plot(date,ys,xlab='Sampling date',ylab='Root-to-tip distance',xaxs='i',yaxs='i',pch=19,ylim=c(0,max(ys)),xlim=c(ori,max(date,na.rm = T)))
   par(xpd=F)
   abline(res,lwd=2)
-  xs=seq(ori,max(date),0.1)
+  xs=seq(ori,max(date,na.rm = T),0.1)
   plim=0.05
   if (predInt=='poisson') {
   lines(xs,qpois(  plim/2,(xs-ori)*rate),lty='dashed')
