@@ -28,13 +28,13 @@ plot.resCreDating = function(x, type='tree', ...) {
   }
 
   if (type=='trace') {
-    nc=ncol(x$record)
+    nnode=Ntip(x$tree)*2-1
     par(mfrow=c(2,3))
-    plot(x$record[,nc-3],main='Likelihood',type='l',xlab='Sampled iterations',ylab='')
-    plot(x$record[,nc  ],main='Prior',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,nnode+1],main='Likelihood',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,nnode+4],main='Prior',type='l',xlab='Sampled iterations',ylab='')
     plot(x$record[,Ntip(x$tree)+1],main='Date of root',type='l',xlab='Sampled iterations',ylab='')
-    plot(x$record[,nc-2],main='Substitution rate',type='l',xlab='Sampled iterations',ylab='')
-    plot(x$record[,nc-1],main='Coalescent rate',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,nnode+2],main='Substitution rate',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,nnode+3],main='Coalescent rate',type='l',xlab='Sampled iterations',ylab='')
   }
 }
 

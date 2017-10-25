@@ -61,15 +61,18 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
   l = likelihood(tab, rate)
   p = prior(ordereddate, tab[(n+1):nrow(tab)], neg)
   thin = nbIts/1000
-  record = matrix(NA, nbIts / thin, 4 + nrow(tab))
+  record = matrix(NA, nbIts / thin, nrow(tab) + 5)
+  pb <- txtProgressBar(min=0,max=nbIts,style = 3)
   for (i in 1:nbIts) {
     #Record
     if (i %% thin == 0) {
+      setTxtProgressBar(pb, i)
+      record[i / thin, 1:nrow(tab)] = tab[1:nrow(tab), 3]
       record[i / thin, nrow(tab) + 1] = l
       record[i / thin, nrow(tab) + 2] = rate
       record[i / thin, nrow(tab) + 3] = neg
       record[i / thin, nrow(tab) + 4] = p
-      record[i / thin, 1:nrow(tab)] = tab[1:nrow(tab), 3]
+      record[i / thin, nrow(tab) + 5] = NA
     }
 
     if (updateRate == 1) {
@@ -147,7 +150,7 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
       if (log(runif(1))<l2-l) l=l2 else tab[sides,2]=old
     }
 
-    if (findRoot==2 && i<(nbIts/4)) {
+    if (findRoot==2 && i<(nbIts/2)) {
       #Move root branch
       root=which(tab[,3]==min(tab[,3]))
       sides=which(tab[,4]==root)
