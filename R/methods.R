@@ -35,6 +35,7 @@ plot.resCreDating = function(x, type='tree', ...) {
     plot(x$record[,Ntip(x$tree)+1],main='Date of root',type='l',xlab='Sampled iterations',ylab='')
     plot(x$record[,nnode+2],main='Substitution rate',type='l',xlab='Sampled iterations',ylab='')
     plot(x$record[,nnode+3],main='Coalescent rate',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,nnode+5],main='Root branch',type='l',xlab='Sampled iterations',ylab='')
   }
 }
 

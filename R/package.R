@@ -16,6 +16,7 @@
 #' @seealso https://github.com/xavierdidelot/CreDating
 
 #' @importFrom Rcpp evalCpp
+#' @importFrom utils setTxtProgressBar txtProgressBar
 #' @useDynLib CreDating
 #' @import stats
 #' @import graphics

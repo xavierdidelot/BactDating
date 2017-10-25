@@ -16,6 +16,12 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
   n = Ntip(tree)
   rate = initRate
   neg = initNeg
+  if (is.rooted(tree)==F) {
+    first=which(date==min(date,na.rm = T))[1]
+    tree=root(tree,outgroup=first,resolve.root=T)
+    w=which(tree$edge[,1]==Ntip(tree)+1)
+    tree$edge.length[w]=rep(sum(tree$edge.length[w])/2,2)
+  }
 
   prior=function(...) return(0)
   if (useCoalPrior) prior=coalpriorC else updateNeg=0
@@ -67,12 +73,16 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
     #Record
     if (i %% thin == 0) {
       setTxtProgressBar(pb, i)
+      rootchildren=which(tab[,4]==(n+1))
+      curroot=NA
+      for (j in 1:nrow(tree$edge)) if (setequal(rootchildren,tree$edge[j,])) {curroot=j;break}
+      if (is.na(curroot)) curroot=which(tree$edge[,1]==(n+1))[1]
       record[i / thin, 1:nrow(tab)] = tab[1:nrow(tab), 3]
       record[i / thin, nrow(tab) + 1] = l
       record[i / thin, nrow(tab) + 2] = rate
       record[i / thin, nrow(tab) + 3] = neg
       record[i / thin, nrow(tab) + 4] = p
-      record[i / thin, nrow(tab) + 5] = NA
+      record[i / thin, nrow(tab) + 5] = curroot
     }
 
     if (updateRate == 1) {
