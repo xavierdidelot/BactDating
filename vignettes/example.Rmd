@@ -70,3 +70,7 @@ We can see what the MCMC traces look like:
 ```{r}
 plot(res,'trace')
 ```
+Let's see where the root is likely to be:
+```{r}
+plot(res,'treeRoot')
+```
