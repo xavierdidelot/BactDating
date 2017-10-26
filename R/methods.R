@@ -1,6 +1,6 @@
 #' Plotting methods
 #' @param x Output from running function credating
-#' @param type Type of plot to do. Currently either 'tree' or 'treeCI' or 'trace'
+#' @param type Type of plot to do. Currently either 'tree' or 'treeCI' or 'trace' or 'treeRoot'
 #' @param ... Additional parameters are passed on
 #' @return Nothing
 #' @importFrom grDevices rgb
@@ -36,6 +36,16 @@ plot.resCreDating = function(x, type='tree', ...) {
     plot(x$record[,'neg'],main='Coalescent rate',type='l',xlab='Sampled iterations',ylab='')
     plot(x$record[,'root'],main='Root branch',type='l',xlab='Sampled iterations',ylab='')
   }
+
+  if (type=='treeRoot') {
+    roots = table(x$record[floor(nrow(x$record) / 2):nrow(x$record),'root'])
+    plot.phylo(x$inputtree, ...)
+    probs=as.vector(roots)
+    probs=probs/sum(probs)
+    probs=round(probs*1000)/10
+    edgelabels(probs,as.numeric(labels(roots)[[1]]))
+    axisPhylo(backward = F)
+  }
 }
 
 #' Print function for resCreDating objects
@@ -48,6 +58,7 @@ print.resCreDating <- function(x, ...)
   cat( 'Phylogenetic tree dated using CreDating\n')
   print(x$tree,...)
   cat(paste( 'Mean date of root:', x$rootdate, '\n'))
+  cat(paste('Probability of root branch:', x$rootprob, '\n'))
   cat(paste('Mean clock rate:',mean(x$record[round(nrow(x$record)/2):nrow(x$record),ncol(x$record)-2])))
   invisible(x)
 }

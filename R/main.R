@@ -186,6 +186,7 @@ credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1
   }
 
   #Output
+  inputtree = tree
   bestroot = as.numeric(names(sort(table(record[floor(nrow(record) / 2):nrow(record),'root']),decreasing=T)[1]))
   bestrows = intersect(floor(nrow(record) / 2):nrow(record),which(record[,'root']==bestroot))
   meanRec = colMeans(record[bestrows, ])
@@ -201,9 +202,11 @@ credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1
     CI[i,2]=s[floor(length(s)*0.975)]
   }
   out = list(
+    inputtree = inputtree,
     tree = tree,
     record = record,
     rootdate = unname(meanRec[n + 1]),
+    rootprob = length(bestrows)*2/nrow(record),
     CI = CI
   )
   class(out) <- 'resCreDating'
