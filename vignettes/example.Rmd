@@ -3,8 +3,9 @@ title: "Example of using CreDating"
 author: "Xavier Didelot"
 date: '`r Sys.Date()`'
 output:
-  pdf_document: default
+  html_document: default
   html_notebook: default
+  pdf_document: default
 ---
 
 ##Initialisation
@@ -17,31 +18,27 @@ set.seed(0)
 
 ##Data
 
-We consider a random timed tree with 20 leaves, with the root in 2000. 
+We start by generating a random timed tree with 20 leaves and root in 2000:
 
 ```{r}
-nsam <- 20
-phy <- rtree(nsam, br = rexp)
-phy$root.time <- 2000
+phy <- simdatedtree(nsam = 20, dateroot = 2000)
 plot(phy)
 axisPhylo(backward = F)
 ```
 
-We can extract the sampling dates.
+We can extract the sampling dates as follows:
 ```{r}
 dates = leafDates(phy)
 #dates[seq(2,20,2)]=NA#Oops, just lost half of the dates!
 dates[1]=NA#Oops, just lost a date!
 ```
 
-On each branch we observe a number of substitutions which is distributed $\mathrm{Poisson}(rl)$
+On each branch we observe a number of substitutions which is distributed $\mathrm{Gamma}(rl,1)$
 where $l$ is the branch length and 
-$r=10$ per year is the real substitution rate.
+$r=10$ per year is the substitution rate. We can simulate an observed phylogenetic tree
+and perform a root-to-tip analysis as follows:
 ```{r}
-obsphy=phy
-obsphy$root.time=NULL
-#obsphy$edge.length=unlist(lapply(obsphy$edge.length*10,function (x) rpois(1,x)))
-obsphy$edge.length=unlist(lapply(obsphy$edge.length*10,function (x) rgamma(1,x,1)))
+obsphy=simobsphy(phy, 10, 'gamma')
 res=roottotip(obsphy,dates,predInt='gamma',showTree=T)
 ```
 
@@ -58,7 +55,7 @@ res=roottotip(obsphy, dates, predInt = 'gamma', showTree = T)
 We run CreDating as follows:
 
 ```{r}
-res=credate(obsphy,dates,nbIts = 20000,model='gamma',findRoot = 2)
+res=credate(obsphy,dates,nbIts = 10000,model='gamma',findRoot = 2,showProgress=F)
 plot(res)
 ```
 

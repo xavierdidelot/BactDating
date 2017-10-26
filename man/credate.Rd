@@ -5,8 +5,8 @@
 \title{Main function}
 \usage{
 credate(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T,
-  updateRate = 2, initNeg = 1, updateNeg = 2, model = "poisson",
-  findRoot = 0)
+  updateRate = 2, initNeg = 1, updateNeg = 2, model = "gamma",
+  findRoot = 0, showProgress = T)
 }
 \arguments{
 \item{tree}{Tree wih branches measured in unit of substitutions}
@@ -28,6 +28,8 @@ credate(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T,
 \item{model}{Which model to use (poisson, negbin or gamma)}
 
 \item{findRoot}{Root finding algorithm (0=none, 1=on preset branch, 2=anywhere)}
+
+\item{showProgress}{Whether or not to show a progress bar}
 }
 \value{
 Dating results

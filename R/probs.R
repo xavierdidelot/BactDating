@@ -48,8 +48,7 @@ likelihoodGamma = function(tab, rate) {
 #' @param tab Table of nodes
 #' @param neg Coalescent rate
 #' @return The log-prior in Eq (1) of Drummond et al (2002) Genetics
-#' @export
-coalprior = function(tab, neg) {
+coalpriorR = function(tab, neg) {
   n = ceiling(nrow(tab)/2)
   p = -log(neg) * (n - 1)
   l=nrow(tab)
@@ -63,10 +62,10 @@ coalprior = function(tab, neg) {
 }
 
 #Provide equivalent R function to the C prior function
-  coalpriorNOC = function(leaves, intnodes, neg) {
+  coalprior = function(leaves, intnodes, neg) {
   n = length(leaves)
   tab=matrix(0,n*2-1,4)
   tab[,3]=c(leaves,intnodes)
-  coalprior(tab,neg)
+  coalpriorR(tab,neg)
   }
 

@@ -9,9 +9,10 @@
 #' @param updateNeg Whether or not to update the neg parameter
 #' @param model Which model to use (poisson, negbin or gamma)
 #' @param findRoot Root finding algorithm (0=none, 1=on preset branch, 2=anywhere)
+#' @param showProgress Whether or not to show a progress bar
 #' @return Dating results
 #' @export
-credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, updateRate = 2, initNeg = 1, updateNeg = 2, model = 'poisson', findRoot = 0)
+credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, updateRate = 2, initNeg = 1, updateNeg = 2, model = 'gamma', findRoot = 0, showProgress = T)
 {
   n = Ntip(tree)
   rate = initRate
@@ -65,14 +66,14 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
 
   #MCMC
   l = likelihood(tab, rate)
-  p = prior(ordereddate, tab[(n+1):nrow(tab)], neg)
+  p = prior(ordereddate, tab[(n+1):nrow(tab),3], neg)
   thin = nbIts/1000
   record = matrix(NA, nbIts / thin, nrow(tab) + 5)
-  pb <- txtProgressBar(min=0,max=nbIts,style = 3)
+  if (showProgress) pb <- txtProgressBar(min=0,max=nbIts,style = 3)
   for (i in 1:nbIts) {
     #Record
     if (i %% thin == 0) {
-      setTxtProgressBar(pb, i)
+      if (showProgress) setTxtProgressBar(pb, i)
       rootchildren=which(tab[,4]==(n+1))
       curroot=NA
       for (j in 1:nrow(tree$edge)) if (setequal(rootchildren,tree$edge[j,])) {curroot=j;break}
@@ -103,7 +104,7 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
     if (updateNeg == 1) {
       #MH move assuming flat prior
       neg2=abs(neg+runif(1)-0.5)
-      p2=prior(ordereddate, tab[(n+1):nrow(tab)],neg2)
+      p2=prior(ordereddate, tab[(n+1):nrow(tab),3],neg2)
       if (log(runif(1))<p2-p) {p=p2;neg=neg2}
     }
 
@@ -114,7 +115,7 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
       difs=-diff(s$x)#s$x[1:(nrow(tab)-1)]-s$x[2:nrow(tab)]
       b=sum(k[2:nrow(tab)]*(k[2:nrow(tab)]-1)*difs)/2
       neg=1/rgamma(1,shape=n-1,scale=1/b)
-      p=prior(ordereddate, tab[(n+1):nrow(tab)],neg)
+      p=prior(ordereddate, tab[(n+1):nrow(tab),3],neg)
     }
 
     #MH to update internal dates
@@ -125,7 +126,7 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
       if (ru<0.5&&(!is.na(tab[j,4])&&tab[j,3]<tab[tab[j,4],3])) {tab[j,3]=old;next}#can't be older than father
       if (ru>0.5&&j>n&&tab[j,3]>min(tab[which(tab[,4]==j),3])) {tab[j,3]=old;next}#can't be younger than sons
       l2 = likelihood(tab, rate)
-      p2 = prior(ordereddate, tab[(n+1):nrow(tab)], neg)
+      p2 = prior(ordereddate, tab[(n+1):nrow(tab),3], neg)
       if (log(runif(1)) < l2 - l + p2 - p)
       {l = l2; p = p2}
       else
@@ -141,7 +142,7 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
       if (tab[j,3]==max(tab[,3])||tab[j,3]==min(tab[,3])) {tab[j,3]=old;next}#stay within prior range
       l2 = likelihood(tab, rate)
       ordereddate2=sort(tab[1:n,3],decreasing = T)
-      p2 = prior(ordereddate2, tab[(n+1):nrow(tab)], neg)
+      p2 = prior(ordereddate2, tab[(n+1):nrow(tab),3], neg)
       if (log(runif(1)) < l2 - l + p2 - p)
       {l = l2; p = p2; ordereddate = ordereddate2}
       else
