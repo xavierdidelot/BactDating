@@ -4,9 +4,10 @@
 \alias{credate}
 \title{Main function}
 \usage{
-credate(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T,
-  updateRate = 2, initNeg = 1, updateNeg = 2, model = "gamma",
-  findRoot = 0, showProgress = T)
+credate(tree, date, initRate = 1, nbIts = 10000,
+  thin = ceiling(nbIts/1000), useCoalPrior = T, updateRate = 2,
+  initNeg = 1, updateNeg = 2, model = "gamma", findRoot = 0,
+  showProgress = T)
 }
 \arguments{
 \item{tree}{Tree wih branches measured in unit of substitutions}
@@ -16,6 +17,8 @@ credate(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T,
 \item{initRate}{Initial rate of substitutions per genome (not per site)}
 
 \item{nbIts}{Number of MCMC iterations to perform}
+
+\item{thin}{Thining interval between recorded MCMC samples}
 
 \item{useCoalPrior}{Whether or not to use a coalescent prior on the tree}
 

@@ -28,14 +28,13 @@ plot.resCreDating = function(x, type='tree', ...) {
   }
 
   if (type=='trace') {
-    nnode=Ntip(x$tree)*2-1
     par(mfrow=c(2,3))
-    plot(x$record[,nnode+1],main='Likelihood',type='l',xlab='Sampled iterations',ylab='')
-    plot(x$record[,nnode+4],main='Prior',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,'likelihood'],main='Likelihood',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,'prior'],main='Prior',type='l',xlab='Sampled iterations',ylab='')
     plot(x$record[,Ntip(x$tree)+1],main='Date of root',type='l',xlab='Sampled iterations',ylab='')
-    plot(x$record[,nnode+2],main='Substitution rate',type='l',xlab='Sampled iterations',ylab='')
-    plot(x$record[,nnode+3],main='Coalescent rate',type='l',xlab='Sampled iterations',ylab='')
-    plot(x$record[,nnode+5],main='Root branch',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,'rate'],main='Substitution rate',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,'neg'],main='Coalescent rate',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,'root'],main='Root branch',type='l',xlab='Sampled iterations',ylab='')
   }
 }
 

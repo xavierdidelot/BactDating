@@ -3,6 +3,7 @@
 #' @param date Sampling dates for the leaves of the tree
 #' @param initRate Initial rate of substitutions per genome (not per site)
 #' @param nbIts Number of MCMC iterations to perform
+#' @param thin Thining interval between recorded MCMC samples
 #' @param useCoalPrior Whether or not to use a coalescent prior on the tree
 #' @param updateRate Whether or not to update the substitution rate
 #' @param initNeg Initial rate of coalescence, equal to Ne*g
@@ -12,7 +13,7 @@
 #' @param showProgress Whether or not to show a progress bar
 #' @return Dating results
 #' @export
-credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, updateRate = 2, initNeg = 1, updateNeg = 2, model = 'gamma', findRoot = 0, showProgress = T)
+credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T, updateRate = 1, initNeg = 1, updateNeg = 2, model = 'gamma', findRoot = 0, showProgress = T)
 {
   n = Ntip(tree)
   rate = initRate
@@ -67,8 +68,8 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
   #MCMC
   l = likelihood(tab, rate)
   p = prior(ordereddate, tab[(n+1):nrow(tab),3], neg)
-  thin = nbIts/1000
-  record = matrix(NA, nbIts / thin, nrow(tab) + 5)
+  record = matrix(NA, floor(nbIts / thin), nrow(tab)*2 + 5)
+  colnames(record)<-c(rep(NA,nrow(tab)*2),'likelihood','rate','neg','prior','root')
   if (showProgress) pb <- txtProgressBar(min=0,max=nbIts,style = 3)
   for (i in 1:nbIts) {
     #Record
@@ -78,12 +79,13 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
       curroot=NA
       for (j in 1:nrow(tree$edge)) if (setequal(rootchildren,tree$edge[j,])) {curroot=j;break}
       if (is.na(curroot)) curroot=which(tree$edge[,1]==(n+1))[1]
-      record[i / thin, 1:nrow(tab)] = tab[1:nrow(tab), 3]
-      record[i / thin, nrow(tab) + 1] = l
-      record[i / thin, nrow(tab) + 2] = rate
-      record[i / thin, nrow(tab) + 3] = neg
-      record[i / thin, nrow(tab) + 4] = p
-      record[i / thin, nrow(tab) + 5] = curroot
+      record[i / thin, 1:nrow(tab)] = tab[, 3]
+      record[i / thin, (1:nrow(tab))+nrow(tab)]=tab[, 4]
+      record[i / thin, 'likelihood'] = l
+      record[i / thin, 'rate'] = rate
+      record[i / thin, 'neg'] = neg
+      record[i / thin, 'prior'] = p
+      record[i / thin, 'root'] = curroot
     }
 
     if (updateRate == 1) {
@@ -150,7 +152,7 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
     }
 
     if (findRoot>0) {
-      #Move root on its branch
+      #Move root on current branch
       root=which(tab[,3]==max(tab[,3]))
       sides=which(tab[,4]==root)
       old=tab[sides,2]
@@ -161,7 +163,7 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
       if (log(runif(1))<l2-l) l=l2 else tab[sides,2]=old
     }
 
-    if (findRoot==2 && i<(nbIts/2)) {
+    if (findRoot==2) {
       #Move root branch
       root=which(tab[,3]==min(tab[,3]))
       sides=which(tab[,4]==root)
@@ -184,22 +186,24 @@ credate = function(tree, date, initRate = 1, nbIts = 1000, useCoalPrior = T, upd
   }
 
   #Output
-  meanRec = colMeans(record[(nrow(record) / 2):nrow(record), ])
+  bestroot = as.numeric(names(sort(table(record[floor(nrow(record) / 2):nrow(record),'root']),decreasing=T)[1]))
+  bestrows = intersect(floor(nrow(record) / 2):nrow(record),which(record[,'root']==bestroot))
+  meanRec = colMeans(record[bestrows, ])
   for (i in 1:nrow(tree$edge)) {
-    tree$edge[i,1]=tab[tree$edge[i,2],4]
+    tree$edge[i,1]=record[bestrows[1],nrow(tab)+tree$edge[i,2]]#tab[tree$edge[i,2],4]
     tree$edge.length[i] = meanRec[tree$edge[i, 2]] - meanRec[tree$edge[i, 1]]
   }
   tree$root.time = max(date)-max(leafDates(tree))
   CI = matrix(NA, nrow(tab), 2)
   for (i in 1:nrow(tab)) {
-    s=sort(record[(nrow(record)/2):nrow(record),i])
-    CI[i,1]=s[floor(length(s)*0.025)]
-    CI[i,2]=s[ceiling(length(s)*0.975)]
+    s=sort(record[bestrows,i])
+    CI[i,1]=s[ceiling(length(s)*0.025)]
+    CI[i,2]=s[floor(length(s)*0.975)]
   }
   out = list(
     tree = tree,
     record = record,
-    rootdate = meanRec[n + 1],
+    rootdate = unname(meanRec[n + 1]),
     CI = CI
   )
   class(out) <- 'resCreDating'
