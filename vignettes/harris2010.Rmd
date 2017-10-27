@@ -32,7 +32,7 @@ res=roottotip(harris2010$tree,harris2010$dates,predInt = 'gamma')
 We run CreDating as follows:
 
 ```{r}
-res=credate(harris2010$tree,harris2010$dates,nbIts = 10000,model='gamma',showProgress = F)
+res=credate(harris2010$tree,harris2010$dates,nbIts = 100000,model='gamma',findRoot = 2, showProgress = F)
 plot(res,show.tip.label = F)
 ```
 
@@ -46,4 +46,8 @@ We can see what the MCMC traces look like:
 
 ```{r}
   plot(res,'trace')
+```
+Let's see where the root is likely to be:
+```{r}
+plot(res,'treeRoot',show.tip.label=F)
 ```

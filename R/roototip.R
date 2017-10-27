@@ -12,9 +12,9 @@ roottotip = function(tree,date,predInt=F,showTree=F)
   res=lm(ys~date)
   ori=-coef(res)[1]/coef(res)[2]
   rate=coef(res)[2]
-  par(xpd=NA)
+  par(xpd=NA,oma = c(0, 0, 2, 0))
   if (showTree) {
-    par(mfrow=c(1,2),oma = c(0, 0, 2, 0))
+    par(mfrow=c(1,2))
     plot(tree)
     axisPhylo(1,backward = T)
   }
