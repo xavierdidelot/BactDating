@@ -5,9 +5,9 @@
 \title{Main function}
 \usage{
 credate(tree, date, initRate = 1, nbIts = 10000,
-  thin = ceiling(nbIts/1000), useCoalPrior = T, updateRate = 2,
-  initNeg = 1, updateNeg = 2, model = "gamma", findRoot = 0,
-  showProgress = T)
+  thin = ceiling(nbIts/1000), useCoalPrior = T, updateRate = 1,
+  initNeg = 1, updateNeg = 2, initRatevar = 1, updateRatevar = F,
+  model = "gamma", findRoot = 0, showProgress = T)
 }
 \arguments{
 \item{tree}{Tree wih branches measured in unit of substitutions}
@@ -28,7 +28,11 @@ credate(tree, date, initRate = 1, nbIts = 10000,
 
 \item{updateNeg}{Whether or not to update the neg parameter}
 
-\item{model}{Which model to use (poisson, negbin or gamma)}
+\item{initRatevar}{Initial variance on per-branch substituion rate (only used in relaxedgamma model)}
+
+\item{updateRatevar}{Whether or not to per-branch substituion rate (only used in relaxedgamma model)}
+
+\item{model}{Which model to use (poisson or negbin or gamma or relaxedgamma)}
 
 \item{findRoot}{Root finding algorithm (0=none, 1=on preset branch, 2=anywhere)}
 

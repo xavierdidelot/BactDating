@@ -30,6 +30,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// likelihoodRelaxedgammaC
+double likelihoodRelaxedgammaC(NumericMatrix tab, double rate, double ratevar);
+RcppExport SEXP _CreDating_likelihoodRelaxedgammaC(SEXP tabSEXP, SEXP rateSEXP, SEXP ratevarSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type tab(tabSEXP);
+    Rcpp::traits::input_parameter< double >::type rate(rateSEXP);
+    Rcpp::traits::input_parameter< double >::type ratevar(ratevarSEXP);
+    rcpp_result_gen = Rcpp::wrap(likelihoodRelaxedgammaC(tab, rate, ratevar));
+    return rcpp_result_gen;
+END_RCPP
+}
 // likelihoodPoissonC
 double likelihoodPoissonC(NumericMatrix tab, double rate);
 RcppExport SEXP _CreDating_likelihoodPoissonC(SEXP tabSEXP, SEXP rateSEXP) {
@@ -46,6 +59,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_CreDating_coalpriorC", (DL_FUNC) &_CreDating_coalpriorC, 3},
     {"_CreDating_likelihoodGammaC", (DL_FUNC) &_CreDating_likelihoodGammaC, 2},
+    {"_CreDating_likelihoodRelaxedgammaC", (DL_FUNC) &_CreDating_likelihoodRelaxedgammaC, 3},
     {"_CreDating_likelihoodPoissonC", (DL_FUNC) &_CreDating_likelihoodPoissonC, 2},
     {NULL, NULL, 0}
 };

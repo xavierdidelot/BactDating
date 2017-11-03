@@ -9,6 +9,10 @@ likelihoodGammaC <- function(tab, rate) {
     .Call('_CreDating_likelihoodGammaC', PACKAGE = 'CreDating', tab, rate)
 }
 
+likelihoodRelaxedgammaC <- function(tab, rate, ratevar) {
+    .Call('_CreDating_likelihoodRelaxedgammaC', PACKAGE = 'CreDating', tab, rate, ratevar)
+}
+
 likelihoodPoissonC <- function(tab, rate) {
     .Call('_CreDating_likelihoodPoissonC', PACKAGE = 'CreDating', tab, rate)
 }

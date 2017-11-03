@@ -12,6 +12,7 @@ roottotip = function(tree,date,predInt=F,showTree=F)
   res=lm(ys~date)
   ori=-coef(res)[1]/coef(res)[2]
   rate=coef(res)[2]
+  if (rate<0) {warning('The linear regression suggests a negative rate.');return(list(rate=rate,ori=ori))}
   par(xpd=NA,oma = c(0, 0, 2, 0))
   if (showTree) {
     par(mfrow=c(1,2))

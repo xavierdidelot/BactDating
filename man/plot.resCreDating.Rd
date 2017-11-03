@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{Output from running function credating}
 
-\item{type}{Type of plot to do. Currently either 'tree' or 'treeCI' or 'trace'}
+\item{type}{Type of plot to do. Currently either 'tree' or 'treeCI' or 'trace' or 'treeRoot'}
 
 \item{...}{Additional parameters are passed on}
 }

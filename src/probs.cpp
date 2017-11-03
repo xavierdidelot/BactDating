@@ -34,6 +34,19 @@ double likelihoodGammaC(NumericMatrix tab, double rate) {
 }
 
 // [[Rcpp::export]]
+double likelihoodRelaxedgammaC(NumericMatrix tab, double rate, double ratevar) {
+  int n = (tab.nrow()+1)/2;
+  double p=0;
+  double l=0;
+  for (int i=0;i<(n+n-1);i++) {
+    if (i==n) continue;
+    l=tab(i,2)-tab(tab(i,3)-1,2);
+    p+=R::dgamma(tab(i,1),l*rate*rate/(rate+l*ratevar),1.0+l*ratevar/rate,1);
+  }
+  return(p);
+}
+
+// [[Rcpp::export]]
 double likelihoodPoissonC(NumericMatrix tab, double rate) {
   int n = (tab.nrow()+1)/2;
   double p=0;

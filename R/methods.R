@@ -28,13 +28,14 @@ plot.resCreDating = function(x, type='tree', ...) {
   }
 
   if (type=='trace') {
-    par(mfrow=c(2,3))
+    par(mfrow=c(2,4))
     plot(x$record[,'likelihood'],main='Likelihood',type='l',xlab='Sampled iterations',ylab='')
     plot(x$record[,'prior'],main='Prior',type='l',xlab='Sampled iterations',ylab='')
     plot(x$record[,Ntip(x$tree)+1],main='Date of root',type='l',xlab='Sampled iterations',ylab='')
-    plot(x$record[,'rate'],main='Substitution rate',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,'rate'],main='Clock rate',type='l',xlab='Sampled iterations',ylab='')
     plot(x$record[,'neg'],main='Coalescent rate',type='l',xlab='Sampled iterations',ylab='')
     plot(x$record[,'root'],main='Root branch',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,'ratevar'],main='Clock rate variance',type='l',xlab='Sampled iterations',ylab='')
   }
 
   if (type=='treeRoot') {

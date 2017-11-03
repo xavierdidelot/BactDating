@@ -8,15 +8,18 @@
 #' @param updateRate Whether or not to update the substitution rate
 #' @param initNeg Initial rate of coalescence, equal to Ne*g
 #' @param updateNeg Whether or not to update the neg parameter
-#' @param model Which model to use (poisson, negbin or gamma)
+#' @param initRatevar Initial variance on per-branch substituion rate (only used in relaxedgamma model)
+#' @param updateRatevar Whether or not to per-branch substituion rate (only used in relaxedgamma model)
+#' @param model Which model to use (poisson or negbin or gamma or relaxedgamma)
 #' @param findRoot Root finding algorithm (0=none, 1=on preset branch, 2=anywhere)
 #' @param showProgress Whether or not to show a progress bar
 #' @return Dating results
 #' @export
-credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T, updateRate = 1, initNeg = 1, updateNeg = 2, model = 'gamma', findRoot = 0, showProgress = T)
+credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T, updateRate = 1, initNeg = 1, updateNeg = 2, initRatevar = 1, updateRatevar = F,  model = 'gamma', findRoot = 0, showProgress = T)
 {
   n = Ntip(tree)
   rate = initRate
+  ratevar = initRatevar
   neg = initNeg
   if (is.rooted(tree)==F) {
     first=which(date==min(date,na.rm = T))[1]
@@ -28,10 +31,11 @@ credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1
   prior=function(...) return(0)
   if (useCoalPrior) prior=coalpriorC else updateNeg=0
 
-  if (model == 'poisson') likelihood=likelihoodPoissonC
-  if ((model == 'gamma'||model == 'negbin') && updateRate==2) updateRate=1
-  if (model == 'negbin') likelihood=function(tab,rate) return(likelihoodNegbin(tab,r=rate,phi=1))
-  if (model == 'gamma') likelihood=function(tab,rate) return(likelihoodGammaC(tab,rate))
+  if ((model == 'gamma'||model == 'negbin'||model=='relaxedgamma') && updateRate==2) updateRate=1#Gibbs move on rate is only available for poisson model
+  if (model == 'poisson') likelihood=function(tab,rate,ratevar) return(likelihoodPoissonC(tab,rate))
+  if (model == 'negbin') likelihood=function(tab,rate,ratevar) return(likelihoodNegbin(tab,r=rate,phi=1))
+  if (model == 'gamma') likelihood=function(tab,rate,ratevar) return(likelihoodGammaC(tab,rate))
+  if (model == 'relaxedgamma') likelihood=function(tab,rate,ratevar) return(likelihoodRelaxedgammaC(tab,rate,ratevar))
 
   #Deal with missing dates
   misDates=which(is.na(date))
@@ -66,10 +70,10 @@ credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1
   tab[i, 3] = min(tab[children, 3]) - 1
 
   #MCMC
-  l = likelihood(tab, rate)
+  l = likelihood(tab, rate, ratevar)
   p = prior(ordereddate, tab[(n+1):nrow(tab),3], neg)
-  record = matrix(NA, floor(nbIts / thin), nrow(tab)*2 + 5)
-  colnames(record)<-c(rep(NA,nrow(tab)*2),'likelihood','rate','neg','prior','root')
+  record = matrix(NA, floor(nbIts / thin), nrow(tab)*2 + 6)
+  colnames(record)<-c(rep(NA,nrow(tab)*2),'likelihood','rate','ratevar','neg','prior','root')
   if (showProgress) pb <- txtProgressBar(min=0,max=nbIts,style = 3)
   for (i in 1:nbIts) {
     #Record
@@ -83,6 +87,7 @@ credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1
       record[i / thin, (1:nrow(tab))+nrow(tab)]=tab[, 4]
       record[i / thin, 'likelihood'] = l
       record[i / thin, 'rate'] = rate
+      record[i / thin, 'ratevar'] = ratevar
       record[i / thin, 'neg'] = neg
       record[i / thin, 'prior'] = p
       record[i / thin, 'root'] = curroot
@@ -90,8 +95,8 @@ credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1
 
     if (updateRate == 1) {
       #MH move assuming flat prior
-      rate2=abs(rate+runif(1)-0.5)
-      l2=likelihood(tab,rate2)
+      rate2=abs(rnorm(1,rate,0.1*initRate))
+      l2=likelihood(tab,rate2,ratevar)
       if (log(runif(1))<l2-l) {l=l2;rate=rate2}
     }
 
@@ -100,12 +105,19 @@ credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1
       lengths=tab[-(n+1),3]-tab[tab[-(n+1),4],3]
       muts=tab[-(n+1),2]
       rate=rgamma(1,1+sum(muts),sum(lengths))
-      l=likelihood(tab,rate)
+      l=likelihood(tab,rate,ratevar)
+    }
+
+    if (updateRatevar == 1) {
+      #MH move assuming flat prior
+      ratevar2=abs(rnorm(1,ratevar,0.1*initRatevar))
+      l2=likelihood(tab,rate,ratevar2)
+      if (log(runif(1))<l2-l) {l=l2;ratevar=ratevar2}
     }
 
     if (updateNeg == 1) {
       #MH move assuming flat prior
-      neg2=abs(neg+runif(1)-0.5)
+      neg2=abs(rnorm(1,neg,0.1*initNeg))
       p2=prior(ordereddate, tab[(n+1):nrow(tab),3],neg2)
       if (log(runif(1))<p2-p) {p=p2;neg=neg2}
     }
@@ -123,11 +135,10 @@ credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1
     #MH to update internal dates
     for (j in c((n + 1):nrow(tab))) {
       old = tab[j, 3]
-      ru=runif(1)
-      tab[j, 3] = old + ru - 0.5
-      if (ru<0.5&&(!is.na(tab[j,4])&&tab[j,3]<tab[tab[j,4],3])) {tab[j,3]=old;next}#can't be older than father
-      if (ru>0.5&&j>n&&tab[j,3]>min(tab[which(tab[,4]==j),3])) {tab[j,3]=old;next}#can't be younger than sons
-      l2 = likelihood(tab, rate)
+      tab[j, 3] = old + rnorm(1)
+      if (tab[j,3]-old<0&&(!is.na(tab[j,4])&&tab[j,3]<tab[tab[j,4],3])) {tab[j,3]=old;next}#can't be older than father
+      if (tab[j,3]-old>0&&j>n&&tab[j,3]>min(tab[which(tab[,4]==j),3])) {tab[j,3]=old;next}#can't be younger than sons
+      l2 = likelihood(tab, rate, ratevar)
       p2 = prior(ordereddate, tab[(n+1):nrow(tab),3], neg)
       if (log(runif(1)) < l2 - l + p2 - p)
       {l = l2; p = p2}
@@ -138,11 +149,10 @@ credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1
     #MH to update missing leaf dates
     for (j in misDates) {
       old = tab[j, 3]
-      ru=runif(1)
-      tab[j, 3] = old + ru - 0.5
-      if (ru<0.5&&(!is.na(tab[j,4])&&tab[j,3]<tab[tab[j,4],3])) {tab[j,3]=old;next}#can't be older than father
+      tab[j, 3] = old + rnorm(1)
+      if (tab[j,3]-old<0&&(!is.na(tab[j,4])&&tab[j,3]<tab[tab[j,4],3])) {tab[j,3]=old;next}#can't be older than father
       if (tab[j,3]==max(tab[,3])||tab[j,3]==min(tab[,3])) {tab[j,3]=old;next}#stay within prior range
-      l2 = likelihood(tab, rate)
+      l2 = likelihood(tab, rate, ratevar)
       ordereddate2=sort(tab[1:n,3],decreasing = T)
       p2 = prior(ordereddate2, tab[(n+1):nrow(tab),3], neg)
       if (log(runif(1)) < l2 - l + p2 - p)
@@ -159,7 +169,7 @@ credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1
       r=runif(1)
       tab[sides,2]=c(sum(old)*r,sum(old)*(1-r))
       if (model=='poisson'||model=='negbin') tab[sides,2]=round(tab[sides,2])
-      l2=likelihood(tab,rate)
+      l2=likelihood(tab,rate, ratevar)
       if (log(runif(1))<l2-l) l=l2 else tab[sides,2]=old
     }
 
@@ -179,7 +189,7 @@ credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1
         tab[left,2]=oldtab[a,2]*(1-r)
         if (model=='poisson'||model=='negbin') {tab[a,2]=round(tab[a,2]);tab[left,2]=round(tab[left,2])}
         tab[right,2]=oldtab[right,2]+oldtab[left,2]
-        l2=likelihood(tab,rate)
+        l2=likelihood(tab,rate, ratevar)
         if (log(runif(1))<l2-l) l=l2 else tab=oldtab
       }
     }
