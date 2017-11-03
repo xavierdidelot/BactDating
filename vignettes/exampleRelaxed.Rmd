@@ -54,7 +54,7 @@ res=roottotip(obsphy,dates,predInt='gamma',showTree=T)
 We run CreDating as follows:
 
 ```{r}
-res=credate(obsphy,dates,nbIts = 10000,model='relaxedgamma',findRoot = 0,showProgress=F,initRate=10,initRatevar = 100,updateRatevar = T)
+res=credate(obsphy,dates,nbIts = 10000,model='relaxedgamma',findRoot = 2,showProgress=F,initRate=10,initRatevar = 100,updateRatevar = T)
 plot(res)
 ```
 
@@ -69,7 +69,7 @@ We can see what the MCMC traces look like:
 ```{r}
 plot(res,'trace')
 ```
-#Let's see where the root is likely to be:
-#```{r}
-#plot(res,'treeRoot')
-#```
+Let's see where the root is likely to be:
+```{r}
+plot(res,'treeRoot')
+```

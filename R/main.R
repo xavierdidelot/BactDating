@@ -32,6 +32,7 @@ credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1
   if (useCoalPrior) prior=coalpriorC else updateNeg=0
 
   if ((model == 'gamma'||model == 'negbin'||model=='relaxedgamma') && updateRate==2) updateRate=1#Gibbs move on rate is only available for poisson model
+  if (model == 'gamma' ||model == 'relaxedgamma') tree$edge.length=pmax(tree$edge.length,1e-7)
   if (model == 'poisson') likelihood=function(tab,rate,ratevar) return(likelihoodPoissonC(tab,rate))
   if (model == 'negbin') likelihood=function(tab,rate,ratevar) return(likelihoodNegbin(tab,r=rate,phi=1))
   if (model == 'gamma') likelihood=function(tab,rate,ratevar) return(likelihoodGammaC(tab,rate))
@@ -190,7 +191,7 @@ credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1
         if (model=='poisson'||model=='negbin') {tab[a,2]=round(tab[a,2]);tab[left,2]=round(tab[left,2])}
         tab[right,2]=oldtab[right,2]+oldtab[left,2]
         l2=likelihood(tab,rate, ratevar)
-        if (log(runif(1))<l2-l) l=l2 else tab=oldtab
+        if (log(runif(1))<l2-l+log(oldtab[a,2]/tab[right,2])) l=l2 else tab=oldtab
       }
     }
   }

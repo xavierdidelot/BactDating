@@ -2,7 +2,7 @@
 % Please edit documentation in R/simulate.R
 \name{simdatedtree}
 \alias{simdatedtree}
-\title{Simulation of dated tree}
+\title{Simulation of dated tree using rtree and rexp branch lengths}
 \usage{
 simdatedtree(nsam = 20, dateroot = 2000)
 }
@@ -15,5 +15,5 @@ simdatedtree(nsam = 20, dateroot = 2000)
 A simulated dated tree
 }
 \description{
-Simulation of dated tree
+Simulation of dated tree using rtree and rexp branch lengths
 }
