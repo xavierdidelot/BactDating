@@ -15,7 +15,7 @@
 #' @param showProgress Whether or not to show a progress bar
 #' @return Dating results
 #' @export
-credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T, updateRate = 1, initNeg = 1, updateNeg = 2, initRatevar = 1, updateRatevar = F,  model = 'gamma', updateRoot = 0, showProgress = T)
+credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T, updateRate = 1, initNeg = 1, updateNeg = 2, initRatevar = 1, updateRatevar = 0,  model = 'gamma', updateRoot = 0, showProgress = T)
 {
   n = Ntip(tree)
   rate = initRate
@@ -36,7 +36,8 @@ credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1
   if (model == 'poisson') likelihood=function(tab,rate,ratevar) return(likelihoodPoissonC(tab,rate))
   if (model == 'negbin') likelihood=function(tab,rate,ratevar) return(likelihoodNegbin(tab,r=rate,phi=1))
   if (model == 'gamma') likelihood=function(tab,rate,ratevar) return(likelihoodGammaC(tab,rate))
-  if (model == 'relaxedgamma') likelihood=function(tab,rate,ratevar) return(likelihoodRelaxedgammaC(tab,rate,ratevar))
+  if (model == 'relaxedgamma') likelihood=function(tab,rate,ratevar) return(likelihoodRelaxedgammaC(tab,rate,ratevar)) else updateRatevar=0
+  if (model == 'null') {updateRate=0;likelihood=function(tab,rate,ratevar) return(0)}
 
   #Deal with missing dates
   misDates=which(is.na(date))
@@ -83,7 +84,7 @@ credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1
       rootchildren=which(tab[,4]==(n+1))
       curroot=NA
       for (j in 1:nrow(tree$edge)) if (setequal(rootchildren,tree$edge[j,])) {curroot=j;break}
-      if (is.na(curroot)) curroot=which(tree$edge[,1]==(n+1))[1]
+      if (is.na(curroot)) curroot=min(which(tree$edge[,1]==(n+1)))
       record[i / thin, 1:nrow(tab)] = tab[, 3]
       record[i / thin, (1:nrow(tab))+nrow(tab)]=tab[, 4]
       record[i / thin, 'likelihood'] = l
@@ -164,7 +165,7 @@ credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1
 
     if (updateRoot>0) {
       #Move root on current branch
-      root=which(tab[,3]==max(tab[,3]))
+      root=which(is.na(tab[,4]))
       sides=which(tab[,4]==root)
       old=tab[sides,2]
       r=runif(1)
@@ -176,7 +177,7 @@ credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1
 
     if (updateRoot==2) {
       #Move root branch
-      root=which(tab[,3]==min(tab[,3]))
+      root=which(is.na(tab[,4]))
       sides=which(tab[,4]==root)
       if (tab[sides[1],3]<tab[sides[2],3]) {left=sides[1];right=sides[2]} else {left=sides[2];right=sides[1]}
       if (left>n) {

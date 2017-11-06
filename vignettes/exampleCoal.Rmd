@@ -43,7 +43,10 @@ res=roottotip(obsphy,dates,predInt='gamma',showTree=T)
 We run CreDating to infer the coalescent rate:
 
 ```{r}
-res=credate(obsphy,dates,nbIts = 10000,model='gamma',updateRoot = 0,showProgress=F,initRate=10)
+res=credate(unroot(obsphy),dates,nbIts = 10000,model='gamma',updateRoot = 2,showProgress=T,initRate=10)
 plot(res,'trace')
+```
+```{r}
+plot(res,'treeRoot')
 ```
 
