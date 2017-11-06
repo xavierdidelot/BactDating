@@ -63,12 +63,12 @@ credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1
       next
     children = which(tab[, 4] == i)
     if (length(children) != 0)
-      tab[i, 3] = min(tab[children, 3]) - 1
+      tab[i, 3] = min(tab[children, 3]-tab[children,2]/rate)
   }
   i = n + 1
   children = which(tab[, 4] == i)
   tab[i, 1] = i
-  tab[i, 3] = min(tab[children, 3]) - 1
+  tab[i, 3] = min(tab[children, 3]-tab[children,2]/rate)
 
   #MCMC
   l = likelihood(tab, rate, ratevar)
