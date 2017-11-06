@@ -4,12 +4,12 @@
 \alias{simcoaltree}
 \title{Simulation of coalescent dated tree}
 \usage{
-simcoaltree(dates, neg)
+simcoaltree(dates = NA, neg = 10)
 }
 \arguments{
-\item{neg}{Reciprocal of coalescent rate}
+\item{dates}{Vector of dates at which samples are taken}
 
-\item{times}{dates at which samples are taken}
+\item{neg}{Reciprocal of coalescent rate}
 }
 \value{
 A simulated dated tree

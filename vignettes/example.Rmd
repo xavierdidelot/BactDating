@@ -54,7 +54,7 @@ obsphy=unroot(obsphy)
 We run CreDating as follows:
 
 ```{r}
-res=credate(obsphy,dates,nbIts = 10000,model='gamma',findRoot = 2,showProgress=F,initRate=100)
+res=credate(obsphy,dates,nbIts = 10000,model='gamma',updateRoot = 2,showProgress=F,initRate=100)
 plot(res)
 ```
 

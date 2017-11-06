@@ -11,11 +11,11 @@
 #' @param initRatevar Initial variance on per-branch substituion rate (only used in relaxedgamma model)
 #' @param updateRatevar Whether or not to per-branch substituion rate (only used in relaxedgamma model)
 #' @param model Which model to use (poisson or negbin or gamma or relaxedgamma)
-#' @param findRoot Root finding algorithm (0=none, 1=on preset branch, 2=anywhere)
+#' @param updateRoot Root finding algorithm (0=none, 1=on preset branch, 2=anywhere)
 #' @param showProgress Whether or not to show a progress bar
 #' @return Dating results
 #' @export
-credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T, updateRate = 1, initNeg = 1, updateNeg = 2, initRatevar = 1, updateRatevar = F,  model = 'gamma', findRoot = 0, showProgress = T)
+credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T, updateRate = 1, initNeg = 1, updateNeg = 2, initRatevar = 1, updateRatevar = F,  model = 'gamma', updateRoot = 0, showProgress = T)
 {
   n = Ntip(tree)
   rate = initRate
@@ -162,7 +162,7 @@ credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1
         tab[j, 3] = old
     }
 
-    if (findRoot>0) {
+    if (updateRoot>0) {
       #Move root on current branch
       root=which(tab[,3]==max(tab[,3]))
       sides=which(tab[,4]==root)
@@ -174,7 +174,7 @@ credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1
       if (log(runif(1))<l2-l) l=l2 else tab[sides,2]=old
     }
 
-    if (findRoot==2) {
+    if (updateRoot==2) {
       #Move root branch
       root=which(tab[,3]==min(tab[,3]))
       sides=which(tab[,4]==root)

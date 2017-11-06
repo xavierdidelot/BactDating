@@ -17,7 +17,7 @@ roottotip = function(tree,date,predInt=F,showTree=F)
   if (showTree) {
     par(mfrow=c(1,2))
     plot(tree)
-    axisPhylo(1,backward = T)
+    axisPhylo(1,backward = F)
   }
   plot(date,ys,xlab='Sampling date',ylab='Root-to-tip distance',xaxs='i',yaxs='i',pch=19,ylim=c(0,max(ys)),xlim=c(ori,max(date,na.rm = T)))
   par(xpd=F)

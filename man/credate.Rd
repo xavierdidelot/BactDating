@@ -7,7 +7,7 @@
 credate(tree, date, initRate = 1, nbIts = 10000,
   thin = ceiling(nbIts/1000), useCoalPrior = T, updateRate = 1,
   initNeg = 1, updateNeg = 2, initRatevar = 1, updateRatevar = F,
-  model = "gamma", findRoot = 0, showProgress = T)
+  model = "gamma", updateRoot = 0, showProgress = T)
 }
 \arguments{
 \item{tree}{Tree wih branches measured in unit of substitutions}
@@ -34,7 +34,7 @@ credate(tree, date, initRate = 1, nbIts = 10000,
 
 \item{model}{Which model to use (poisson or negbin or gamma or relaxedgamma)}
 
-\item{findRoot}{Root finding algorithm (0=none, 1=on preset branch, 2=anywhere)}
+\item{updateRoot}{Root finding algorithm (0=none, 1=on preset branch, 2=anywhere)}
 
 \item{showProgress}{Whether or not to show a progress bar}
 }
