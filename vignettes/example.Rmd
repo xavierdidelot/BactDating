@@ -38,8 +38,7 @@ where $l$ is the branch length and
 $r=10$ per year is the substitution rate. We can simulate an observed phylogenetic tree
 and perform a root-to-tip analysis as follows:
 ```{r}
-obsphy=simobsphy(phy, rate=100,model='gamma')
-#obsphy$edge.length[11]=0
+obsphy=simobsphy(phy, rate=10,model='gamma')
 res=roottotip(obsphy,dates,predInt='gamma',showTree=T)
 ```
 
@@ -54,7 +53,7 @@ obsphy=unroot(obsphy)
 We run CreDating as follows:
 
 ```{r}
-res=credate(obsphy,dates,nbIts = 10000,model='gamma',updateRoot = 2,showProgress=F,initRate=100)
+res=credate(obsphy,dates,nbIts = 10000,model='gamma',updateRoot = 2,showProgress=T)
 plot(res)
 ```
 

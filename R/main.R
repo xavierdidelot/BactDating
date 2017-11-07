@@ -1,7 +1,7 @@
 #' Main function
 #' @param tree Tree wih branches measured in unit of substitutions
 #' @param date Sampling dates for the leaves of the tree
-#' @param initRate Initial rate of substitutions per genome (not per site)
+#' @param initRate Initial rate of substitutions per genome (not per site), or zero to use root-to-tip estimate
 #' @param nbIts Number of MCMC iterations to perform
 #' @param thin Thining interval between recorded MCMC samples
 #' @param useCoalPrior Whether or not to use a coalescent prior on the tree
@@ -15,7 +15,7 @@
 #' @param showProgress Whether or not to show a progress bar
 #' @return Dating results
 #' @export
-credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T, updateRate = 1, initNeg = 1, updateNeg = 2, initRatevar = 1, updateRatevar = 0,  model = 'gamma', updateRoot = 0, showProgress = T)
+credate = function(tree, date, initRate = 0, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T, updateRate = 1, initNeg = 1, updateNeg = 2, initRatevar = 1, updateRatevar = 0,  model = 'gamma', updateRoot = 0, showProgress = T)
 {
   n = Ntip(tree)
   rate = initRate
@@ -26,6 +26,12 @@ credate = function(tree, date, initRate = 1, nbIts = 10000, thin=ceiling(nbIts/1
     tree=root(tree,outgroup=first,resolve.root=T)
     w=which(tree$edge[,1]==Ntip(tree)+1)
     tree$edge.length[w]=rep(sum(tree$edge.length[w])/2,2)
+  }
+
+  if (rate==0) {
+    rate=roottotip(tree,date,showFig=F)$rate
+    if (rate<0) rate=1
+    initRate=rate
   }
 
   prior=function(...) return(0)

@@ -4,9 +4,9 @@
 \alias{credate}
 \title{Main function}
 \usage{
-credate(tree, date, initRate = 1, nbIts = 10000,
+credate(tree, date, initRate = 0, nbIts = 10000,
   thin = ceiling(nbIts/1000), useCoalPrior = T, updateRate = 1,
-  initNeg = 1, updateNeg = 2, initRatevar = 1, updateRatevar = F,
+  initNeg = 1, updateNeg = 2, initRatevar = 1, updateRatevar = 0,
   model = "gamma", updateRoot = 0, showProgress = T)
 }
 \arguments{
@@ -14,7 +14,7 @@ credate(tree, date, initRate = 1, nbIts = 10000,
 
 \item{date}{Sampling dates for the leaves of the tree}
 
-\item{initRate}{Initial rate of substitutions per genome (not per site)}
+\item{initRate}{Initial rate of substitutions per genome (not per site), or zero to use root-to-tip estimate}
 
 \item{nbIts}{Number of MCMC iterations to perform}
 
