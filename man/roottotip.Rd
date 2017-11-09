@@ -4,16 +4,19 @@
 \alias{roottotip}
 \title{Root to tip correlation}
 \usage{
-roottotip(tree, date, showFig = T, predInt = F, showTree = F)
+roottotip(tree, date, permTest = 10000, showFig = T,
+  showPredInt = "gamma", showTree = T)
 }
 \arguments{
 \item{tree}{Phylogenetic tree}
 
 \item{date}{Dates of sampling}
 
+\item{permTest}{Number of permutations to perform to compute the p-value using a permutation test}
+
 \item{showFig}{Whether or not to show the root-to-tip regression figure}
 
-\item{predInt}{To show 95percent confidence intervals, can be 'poisson' or 'gamma'}
+\item{showPredInt}{To show 95percent confidence intervals, can be 'poisson' or 'gamma'}
 
 \item{showTree}{Whether to show the tree or not}
 }

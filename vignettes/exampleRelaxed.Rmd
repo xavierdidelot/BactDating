@@ -38,7 +38,7 @@ We can simulate an observed phylogenetic tree
 and perform a root-to-tip analysis as follows:
 ```{r}
 obsphy=simobsphy(phy, rate=10,model='relaxedgamma',ratevar = 100)
-res=roottotip(obsphy,dates,predInt='gamma',showTree=T)
+res=roottotip(obsphy,dates)
 ```
 
 # ##Unknown root
@@ -46,7 +46,7 @@ res=roottotip(obsphy,dates,predInt='gamma',showTree=T)
 #the midpoint:
 #```{r}
 #obsphy=phangorn::midpoint(obsphy)
-#res=roottotip(obsphy, dates, predInt = 'gamma', showTree = T)
+#res=roottotip(obsphy, dates)
 #```
 
 ##Analysis

@@ -24,7 +24,7 @@ axisPhylo(backward = F)
 Let's do a root-to-tip regression analysis:
 
 ```{r}
-res=roottotip(harris2010$tree,harris2010$dates,predInt = 'gamma')
+res=roottotip(harris2010$tree,harris2010$dates)
 ```
 
 ##Analysis

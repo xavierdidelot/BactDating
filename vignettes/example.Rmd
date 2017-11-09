@@ -39,7 +39,7 @@ $r=10$ per year is the substitution rate. We can simulate an observed phylogenet
 and perform a root-to-tip analysis as follows:
 ```{r}
 obsphy=simobsphy(phy, rate=10,model='gamma')
-res=roottotip(obsphy,dates,predInt='gamma',showTree=T)
+res=roottotip(obsphy,dates)
 ```
 
 ##Unknown root
@@ -53,7 +53,7 @@ obsphy=unroot(obsphy)
 We run CreDating as follows:
 
 ```{r}
-res=credate(obsphy,dates,nbIts = 10000,model='gamma',updateRoot = 2,showProgress=T)
+res=credate(obsphy,dates,nbIts = 10000,model='gamma',updateRoot = 2,showProgress=F)
 plot(res)
 ```
 

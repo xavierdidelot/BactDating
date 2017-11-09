@@ -1,0 +1,36 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+# CreDating
+
+The goal of CreDating is to perform Bayesian dating of the nodes of phylogenetic tree.
+This typically involves simultaneous Bayesian estimation of the molecular clock rate and coalescent rate.
+Additional features include inference of root location, lost sampling dates and different evolutionary models.
+
+## Installation
+
+You can install CreDating from github with:
+
+```{r gh-installation, eval = FALSE}
+# install.packages("devtools")
+devtools::install_github("xavierdidelot/CreDating")
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+```{r example}
+## basic example code
+```
