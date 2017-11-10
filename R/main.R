@@ -212,6 +212,13 @@ credate = function(tree, date, initRate = 0, nbIts = 10000, thin=ceiling(nbIts/1
     tree$edge[i,1]=record[bestrows[1],nrow(tab)+tree$edge[i,2]]#tab[tree$edge[i,2],4]
     tree$edge.length[i] = meanRec[tree$edge[i, 2]] - meanRec[tree$edge[i, 1]]
   }
+
+  #Calculate DIC
+  meantab=tab
+  meantab[,3]=meanRec[1:nrow(tab)]
+  meantab[,4]=meanRec[(1:nrow(tab))+nrow(tab)]
+  dic=-2*likelihood(meantab,meanRec['rate'],meanRec['ratevar'])+var(-2*record[bestrows,'likelihood'])
+
   tree$root.time = max(date)-max(leafDates(tree))
   CI = matrix(NA, nrow(tab), 2)
   for (i in 1:nrow(tab)) {
@@ -225,9 +232,25 @@ credate = function(tree, date, initRate = 0, nbIts = 10000, thin=ceiling(nbIts/1
     record = record,
     rootdate = unname(meanRec[n + 1]),
     rootprob = length(bestrows)*2/nrow(record),
-    CI = CI
+    CI = CI,
+    dic = dic
   )
   class(out) <- 'resCreDating'
   return(out)
 }
 
+#' Perform Bayesian comparison between two models based on DIC values
+#' @param res1 An output from the credate function
+#' @param date Another output from the credate function
+#' @export
+modelcompare = function(res1,res2) {
+dic1=res1$dic
+dic2=res2$dic
+dif=dic2-dic1
+print(sprintf('dic1=%.2f and dic2=%.2f',dic1,dic2))
+if (dif>10) print('Model 1 wins.')
+if (dif>5 && dif<10) print('Model 1 advantage.')
+if (abs(dif)<5) print('No winner.')
+if (dif< -5 && dif>-10) print('Model 2 advantage.')
+if (dif< -10) print('Model 2 wins.')
+}
