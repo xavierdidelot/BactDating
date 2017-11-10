@@ -9,6 +9,7 @@
 #' @export
 roottotip = function(tree,date,permTest=10000,showFig=T,showPredInt='gamma',showTree=T)
 {
+  if (var(date,na.rm=T)==0) {warning('All dates are identical.');return(list(rate=NA,ori=NA,pvalue=NA))}
   n=length(date)
   ys=leafDates(tree)
   res=lm(ys~date)

@@ -15,7 +15,7 @@
 #' @param showProgress Whether or not to show a progress bar
 #' @return Dating results
 #' @export
-credate = function(tree, date, initRate = 0, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T, updateRate = 1, initNeg = 1, updateNeg = 2, initRatevar = 1, updateRatevar = 0,  model = 'gamma', updateRoot = 0, showProgress = T)
+credate = function(tree, date, initRate = 0, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T, updateRate = 1, initNeg = 1, updateNeg = 2, initRatevar = 1, updateRatevar = 1,  model = 'gamma', updateRoot = 0, showProgress = T)
 {
   n = Ntip(tree)
   rate = initRate
@@ -30,8 +30,9 @@ credate = function(tree, date, initRate = 0, nbIts = 10000, thin=ceiling(nbIts/1
 
   if (rate==0) {
     rate=roottotip(tree,date,showFig=F)$rate
-    if (rate<0) rate=1
+    if (is.na(rate) || rate<0) rate=1
     initRate=rate
+    initRatevar=rate*rate
   }
 
   prior=function(...) return(0)
@@ -241,16 +242,16 @@ credate = function(tree, date, initRate = 0, nbIts = 10000, thin=ceiling(nbIts/1
 
 #' Perform Bayesian comparison between two models based on DIC values
 #' @param res1 An output from the credate function
-#' @param date Another output from the credate function
+#' @param res2 Another output from the credate function
 #' @export
 modelcompare = function(res1,res2) {
-dic1=res1$dic
-dic2=res2$dic
-dif=dic2-dic1
-print(sprintf('dic1=%.2f and dic2=%.2f',dic1,dic2))
-if (dif>10) print('Model 1 wins.')
-if (dif>5 && dif<10) print('Model 1 advantage.')
-if (abs(dif)<5) print('No winner.')
-if (dif< -5 && dif>-10) print('Model 2 advantage.')
-if (dif< -10) print('Model 2 wins.')
+  dic1=res1$dic
+  dic2=res2$dic
+  dif=dic2-dic1
+  print(sprintf('dic1=%.2f and dic2=%.2f',dic1,dic2))
+  if (dif>10) print('Model 1 is definitely better.')
+  if (dif>5 && dif<10) print('Model 1 is slightly better.')
+  if (abs(dif)<5) print('The difference is not significant.')
+  if (dif< -5 && dif>-10) print('Model 2 is slightly better.')
+  if (dif< -10) print('Model 2 is definitely better.')
 }

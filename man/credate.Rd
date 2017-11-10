@@ -6,7 +6,7 @@
 \usage{
 credate(tree, date, initRate = 0, nbIts = 10000,
   thin = ceiling(nbIts/1000), useCoalPrior = T, updateRate = 1,
-  initNeg = 1, updateNeg = 2, initRatevar = 1, updateRatevar = 0,
+  initNeg = 1, updateNeg = 2, initRatevar = 1, updateRatevar = 1,
   model = "gamma", updateRoot = 0, showProgress = T)
 }
 \arguments{

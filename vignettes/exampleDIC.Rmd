@@ -16,17 +16,30 @@ library(ape)
 set.seed(0)
 phy <- simdatedtree(nsam = 20, dateroot = 2000)
 dates = leafDates(phy)
-obsphy=simobsphy(phy, rate=10,model='gamma')
-res=roottotip(obsphy,dates)
 ```
 
 ##Analysis
 
-We run CreDating with rate equal to 5 and 10, and compare models:
+Comparison of strict and relaxed models on a strict dataset:
 
 ```{r}
-res =credate(obsphy,dates,initRate = 20,updateRate = F)
-res2=credate(obsphy,dates,initRate = 10,updateRate = F)
-modelcompare(res,res2)
+obsphy1=simobsphy(phy, rate=10)
+res1=credate(obsphy1,dates)
+res2=credate(obsphy1,dates,model='relaxedgamma')
+modelcompare(res1,res2)
 ```
 
+Comparison of strict and relaxed models on a relaxed dataset:
+
+```{r}
+obsphy2=simobsphy(phy, rate=10,model='relaxedgamma',ratevar = 100)
+res3=credate(obsphy2,dates)
+res4=credate(obsphy2,dates,model='relaxedgamma')
+modelcompare(res3,res4)
+```
+
+Comparison of strict model with and without use of dates:
+```{r}
+res5=credate(obsphy1,rep(2015,length(dates)))
+modelcompare(res1,res5)
+```
