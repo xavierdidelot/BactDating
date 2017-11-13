@@ -27,8 +27,11 @@ double coalpriorC(NumericVector leaves, NumericVector intnodes, double neg) {
 double likelihoodGammaC(NumericMatrix tab, double rate) {
   int n = (tab.nrow()+1)/2;
   double p=0;
+  double unrec=1;
   for (int i=0;i<(n+n-1);i++) {
-    if (i!=n) p+=R::dgamma(tab(i,1),rate*(tab(i,2)-tab(tab(i,3)-1,2)),1,1);
+    if (i==n) continue;
+    if (tab.ncol()==5) unrec=tab(i,4);
+    p+=R::dgamma(unrec*tab(i,1),unrec*rate*(tab(i,2)-tab(tab(i,3)-1,2)),1,1);
   }
   return(p);
 }
@@ -38,10 +41,12 @@ double likelihoodRelaxedgammaC(NumericMatrix tab, double rate, double ratevar) {
   int n = (tab.nrow()+1)/2;
   double p=0;
   double l=0;
+  double unrec=1;
   for (int i=0;i<(n+n-1);i++) {
     if (i==n) continue;
     l=tab(i,2)-tab(tab(i,3)-1,2);
-    p+=R::dgamma(tab(i,1),l*rate*rate/(rate+l*ratevar),1.0+l*ratevar/rate,1);
+    if (tab.ncol()==5) {unrec=tab(i,4);l=l*unrec;}
+    p+=R::dgamma(unrec*tab(i,1),l*rate*rate/(rate+l*ratevar),1.0+l*ratevar/rate,1);
   }
   return(p);
 }
@@ -50,8 +55,11 @@ double likelihoodRelaxedgammaC(NumericMatrix tab, double rate, double ratevar) {
 double likelihoodPoissonC(NumericMatrix tab, double rate) {
   int n = (tab.nrow()+1)/2;
   double p=0;
+  double unrec=1;
   for (int i=0;i<(n+n-1);i++) {
-    if (i!=n) p+=R::dpois(tab(i,1),rate*(tab(i,2)-tab(tab(i,3)-1,2)),1);
+    if (i==n) continue;
+    if (tab.ncol()==5) unrec=tab(i,4);
+    p+=R::dpois(unrec*tab(i,1),unrec*rate*(tab(i,2)-tab(tab(i,3)-1,2)),1);
   }
   return(p);
 }

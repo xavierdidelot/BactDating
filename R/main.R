@@ -12,10 +12,11 @@
 #' @param updateRatevar Whether or not to per-branch substituion rate (only used in relaxedgamma model)
 #' @param model Which model to use (poisson or negbin or gamma or relaxedgamma)
 #' @param updateRoot Root finding algorithm (0=none, 1=on preset branch, 2=anywhere)
+#' @param useRec Whether or not to use results from previous recombination analysis
 #' @param showProgress Whether or not to show a progress bar
 #' @return Dating results
 #' @export
-credate = function(tree, date, initRate = 0, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T, updateRate = 1, initNeg = 1, updateNeg = 2, initRatevar = 1, updateRatevar = 1,  model = 'gamma', updateRoot = 0, showProgress = T)
+credate = function(tree, date, initRate = 0, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T, updateRate = 1, initNeg = 1, updateNeg = 2, initRatevar = 1, updateRatevar = 1,  model = 'gamma', updateRoot = 0, useRec = F, showProgress = T)
 {
   n = Ntip(tree)
   rate = initRate
@@ -26,6 +27,7 @@ credate = function(tree, date, initRate = 0, nbIts = 10000, thin=ceiling(nbIts/1
     tree=root(tree,outgroup=first,resolve.root=T)
     w=which(tree$edge[,1]==Ntip(tree)+1)
     tree$edge.length[w]=rep(sum(tree$edge.length[w])/2,2)
+    tree$unrec=rep(0.8,length(tree$edge.length))#TODO
   }
 
   if (rate==0) {
@@ -51,14 +53,15 @@ credate = function(tree, date, initRate = 0, nbIts = 10000, thin=ceiling(nbIts/1
   date[misDates]=mean(date,na.rm = T)
   ordereddate=sort(date,decreasing = T)
 
-  #Create table of nodes (col1=name,col2=expected mutation on branch above,col3=date,col4=father)
-  tab = matrix(NA, n + tree$Nnode, 4)
+  #Create table of nodes (col1=name,col2=expected mutation on branch above,col3=date,col4=father,col5=recombination coef, only if useRec=T)
+  tab = matrix(NA, n + tree$Nnode, ifelse(useRec,5,4))
   for (r in 1:(nrow(tree$edge))) {
     i = tree$edge[r, 2]
     tab[i, 1] = i
     tab[i, 4] = tree$edge[r, 1]
     if (model == 'poisson' || model == 'negbin') tab[i, 2] = round(tree$edge.length[r])
     else tab[i, 2] = tree$edge.length[r]
+    if (useRec) tab[i,5]=tree$unrec[r]
     if (i <= n)
       tab[i, 3] = date[i]
   }
@@ -243,6 +246,7 @@ credate = function(tree, date, initRate = 0, nbIts = 10000, thin=ceiling(nbIts/1
 #' Perform Bayesian comparison between two models based on DIC values
 #' @param res1 An output from the credate function
 #' @param res2 Another output from the credate function
+#' @return Prints out results of model comparison
 #' @export
 modelcompare = function(res1,res2) {
   dic1=res1$dic

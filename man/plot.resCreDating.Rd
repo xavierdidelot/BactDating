@@ -14,7 +14,7 @@
 \item{...}{Additional parameters are passed on}
 }
 \value{
-Nothing
+Plot of CreDating results
 }
 \description{
 Plotting methods

@@ -16,7 +16,7 @@ simobsphy(tree, rate = 10, ratevar = 0, model = "gamma")
 \item{model}{Which model to use (poisson or gamma or gamma2)}
 }
 \value{
-The observed phylogenetic tree
+An observed phylogenetic tree
 }
 \description{
 Simulation of observed phylogeny given a dated tree

@@ -11,6 +11,9 @@ modelcompare(res1, res2)
 
 \item{res2}{Another output from the credate function}
 }
+\value{
+Prints out results of model comparison
+}
 \description{
 Perform Bayesian comparison between two models based on DIC values
 }

@@ -20,6 +20,9 @@ roottotip(tree, date, permTest = 10000, showFig = T,
 
 \item{showTree}{Whether to show the tree or not}
 }
+\value{
+List containing estimated clock rate, date of origin and p-value
+}
 \description{
 Root to tip correlation
 }

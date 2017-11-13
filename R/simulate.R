@@ -86,7 +86,7 @@ simcoaltree = function(dates=NA,neg=10) {
 #' @param rate Substitution clock rate
 #' @param ratevar Per-branch variance on the clock rate (used only by relaxed gamma model)
 #' @param model Which model to use (poisson or gamma or gamma2)
-#' @return The observed phylogenetic tree
+#' @return An observed phylogenetic tree
 #' @export
 simobsphy = function(tree, rate = 10, ratevar = 0, model = 'gamma') {
   obsphy=tree

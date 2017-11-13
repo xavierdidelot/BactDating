@@ -2,7 +2,7 @@
 #' @param x Output from running function credating
 #' @param type Type of plot to do. Currently either 'tree' or 'treeCI' or 'trace' or 'treeRoot'
 #' @param ... Additional parameters are passed on
-#' @return Nothing
+#' @return Plot of CreDating results
 #' @importFrom grDevices rgb
 #' @export
 plot.resCreDating = function(x, type='tree', ...) {
@@ -56,6 +56,7 @@ plot.resCreDating = function(x, type='tree', ...) {
 #' Print function for resCreDating objects
 #' @param x output from credate
 #' @param ... Passed on to print.phylo
+#' @return Print out details of CreDating results
 #' @export
 print.resCreDating <- function(x, ...)
 {
@@ -71,6 +72,7 @@ print.resCreDating <- function(x, ...)
 #' Summary function for resCreDating objects
 #' @param object output from credate
 #' @param ... Passed on to print.phylo
+#' @return Print out details of CreDating results
 #' @export
 summary.resCreDating <- function(object, ...){
   print.resCreDating(object,...)

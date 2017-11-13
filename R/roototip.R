@@ -5,6 +5,7 @@
 #' @param showFig Whether or not to show the root-to-tip regression figure
 #' @param showPredInt To show 95percent confidence intervals, can be 'poisson' or 'gamma'
 #' @param showTree Whether to show the tree or not
+#' @return List containing estimated clock rate, date of origin and p-value
 #' @importFrom graphics abline
 #' @export
 roottotip = function(tree,date,permTest=10000,showFig=T,showPredInt='gamma',showTree=T)

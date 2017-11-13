@@ -1,6 +1,7 @@
 #' Load output from ClonalFrameML
 #' @param prefix Prefix of the ClonalFrameML output files
 #' @importFrom utils read.table
+#' @return Tree representing the output from ClonalFrameML
 #' @export
 loadCFML = function(prefix)
 {

@@ -11,6 +11,9 @@
 
 \item{...}{Passed on to print.phylo}
 }
+\value{
+Print out details of CreDating results
+}
 \description{
 Print function for resCreDating objects
 }

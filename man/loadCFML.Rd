@@ -9,6 +9,9 @@ loadCFML(prefix)
 \arguments{
 \item{prefix}{Prefix of the ClonalFrameML output files}
 }
+\value{
+Tree representing the output from ClonalFrameML
+}
 \description{
 Load output from ClonalFrameML
 }

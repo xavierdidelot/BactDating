@@ -10,6 +10,7 @@ likelihoodPoisson = function(tab, rate) {
   if (min(lengths) < 0) stop('error2')
   muts = t2[, 2]
   if (min(muts)<0) stop('error3')
+  if (ncol(tab)==5) {lengths=lengths*t2[,5];muts=muts*t2[,5]}
   return(sum(-lengths * rate + muts * log(lengths * rate)))
 }
 
@@ -26,6 +27,7 @@ likelihoodNegbin = function(tab, r, phi) {
   if (min(lengths) < 0) stop('error2')
   muts = t2[, 2]
   if (min(muts)<0) stop('error3')
+  if (ncol(tab)==5) {lengths=lengths*t2[,5];muts=muts*t2[,5]}
   return(sum(dnbinom(muts,r,1-phi*lengths/(1+phi*lengths),log=T)))
 }
 
@@ -41,6 +43,7 @@ likelihoodGamma = function(tab, rate) {
   if (min(lengths) < 0) stop('error2')
   muts = t2[, 2]
   if (min(muts)<0) stop('error3')
+  if (ncol(tab)==5) {lengths=lengths*t2[,5];muts=muts*t2[,5]}
   return(sum(dgamma(muts,shape=rate*lengths,scale=1,log=T)))
 }
 
