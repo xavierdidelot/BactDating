@@ -15,6 +15,7 @@ loadCFML = function(prefix,priorMeanM=0.0001,priorSdM=0.0001)
   imports=read.table(sprintf('%s.importation_status.txt',prefix),header=T,as.is=T,sep="\t")
   params=read.table(sprintf('%s.em.txt',prefix),header=T,as.is=T,sep="\t")
   L=length(scan(sprintf('%s.position_cross_reference.txt',prefix),sep=',',quiet = T))
+  tree$edge.length=tree$edge.length*L
   tree$unrec=rep(NA,length(tree$edge.length))
   for (i in 1:length(tree$edge.length)) {
     j=tree$edge[i,2]
