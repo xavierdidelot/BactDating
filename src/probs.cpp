@@ -59,7 +59,7 @@ double likelihoodPoissonC(NumericMatrix tab, double rate) {
   for (int i=0;i<(n+n-1);i++) {
     if (i==n) continue;
     if (tab.ncol()==5) unrec=tab(i,4);
-    p+=R::dpois(unrec*tab(i,1),unrec*rate*(tab(i,2)-tab(tab(i,3)-1,2)),1);
+    p+=R::dpois(round(unrec*tab(i,1)),unrec*rate*(tab(i,2)-tab(tab(i,3)-1,2)),1);
   }
   return(p);
 }

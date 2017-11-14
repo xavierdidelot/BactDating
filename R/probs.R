@@ -11,7 +11,7 @@ likelihoodPoisson = function(tab, rate) {
   muts = t2[, 2]
   if (min(muts)<0) stop('error3')
   if (ncol(tab)==5) {lengths=lengths*t2[,5];muts=muts*t2[,5]}
-  return(sum(-lengths * rate + muts * log(lengths * rate)))
+  return(sum(-lengths * rate + round(muts) * log(lengths * rate)))
 }
 
 #' Negative-binomial likelihood function
@@ -28,7 +28,7 @@ likelihoodNegbin = function(tab, r, phi) {
   muts = t2[, 2]
   if (min(muts)<0) stop('error3')
   if (ncol(tab)==5) {lengths=lengths*t2[,5];muts=muts*t2[,5]}
-  return(sum(dnbinom(muts,r,1-phi*lengths/(1+phi*lengths),log=T)))
+  return(sum(dnbinom(round(muts),r,1-phi*lengths/(1+phi*lengths),log=T)))
 }
 
 #' Gamma likelihood function

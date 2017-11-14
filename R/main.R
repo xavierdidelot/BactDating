@@ -22,12 +22,28 @@ credate = function(tree, date, initRate = 0, nbIts = 10000, thin=ceiling(nbIts/1
   rate = initRate
   ratevar = initRatevar
   neg = initNeg
-  if (is.rooted(tree)==F) {
+  if (is.rooted(tree)==F && useRec==F) {
     first=which(date==min(date,na.rm = T))[1]
     tree=root(tree,outgroup=first,resolve.root=T)
     w=which(tree$edge[,1]==Ntip(tree)+1)
     tree$edge.length[w]=rep(sum(tree$edge.length[w])/2,2)
-    tree$unrec=rep(0.8,length(tree$edge.length))#TODO
+  }
+
+  if (is.rooted(tree)==F && useRec==T) {
+    first=which(date==min(date,na.rm = T))[1]
+    tree$node.label=sprintf('n%d',1:Nnode(tree))
+    edgenames=cbind(c(tree$tip.label,tree$node.label)[tree$edge[,1]],c(tree$tip.label,tree$node.label)[tree$edge[,2]])
+    unrec=tree$unrec
+    unrecfirst=unrec[which(tree$edge[,2]==first)]
+    tree=root(tree,outgroup=first,resolve.root=T,edgelabel=F)
+    w=which(tree$edge[,1]==Ntip(tree)+1)
+    tree$edge.length[w]=rep(sum(tree$edge.length[w])/2,2)
+    tree$unrec=rep(NA,nrow(tree$edge))
+    tree$unrec[w]=unrecfirst
+    for (i in 1:nrow(tree$edge)) {
+      nams=c(tree$tip.label,tree$node.label)[tree$edge[i,]]
+      for (j in 1:nrow(edgenames)) if (setequal(nams,edgenames[j,])) {tree$unrec[i]=unrec[j];break}
+    }
   }
 
   if (rate==0) {
@@ -47,20 +63,20 @@ credate = function(tree, date, initRate = 0, nbIts = 10000, thin=ceiling(nbIts/1
   if (model == 'gamma') likelihood=function(tab,rate,ratevar) return(likelihoodGammaC(tab,rate))
   if (model == 'relaxedgamma') likelihood=function(tab,rate,ratevar) return(likelihoodRelaxedgammaC(tab,rate,ratevar)) else updateRatevar=0
   if (model == 'null') {updateRate=0;likelihood=function(tab,rate,ratevar) return(0)}
+  if (!exists('likelihood')) stop('Unknown model.')
 
   #Deal with missing dates
   misDates=which(is.na(date))
   date[misDates]=mean(date,na.rm = T)
   ordereddate=sort(date,decreasing = T)
 
-  #Create table of nodes (col1=name,col2=expected mutation on branch above,col3=date,col4=father,col5=recombination coef, only if useRec=T)
+  #Create table of nodes (col1=name,col2=observed substitutions on branch above,col3=date,col4=father,col5=unrecombined proportion, only if useRec=T)
   tab = matrix(NA, n + tree$Nnode, ifelse(useRec,5,4))
   for (r in 1:(nrow(tree$edge))) {
     i = tree$edge[r, 2]
     tab[i, 1] = i
     tab[i, 4] = tree$edge[r, 1]
-    if (model == 'poisson' || model == 'negbin') tab[i, 2] = round(tree$edge.length[r])
-    else tab[i, 2] = tree$edge.length[r]
+    tab[i, 2] = tree$edge.length[r]
     if (useRec) tab[i,5]=tree$unrec[r]
     if (i <= n)
       tab[i, 3] = date[i]
@@ -180,7 +196,6 @@ credate = function(tree, date, initRate = 0, nbIts = 10000, thin=ceiling(nbIts/1
       old=tab[sides,2]
       r=runif(1)
       tab[sides,2]=c(sum(old)*r,sum(old)*(1-r))
-      if (model=='poisson'||model=='negbin') tab[sides,2]=round(tab[sides,2])
       l2=likelihood(tab,rate, ratevar)
       if (log(runif(1))<l2-l) l=l2 else tab[sides,2]=old
     }
@@ -199,8 +214,8 @@ credate = function(tree, date, initRate = 0, nbIts = 10000, thin=ceiling(nbIts/1
         r=runif(1)
         tab[a,2]=oldtab[a,2]*r
         tab[left,2]=oldtab[a,2]*(1-r)
-        if (model=='poisson'||model=='negbin') {tab[a,2]=round(tab[a,2]);tab[left,2]=round(tab[left,2])}
         tab[right,2]=oldtab[right,2]+oldtab[left,2]
+        if (useRec) tab[left,5]=tab[a,5]
         l2=likelihood(tab,rate, ratevar)
         if (log(runif(1))<l2-l+log(oldtab[a,2]/tab[right,2])) l=l2 else tab=oldtab
       }
