@@ -4,10 +4,14 @@
 \alias{loadCFML}
 \title{Load output from ClonalFrameML}
 \usage{
-loadCFML(prefix)
+loadCFML(prefix, priorMeanM = 1e-04, priorSdM = 1e-04)
 }
 \arguments{
 \item{prefix}{Prefix of the ClonalFrameML output files}
+
+\item{priorMeanM}{Mean of prior on M used when running ClonalFrameML}
+
+\item{priorSdM}{Sd of prior on M used when running ClonalFrameML}
 }
 \value{
 Tree representing the output from ClonalFrameML
