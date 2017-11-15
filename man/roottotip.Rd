@@ -5,7 +5,7 @@
 \title{Root to tip correlation}
 \usage{
 roottotip(tree, date, permTest = 10000, showFig = T,
-  showPredInt = "gamma", showTree = T)
+  showPredInt = "gamma", showTree = T, show.tip.label = F)
 }
 \arguments{
 \item{tree}{Phylogenetic tree}
@@ -19,6 +19,8 @@ roottotip(tree, date, permTest = 10000, showFig = T,
 \item{showPredInt}{To show 95percent confidence intervals, can be 'poisson' or 'gamma'}
 
 \item{showTree}{Whether to show the tree or not}
+
+\item{show.tip.label}{Whether or not to show tip labels on the tree}
 }
 \value{
 List containing estimated clock rate, date of origin and p-value

@@ -4,10 +4,10 @@
 \alias{credate}
 \title{Main function}
 \usage{
-credate(tree, date, initRate = 0, nbIts = 10000,
-  thin = ceiling(nbIts/1000), useCoalPrior = T, updateRate = 1,
-  initNeg = 1, updateNeg = 2, initRatevar = 1, updateRatevar = 1,
-  model = "gamma", updateRoot = 0, useRec = F, showProgress = T)
+credate(tree, date, initRate = NA, initNeg = NA, initRatevar = NA,
+  updateRate = T, updateNeg = T, updateRatevar = T, updateRoot = 2,
+  nbIts = 10000, thin = ceiling(nbIts/1000), useCoalPrior = T,
+  model = "gamma", useRec = F, showProgress = F)
 }
 \arguments{
 \item{tree}{Tree wih branches measured in unit of substitutions}
@@ -16,25 +16,25 @@ credate(tree, date, initRate = 0, nbIts = 10000,
 
 \item{initRate}{Initial rate of substitutions per genome (not per site), or zero to use root-to-tip estimate}
 
+\item{initNeg}{Initial rate of coalescence, equal to Ne*g}
+
+\item{initRatevar}{Initial variance on per-branch substituion rate (only used in relaxedgamma model)}
+
+\item{updateRate}{Whether or not to update the substitution rate}
+
+\item{updateNeg}{Whether or not to update the neg parameter}
+
+\item{updateRatevar}{Whether or not to per-branch substituion rate (only used in relaxedgamma model)}
+
+\item{updateRoot}{Root finding algorithm (0=none, 1=on preset branch, 2=anywhere)}
+
 \item{nbIts}{Number of MCMC iterations to perform}
 
 \item{thin}{Thining interval between recorded MCMC samples}
 
 \item{useCoalPrior}{Whether or not to use a coalescent prior on the tree}
 
-\item{updateRate}{Whether or not to update the substitution rate}
-
-\item{initNeg}{Initial rate of coalescence, equal to Ne*g}
-
-\item{updateNeg}{Whether or not to update the neg parameter}
-
-\item{initRatevar}{Initial variance on per-branch substituion rate (only used in relaxedgamma model)}
-
-\item{updateRatevar}{Whether or not to per-branch substituion rate (only used in relaxedgamma model)}
-
 \item{model}{Which model to use (poisson or negbin or gamma or relaxedgamma)}
-
-\item{updateRoot}{Root finding algorithm (0=none, 1=on preset branch, 2=anywhere)}
 
 \item{useRec}{Whether or not to use results from previous recombination analysis}
 

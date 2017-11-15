@@ -16,7 +16,7 @@
 #' @param showProgress Whether or not to show a progress bar
 #' @return Dating results
 #' @export
-credate = function(tree, date, initRate = NA, initNeg = NA, initRatevar = NA, updateRate = T, updateNeg = T, updateRatevar = T, updateRoot = 0, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T,  model = 'gamma', useRec = F, showProgress = T)
+credate = function(tree, date, initRate = NA, initNeg = NA, initRatevar = NA, updateRate = T, updateNeg = T, updateRatevar = T, updateRoot = 2, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T,  model = 'gamma', useRec = F, showProgress = F)
 {
   #Rooting of tree without recombination
   if (is.rooted(tree)==F && useRec==F) {
@@ -265,10 +265,10 @@ modelcompare = function(res1,res2) {
   dic1=res1$dic
   dic2=res2$dic
   dif=dic2-dic1
-  print(sprintf('dic1=%.2f and dic2=%.2f',dic1,dic2))
-  if (dif>10) print('Model 1 is definitely better.')
-  if (dif>5 && dif<10) print('Model 1 is slightly better.')
-  if (abs(dif)<5) print('The difference is not significant.')
-  if (dif< -5 && dif>-10) print('Model 2 is slightly better.')
-  if (dif< -10) print('Model 2 is definitely better.')
+  cat(sprintf('The first model has DIC=%.2f and the second model has DIC=%.2f.\n',dic1,dic2))
+  if (dif>10) cat('Model 1 is definitely better.\n')
+  if (dif>5 && dif<10) cat('Model 1 is slightly better.\n')
+  if (abs(dif)<5) cat('The difference is not significant.\n')
+  if (dif< -5 && dif>-10) cat('Model 2 is slightly better.\n')
+  if (dif< -10) cat('Model 2 is definitely better.\n')
 }

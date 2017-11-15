@@ -17,11 +17,12 @@ plot.resCreDating = function(x, type='tree', ...) {
     axisPhylo(backward = F)
     obj<-get("last_plot.phylo",envir=.PlotPhyloEnv)
     transblue=rgb(0,0,1,0.4)
+    transred =rgb(1,0,0,0.4)
     for(i in 1:(Nnode(x$tree)+Ntip(x$tree)))
       if (x$CI[i,1]!=x$CI[i,2])
         lines(x=c(x$CI[i,1],x$CI[i,2])-x$tree$root.time,
               y=rep(obj$yy[i],2),lwd=11,lend=0,
-              col=transblue)
+              col=ifelse(i<=Ntip(x$tree),transred,transblue))
     points(obj$xx[1:x$tree$Nnode+Ntip(x$tree)],
            obj$yy[1:x$tree$Nnode+Ntip(x$tree)],pch=19,col="blue",
            cex=1.8)

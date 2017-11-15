@@ -3,8 +3,6 @@ title: "Example of using CreDating"
 author: "Xavier Didelot"
 date: '`r Sys.Date()`'
 output:
-  html_notebook: default
-  html_document: default
   pdf_document: default
 ---
 
@@ -18,57 +16,94 @@ set.seed(0)
 
 ##Data
 
-We start by generating a random timed tree with 20 leaves and root in 2000:
+We start by generating a coalescent tree with 10 leaves sampled in 2000, 10 leaves sampled in 2010, and
+a reciprocal coalescent rate of 50:
 
 ```{r}
-phy <- simdatedtree(nsam = 20, dateroot = 2000)
-plot(phy)
+dates=c(rep(2000,10),rep(2010,10))
+phy <- simcoaltree(dates,neg=10)
+plot(phy,show.tip.label = F)
 axisPhylo(backward = F)
-```
-
-We can extract the sampling dates as follows:
-```{r}
-dates = leafDates(phy)
-#dates[seq(2,20,2)]=NA#Oops, just lost half of the dates!
-#dates[1]=NA#Oops, just lost a date!
 ```
 
 On each branch we observe a number of substitutions which is distributed $\mathrm{Gamma}(rl,1)$
 where $l$ is the branch length and 
 $r=10$ per year is the substitution rate. We can simulate an observed phylogenetic tree
 and perform a root-to-tip analysis as follows:
+
 ```{r}
 obsphy=simobsphy(phy, rate=10,model='gamma')
-res=roottotip(obsphy,dates)
+res=roottotip(obsphy,dates,showPredInt='gamma',showTree=T)
 ```
 
-##Unknown root
-Let's say we don't know where the root is:
+Let's consider that we do not know where is the root of the observed phylogeny, and that the data of the last sample has been lost:
+
 ```{r}
 obsphy=unroot(obsphy)
+dates[length(dates)]=NA
 ```
 
-##Analysis
 
-We run CreDating as follows:
+##First analysis
+
+We run the dating analysis as follows:
 
 ```{r}
-res=credate(obsphy,dates,nbIts = 10000,model='gamma',updateRoot = 2,showProgress=F)
-plot(res)
+res=credate(obsphy,dates)
+plot(res,'trace')
 ```
 
-Plot with credibility bars:
+Let's see what the result looks like:
 ```{r}
 plot(res,'treeCI')
 ```
 
-
-We can see what the MCMC traces look like:
-
-```{r}
-plot(res,'trace')
-```
-Let's see where the root is likely to be:
+Let's see where the root was inferred:
 ```{r}
 plot(res,'treeRoot')
+```
+
+##Testing significance of clock signal
+We run the algorithm again, with all sampling dates forced equal, and compare the fit of the two runs
+in order to assess the statistical significance of the temporal signal:
+```{r}
+res2=credate(obsphy,rep(2015,length(dates)))
+modelcompare(res,res2)
+```
+
+##Second analysis using a relaxed clock model
+Let's do another analysis, using a relaxed clock model, and compare to the first analysis:
+```{r}
+res3=credate(obsphy,dates,model='relaxedgamma')
+modelcompare(res,res3)
+```
+
+##Analysis of data generated with relaxed clock model
+
+Let's start everything again with a new dataset using the relaxed model:
+```{r}
+rm(list=ls())
+set.seed(0)
+dates=c(rep(2000,10),rep(2010,10))
+phy <- simcoaltree(dates,neg=10)
+obsphy=simobsphy(phy, rate=10,model='relaxedgamma',ratevar = 100)
+res=roottotip(obsphy,dates,showPredInt='gamma',showTree=T)
+```
+First we analyse using a strict clock model:
+```{r}
+res=credate(obsphy,dates)
+plot(res,'trace')
+```
+
+Let's see if the temporal signal is significant:
+```{r}
+res2=credate(obsphy,rep(2015,length(dates)))
+modelcompare(res,res2)
+```
+
+Finally we analyse with the relaxed clock model:
+```{r}
+res3=credate(obsphy,dates,model='relaxedgamma')
+plot(res3,'trace')
+modelcompare(res,res3)
 ```

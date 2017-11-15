@@ -5,12 +5,13 @@
 #' @param showFig Whether or not to show the root-to-tip regression figure
 #' @param showPredInt To show 95percent confidence intervals, can be 'poisson' or 'gamma'
 #' @param showTree Whether to show the tree or not
+#' @param show.tip.label Whether or not to show tip labels on the tree
 #' @return List containing estimated clock rate, date of origin and p-value
 #' @importFrom graphics abline
 #' @export
-roottotip = function(tree,date,permTest=10000,showFig=T,showPredInt='gamma',showTree=T)
+roottotip = function(tree,date,permTest=10000,showFig=T,showPredInt='gamma',showTree=T,show.tip.label = F)
 {
-  if (var(date,na.rm=T)==0) {warning('All dates are identical.');return(list(rate=NA,ori=NA,pvalue=NA))}
+  if (var(date,na.rm=T)==0) {warning('Warning: All dates are identical.\n');return(list(rate=NA,ori=NA,pvalue=NA))}
   n=length(date)
   ys=leafDates(tree)
   res=lm(ys~date)
@@ -33,7 +34,7 @@ roottotip = function(tree,date,permTest=10000,showFig=T,showPredInt='gamma',show
   par(xpd=NA,oma = c(0, 0, 2, 0))
   if (showTree) {
     par(mfrow=c(1,2))
-    plot(tree)
+    plot(tree,show.tip.label = show.tip.label)
     axisPhylo(1,backward = F)
   }
   plot(date,ys,xlab='Sampling date',ylab='Root-to-tip distance',xaxs='i',yaxs='i',pch=19,ylim=c(0,max(ys)),xlim=c(ori,max(date,na.rm = T)))
