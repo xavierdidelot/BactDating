@@ -32,7 +32,7 @@ res=roottotip(harris2010$tree,harris2010$dates)
 We run CreDating as follows:
 
 ```{r}
-res=credate(harris2010$tree,harris2010$dates,nbIts = 10000,model='gamma',updateRoot = 2, showProgress = F)
+res=credate(harris2010$tree,harris2010$dates, showProgress = F,nbIts = 1000,updateRoot=F)
 plot(res,show.tip.label = F)
 ```
 

@@ -36,7 +36,7 @@ edgelabels(obsphy$unrec)
 We run CreDating as follows:
 
 ```{r}
-res=credate(unroot(obsphy),dates,nbIts = 10000,model='gamma',updateRoot = 0,useRec=T,showProgress=F)
+res=credate(unroot(obsphy),dates,nbIts = 10000,model='gamma',updateRoot = 2,useRec=T,showProgress=F)
 plot(res,'treeCI')
 ```
 

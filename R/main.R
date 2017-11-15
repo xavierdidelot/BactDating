@@ -2,26 +2,23 @@
 #' @param tree Tree wih branches measured in unit of substitutions
 #' @param date Sampling dates for the leaves of the tree
 #' @param initRate Initial rate of substitutions per genome (not per site), or zero to use root-to-tip estimate
+#' @param initNeg Initial rate of coalescence, equal to Ne*g
+#' @param initRatevar Initial variance on per-branch substituion rate (only used in relaxedgamma model)
+#' @param updateRate Whether or not to update the substitution rate
+#' @param updateNeg Whether or not to update the neg parameter
+#' @param updateRatevar Whether or not to per-branch substituion rate (only used in relaxedgamma model)
+#' @param updateRoot Root finding algorithm (0=none, 1=on preset branch, 2=anywhere)
 #' @param nbIts Number of MCMC iterations to perform
 #' @param thin Thining interval between recorded MCMC samples
 #' @param useCoalPrior Whether or not to use a coalescent prior on the tree
-#' @param updateRate Whether or not to update the substitution rate
-#' @param initNeg Initial rate of coalescence, equal to Ne*g
-#' @param updateNeg Whether or not to update the neg parameter
-#' @param initRatevar Initial variance on per-branch substituion rate (only used in relaxedgamma model)
-#' @param updateRatevar Whether or not to per-branch substituion rate (only used in relaxedgamma model)
 #' @param model Which model to use (poisson or negbin or gamma or relaxedgamma)
-#' @param updateRoot Root finding algorithm (0=none, 1=on preset branch, 2=anywhere)
 #' @param useRec Whether or not to use results from previous recombination analysis
 #' @param showProgress Whether or not to show a progress bar
 #' @return Dating results
 #' @export
-credate = function(tree, date, initRate = 0, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T, updateRate = 1, initNeg = 1, updateNeg = 2, initRatevar = 1, updateRatevar = 1,  model = 'gamma', updateRoot = 0, useRec = F, showProgress = T)
+credate = function(tree, date, initRate = NA, initNeg = NA, initRatevar = NA, updateRate = T, updateNeg = T, updateRatevar = T, updateRoot = 0, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T,  model = 'gamma', useRec = F, showProgress = T)
 {
-  n = Ntip(tree)
-  rate = initRate
-  ratevar = initRatevar
-  neg = initNeg
+  #Rooting of tree without recombination
   if (is.rooted(tree)==F && useRec==F) {
     first=which(date==min(date,na.rm = T))[1]
     tree=root(tree,outgroup=first,resolve.root=T)
@@ -29,6 +26,7 @@ credate = function(tree, date, initRate = 0, nbIts = 10000, thin=ceiling(nbIts/1
     tree$edge.length[w]=rep(sum(tree$edge.length[w])/2,2)
   }
 
+  #Rooting of tree with recombination
   if (is.rooted(tree)==F && useRec==T) {
     first=which(date==min(date,na.rm = T))[1]
     tree$node.label=sprintf('n%d',1:Nnode(tree))
@@ -46,22 +44,26 @@ credate = function(tree, date, initRate = 0, nbIts = 10000, thin=ceiling(nbIts/1
     }
   }
 
-  if (rate==0) {
-    rate=roottotip(tree,date,showFig=F)$rate
-    if (is.na(rate) || rate<0) rate=1
-    initRate=rate
-    initRatevar=rate*rate
+  #If the initial rate was not specified, start with the rate implied by root-to-tip analysis
+  if (is.na(initRate)) {
+    r=unname(roottotip(tree,date,showFig=F)$rate)
+    if (is.na(r) || r<0) r=1
+    initRate=r
   }
+  rate=initRate
+  if (is.na(initRatevar)) initRatevar=rate*rate
+  ratevar=initRatevar
 
+  #Select prior function
   prior=function(...) return(0)
-  if (useCoalPrior) prior=coalpriorC else updateNeg=0
+  if (useCoalPrior) prior=coalpriorC else updateNeg=F
 
-  if ((model == 'gamma'||model == 'negbin'||model=='relaxedgamma') && updateRate==2) updateRate=1#Gibbs move on rate is only available for poisson model
+  #Selection likelihood function
   if (model == 'gamma' ||model == 'relaxedgamma') tree$edge.length=pmax(tree$edge.length,1e-7)
   if (model == 'poisson') likelihood=function(tab,rate,ratevar) return(likelihoodPoissonC(tab,rate))
   if (model == 'negbin') likelihood=function(tab,rate,ratevar) return(likelihoodNegbin(tab,r=rate,phi=1))
   if (model == 'gamma') likelihood=function(tab,rate,ratevar) return(likelihoodGammaC(tab,rate))
-  if (model == 'relaxedgamma') likelihood=function(tab,rate,ratevar) return(likelihoodRelaxedgammaC(tab,rate,ratevar)) else updateRatevar=0
+  if (model == 'relaxedgamma') likelihood=function(tab,rate,ratevar) return(likelihoodRelaxedgammaC(tab,rate,ratevar)) else updateRatevar=F
   if (model == 'null') {updateRate=0;likelihood=function(tab,rate,ratevar) return(0)}
   if (!exists('likelihood')) stop('Unknown model.')
 
@@ -71,6 +73,7 @@ credate = function(tree, date, initRate = 0, nbIts = 10000, thin=ceiling(nbIts/1
   ordereddate=sort(date,decreasing = T)
 
   #Create table of nodes (col1=name,col2=observed substitutions on branch above,col3=date,col4=father,col5=unrecombined proportion, only if useRec=T)
+  n = Ntip(tree)
   tab = matrix(NA, n + tree$Nnode, ifelse(useRec,5,4))
   for (r in 1:(nrow(tree$edge))) {
     i = tree$edge[r, 2]
@@ -82,7 +85,7 @@ credate = function(tree, date, initRate = 0, nbIts = 10000, thin=ceiling(nbIts/1
       tab[i, 3] = date[i]
   }
 
-  #Starting point
+  #Create initial tree
   tree = reorder.phylo(tree, 'postorder')
   for (r in 1:(nrow(tree$edge))) {
     i = tree$edge[r, 2]
@@ -97,7 +100,17 @@ credate = function(tree, date, initRate = 0, nbIts = 10000, thin=ceiling(nbIts/1
   tab[i, 1] = i
   tab[i, 3] = min(tab[children, 3]-tab[children,2]/rate)
 
-  #MCMC
+  #Sample Neg if no initial point provided
+  if (is.na(initNeg)) {
+    s <- sort(tab[, 3], decreasing = T, index.return = TRUE)
+    k=cumsum(2*(s$ix<=n)-1)
+    difs=-diff(s$x)
+    b=sum(k[2:nrow(tab)]*(k[2:nrow(tab)]-1)*difs)/2
+    initNeg=1/rgamma(1,shape=n-1,scale=1/b)
+  }
+  neg=initNeg
+
+  #Start of MCMC algorithm
   l = likelihood(tab, rate, ratevar)
   p = prior(ordereddate, tab[(n+1):nrow(tab),3], neg)
   record = matrix(NA, floor(nbIts / thin), nrow(tab)*2 + 6)
@@ -121,40 +134,25 @@ credate = function(tree, date, initRate = 0, nbIts = 10000, thin=ceiling(nbIts/1
       record[i / thin, 'root'] = curroot
     }
 
-    if (updateRate == 1) {
-      #MH move assuming flat prior
+    if (updateRate == T) {
+      #MH move using flat prior
       rate2=abs(rnorm(1,rate,0.1*initRate))
       l2=likelihood(tab,rate2,ratevar)
       if (log(runif(1))<l2-l) {l=l2;rate=rate2}
     }
 
-    if (updateRate == 2) {
-      #Gibbs move assuming Poisson model and Exp(1) prior on rate
-      lengths=tab[-(n+1),3]-tab[tab[-(n+1),4],3]
-      muts=tab[-(n+1),2]
-      rate=rgamma(1,1+sum(muts),sum(lengths))
-      l=likelihood(tab,rate,ratevar)
-    }
-
-    if (updateRatevar == 1) {
-      #MH move assuming flat prior
+    if (updateRatevar == T) {
+      #MH move using flat prior
       ratevar2=abs(rnorm(1,ratevar,0.1*initRatevar))
       l2=likelihood(tab,rate,ratevar2)
       if (log(runif(1))<l2-l) {l=l2;ratevar=ratevar2}
     }
 
-    if (updateNeg == 1) {
-      #MH move assuming flat prior
-      neg2=abs(rnorm(1,neg,0.1*initNeg))
-      p2=prior(ordereddate, tab[(n+1):nrow(tab),3],neg2)
-      if (log(runif(1))<p2-p) {p=p2;neg=neg2}
-    }
-
-    if (updateNeg == 2) {
-      #Gibbs move assuming inverse-gamma prior
+    if (updateNeg == T) {
+      #Gibbs move using inverse-gamma prior
       s <- sort(tab[, 3], decreasing = T, index.return = TRUE)
       k=cumsum(2*(s$ix<=n)-1)
-      difs=-diff(s$x)#s$x[1:(nrow(tab)-1)]-s$x[2:nrow(tab)]
+      difs=-diff(s$x)
       b=sum(k[2:nrow(tab)]*(k[2:nrow(tab)]-1)*difs)/2
       neg=1/rgamma(1,shape=n-1,scale=1/b)
       p=prior(ordereddate, tab[(n+1):nrow(tab),3],neg)
