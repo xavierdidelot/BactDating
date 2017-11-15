@@ -8,8 +8,10 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "README-"
+  fig.path = "figures/README-"
 )
+set.seed(0)
+library(ape)
 ```
 
 # CreDating
@@ -23,14 +25,39 @@ Additional features include inference of root location, lost sampling dates and 
 You can install CreDating from github with:
 
 ```{r gh-installation, eval = FALSE}
-# install.packages("devtools")
 devtools::install_github("xavierdidelot/CreDating")
+```
+
+The package can then be loaded using:
+```{r}
+library(CreDating)
 ```
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
-
-```{r example}
-## basic example code
+This is a basic example of usage. First we generate a coalescent tree with a single leaf per year
+between 1990 and 2010:
+```{r}
+tree=simcoaltree(1990:2010)
+plot(tree)
+axisPhylo()
 ```
+
+Next we generate an observed phylogeny based on this timed tree, and perform a root-to-tip analysis:
+```{r}
+obsphy=simobsphy(tree)
+r=roottotip(obsphy,1990:2010)
+```
+We can run the dating analysis on this phylogeny as follows:
+```{r}
+res=credate(obsphy,1990:2010)
+plot(res,'treeCI')
+```
+## More information and getting help
+
+For more detailed examples of how to use CreDating, see the vignettes [here](https://github.com/xavierdidelot/CreDating/tree/master/vignettes).
+See also the help included in the package using the R command
+`help(package='CreDating')`. 
+
+If you have any problem or question please create an issue [here](https://github.com/xavierdidelot/CreDating/issues) 
+or get in touch by emailing `xavier.didelot@gmail.com`

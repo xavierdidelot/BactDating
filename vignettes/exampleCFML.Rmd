@@ -1,5 +1,5 @@
 ---
-title: "Example of using CreDating"
+title: "Example of using CreDating on ClonalFrameML output"
 author: "Xavier Didelot"
 date: '`r Sys.Date()`'
 output:
@@ -19,9 +19,9 @@ set.seed(0)
 We start by generating a random timed tree with 20 leaves and root in 2000:
 
 ```{r}
-phy <- simdatedtree(nsam = 20, dateroot = 2000)
-dates = leafDates(phy)
-obsphy=simobsphy(phy, rate=10,model='gamma')
+phy=simdatedtree(nsam = 20, dateroot = 2000)
+dates=leafDates(phy)
+obsphy=simobsphy(phy, rate=10)
 obsphy=unroot(obsphy)
 obsphy$unrec=rep(0.8,length(obsphy$edge.length))
 plot(obsphy)
@@ -34,7 +34,7 @@ edgelabels(obsphy$unrec)
 We run CreDating as follows:
 
 ```{r}
-res=credate(unroot(obsphy),dates,nbIts = 10000,model='gamma',updateRoot = 2,useRec=T,showProgress=F)
+res=credate(unroot(obsphy),dates,useRec=T)
 plot(res,'treeCI')
 ```
 

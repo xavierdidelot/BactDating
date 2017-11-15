@@ -5,7 +5,7 @@
 \title{Main function}
 \usage{
 credate(tree, date, initRate = NA, initNeg = NA, initRatevar = NA,
-  updateRate = T, updateNeg = T, updateRatevar = T, updateRoot = 2,
+  updateRate = T, updateNeg = T, updateRatevar = T, updateRoot = T,
   nbIts = 10000, thin = ceiling(nbIts/1000), useCoalPrior = T,
   model = "gamma", useRec = F, showProgress = F)
 }

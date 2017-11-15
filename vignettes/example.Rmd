@@ -17,11 +17,11 @@ set.seed(0)
 ##Data
 
 We start by generating a coalescent tree with 10 leaves sampled in 2000, 10 leaves sampled in 2010, and
-a reciprocal coalescent rate of 50:
+an inverse coalescent rate of 10:
 
 ```{r}
 dates=c(rep(2000,10),rep(2010,10))
-phy <- simcoaltree(dates,neg=10)
+phy=simcoaltree(dates,neg=10)
 plot(phy,show.tip.label = F)
 axisPhylo(backward = F)
 ```
@@ -32,8 +32,8 @@ $r=10$ per year is the substitution rate. We can simulate an observed phylogenet
 and perform a root-to-tip analysis as follows:
 
 ```{r}
-obsphy=simobsphy(phy, rate=10,model='gamma')
-res=roottotip(obsphy,dates,showPredInt='gamma',showTree=T)
+obsphy=simobsphy(phy,rate=10)
+res=roottotip(obsphy,dates)
 ```
 
 Let's consider that we do not know where is the root of the observed phylogeny, and that the data of the last sample has been lost:
@@ -86,8 +86,8 @@ rm(list=ls())
 set.seed(0)
 dates=c(rep(2000,10),rep(2010,10))
 phy <- simcoaltree(dates,neg=10)
-obsphy=simobsphy(phy, rate=10,model='relaxedgamma',ratevar = 100)
-res=roottotip(obsphy,dates,showPredInt='gamma',showTree=T)
+obsphy=simobsphy(phy,rate=10,model='relaxedgamma',ratevar = 100)
+res=roottotip(obsphy,dates)
 ```
 First we analyse using a strict clock model:
 ```{r}

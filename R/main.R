@@ -16,7 +16,7 @@
 #' @param showProgress Whether or not to show a progress bar
 #' @return Dating results
 #' @export
-credate = function(tree, date, initRate = NA, initNeg = NA, initRatevar = NA, updateRate = T, updateNeg = T, updateRatevar = T, updateRoot = 2, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T,  model = 'gamma', useRec = F, showProgress = F)
+credate = function(tree, date, initRate = NA, initNeg = NA, initRatevar = NA, updateRate = T, updateNeg = T, updateRatevar = T, updateRoot = T, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T,  model = 'gamma', useRec = F, showProgress = F)
 {
   #Rooting of tree without recombination
   if (is.rooted(tree)==F && useRec==F) {
@@ -187,7 +187,7 @@ credate = function(tree, date, initRate = NA, initNeg = NA, initRatevar = NA, up
         tab[j, 3] = old
     }
 
-    if (updateRoot>0) {
+    if (updateRoot) {
       #Move root on current branch
       root=which(is.na(tab[,4]))
       sides=which(tab[,4]==root)
@@ -198,7 +198,7 @@ credate = function(tree, date, initRate = NA, initNeg = NA, initRatevar = NA, up
       if (log(runif(1))<l2-l) l=l2 else tab[sides,2]=old
     }
 
-    if (updateRoot==2) {
+    if (updateRoot) {
       #Move root branch
       root=which(is.na(tab[,4]))
       sides=which(tab[,4]==root)
