@@ -11,7 +11,6 @@ knitr::opts_chunk$set(
   fig.path = "figures/README-"
 )
 set.seed(0)
-library(ape)
 ```
 
 # CreDating
@@ -40,7 +39,7 @@ between 1990 and 2010:
 ```{r}
 tree=simcoaltree(1990:2010)
 plot(tree)
-axisPhylo()
+ape::axisPhylo(backward=F)
 ```
 
 Next we generate an observed phylogeny based on this timed tree, and perform a root-to-tip analysis:
@@ -48,11 +47,13 @@ Next we generate an observed phylogeny based on this timed tree, and perform a r
 obsphy=simobsphy(tree)
 r=roottotip(obsphy,1990:2010)
 ```
+
 We can run the dating analysis on this phylogeny as follows:
 ```{r}
 res=credate(obsphy,1990:2010)
 plot(res,'treeCI')
 ```
+
 ## More information and getting help
 
 For more detailed examples of how to use CreDating, see the vignettes [here](https://github.com/xavierdidelot/CreDating/tree/master/vignettes).

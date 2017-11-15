@@ -28,7 +28,7 @@ This is a basic example of usage. First we generate a coalescent tree with a sin
 ``` r
 tree=simcoaltree(1990:2010)
 plot(tree)
-axisPhylo()
+ape::axisPhylo(backward=F)
 ```
 
 ![](figures/README-unnamed-chunk-3-1.png)
@@ -40,14 +40,19 @@ obsphy=simobsphy(tree)
 r=roottotip(obsphy,1990:2010)
 ```
 
-![](figures/README-unnamed-chunk-4-1.png) We can run the dating analysis on this phylogeny as follows:
+![](figures/README-unnamed-chunk-4-1.png)
+
+We can run the dating analysis on this phylogeny as follows:
 
 ``` r
 res=credate(obsphy,1990:2010)
 plot(res,'treeCI')
 ```
 
-![](figures/README-unnamed-chunk-5-1.png) \#\# More information and getting help
+![](figures/README-unnamed-chunk-5-1.png)
+
+More information and getting help
+---------------------------------
 
 For more detailed examples of how to use CreDating, see the vignettes [here](https://github.com/xavierdidelot/CreDating/tree/master/vignettes). See also the help included in the package using the R command `help(package='CreDating')`.
 
