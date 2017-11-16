@@ -16,8 +16,7 @@ set.seed(0)
 
 ##Data
 
-We start by generating a coalescent tree with 10 leaves sampled in 2000, 10 leaves sampled in 2010, and
-an inverse coalescent rate of 10:
+We start by generating a coalescent tree with 10 leaves sampled in 2000, 10 leaves sampled in 2010, and a coalescent time unit of 10 years:
 
 ```{r}
 dates=c(rep(2000,10),rep(2010,10))

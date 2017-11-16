@@ -16,17 +16,22 @@ set.seed(0)
 
 ##Data
 
-We start by generating a random timed tree with 20 leaves and root in 2000:
+A ClonalFrameML output can be read using:
 
+```{r eval=FALSE}
+cfml=loadCFML(prefix='cfml-output')
+```
+
+Instead, for the purpose of making this vignette self-contained, we will simulate a CFML output.
+This is just an object of class `phylo`, unrooted and with the added field `unrec`
+representing the proportion that is unrecombined for each branch.
 ```{r}
-phy=simdatedtree(nsam = 20, dateroot = 2000)
-dates=leafDates(phy)
-obsphy=simobsphy(phy, rate=10)
-obsphy=unroot(obsphy)
-obsphy$unrec=rep(0.8,length(obsphy$edge.length))
-plot(obsphy)
+dates=1990:2010
+cfml=unroot(simobsphy(simcoaltree(dates)))
+cfml$unrec=runif(length(cfml$edge.length))
+plot(cfml)
 axisPhylo(backward = F)
-edgelabels(obsphy$unrec)
+edgelabels(round(100*cfml$unrec))
 ```
 
 ##Analysis
@@ -34,7 +39,7 @@ edgelabels(obsphy$unrec)
 We run CreDating as follows:
 
 ```{r}
-res=credate(unroot(obsphy),dates,useRec=T)
+res=credate(cfml,dates,useRec=T)
 plot(res,'treeCI')
 ```
 

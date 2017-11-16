@@ -34,8 +34,7 @@ library(CreDating)
 
 ## Example
 
-This is a basic example of usage. First we generate a coalescent tree with a single leaf per year
-between 1990 and 2010:
+This is a basic example of usage. First we generate a coalescent tree with a single leaf per year between 1990 and 2010:
 ```{r}
 tree=simcoaltree(1990:2010)
 plot(tree)

@@ -16,13 +16,13 @@ credate(tree, date, initRate = NA, initNeg = NA, initRatevar = NA,
 
 \item{initRate}{Initial rate of substitutions per genome (not per site), or zero to use root-to-tip estimate}
 
-\item{initNeg}{Initial rate of coalescence, equal to Ne*g}
+\item{initNeg}{Initial coalescent time unit}
 
 \item{initRatevar}{Initial variance on per-branch substituion rate (only used in relaxedgamma model)}
 
 \item{updateRate}{Whether or not to update the substitution rate}
 
-\item{updateNeg}{Whether or not to update the neg parameter}
+\item{updateNeg}{Whether or not to update the coalescent time unit}
 
 \item{updateRatevar}{Whether or not to per-branch substituion rate (only used in relaxedgamma model)}
 

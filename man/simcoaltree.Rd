@@ -9,7 +9,7 @@ simcoaltree(dates = NA, neg = 10)
 \arguments{
 \item{dates}{Vector of dates at which samples are taken}
 
-\item{neg}{Reciprocal of coalescent rate}
+\item{neg}{Coalescent time unit}
 }
 \value{
 A simulated dated tree

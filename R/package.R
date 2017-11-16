@@ -6,8 +6,8 @@
 #' The main functions of the package are:
 #' \itemize{
 #'
-#' \item creadating
 #' \item roottotip
+#' \item credate
 #' }
 #'
 #' @author Xavier Didelot \email{xavier.didelot@gmail.com}

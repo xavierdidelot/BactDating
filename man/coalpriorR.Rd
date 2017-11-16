@@ -9,7 +9,7 @@ coalpriorR(tab, neg)
 \arguments{
 \item{tab}{Table of nodes}
 
-\item{neg}{Coalescent rate}
+\item{neg}{Coalescent time unit}
 }
 \value{
 The log-prior in Eq (1) of Drummond et al (2002) Genetics

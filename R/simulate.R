@@ -11,7 +11,7 @@ simdatedtree = function(nsam = 20, dateroot = 2000) {
 
 #' Simulation of coalescent dated tree
 #' @param dates Vector of dates at which samples are taken
-#' @param neg Reciprocal of coalescent rate
+#' @param neg Coalescent time unit
 #' @return A simulated dated tree
 #' @export
 simcoaltree = function(dates=NA,neg=10) {

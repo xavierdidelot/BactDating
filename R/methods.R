@@ -34,7 +34,7 @@ plot.resCreDating = function(x, type='tree', ...) {
     plot(x$record[,'prior'],main='Prior',type='l',xlab='Sampled iterations',ylab='')
     plot(x$record[,Ntip(x$tree)+1],main='Date of root',type='l',xlab='Sampled iterations',ylab='')
     plot(x$record[,'rate'],main='Clock rate',type='l',xlab='Sampled iterations',ylab='')
-    plot(x$record[,'neg'],main='Coalescent rate',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,'neg'],main='Coalescent time unit',type='l',xlab='Sampled iterations',ylab='')
     plot(x$record[,'ratevar'],main='Clock rate variance',type='l',xlab='Sampled iterations',ylab='')
     v=x$record[,'root']
     u=sort(unique(v))

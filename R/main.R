@@ -2,10 +2,10 @@
 #' @param tree Tree wih branches measured in unit of substitutions
 #' @param date Sampling dates for the leaves of the tree
 #' @param initRate Initial rate of substitutions per genome (not per site), or zero to use root-to-tip estimate
-#' @param initNeg Initial rate of coalescence, equal to Ne*g
+#' @param initNeg Initial coalescent time unit
 #' @param initRatevar Initial variance on per-branch substituion rate (only used in relaxedgamma model)
 #' @param updateRate Whether or not to update the substitution rate
-#' @param updateNeg Whether or not to update the neg parameter
+#' @param updateNeg Whether or not to update the coalescent time unit
 #' @param updateRatevar Whether or not to per-branch substituion rate (only used in relaxedgamma model)
 #' @param updateRoot Root finding algorithm (0=none, 1=on preset branch, 2=anywhere)
 #' @param nbIts Number of MCMC iterations to perform
@@ -27,6 +27,7 @@ credate = function(tree, date, initRate = NA, initNeg = NA, initRatevar = NA, up
   }
 
   #Rooting of tree with recombination
+  if (useRec==T && is.null(tree$unrec)) stop("To use recombination, the proportion of unrecombined needs to be input.\n")
   if (is.rooted(tree)==F && useRec==T) {
     first=which(date==min(date,na.rm = T))[1]
     tree$node.label=sprintf('n%d',1:Nnode(tree))

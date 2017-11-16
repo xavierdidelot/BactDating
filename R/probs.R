@@ -49,7 +49,7 @@ likelihoodGamma = function(tab, rate) {
 
 #' Coalescent prior function
 #' @param tab Table of nodes
-#' @param neg Coalescent rate
+#' @param neg Coalescent time unit
 #' @return The log-prior in Eq (1) of Drummond et al (2002) Genetics
 coalpriorR = function(tab, neg) {
   n = ceiling(nrow(tab)/2)
