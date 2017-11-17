@@ -9,8 +9,8 @@ This is the CreDating project.
 The main functions of the package are:
 \itemize{
 
-\item creadating
 \item roottotip
+\item credate
 }
 }
 \references{
