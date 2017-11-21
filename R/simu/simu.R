@@ -1,0 +1,11 @@
+library(CreDating)
+library(ape)
+rm(list=setdiff(ls(),'ind'))
+if (!exists('ind')) ind=1
+set.seed(ind)
+dates=c(rep(2000,10),rep(2010,10))
+phy=simcoaltree(dates,neg=10)
+obsphy=simobsphy(phy,rate=10)
+obsphy=unroot(obsphy)
+res=credate(obsphy,dates)
+save.image(sprintf('run%d.RData',ind))
