@@ -1,5 +1,5 @@
 
-[![Travis-CI Build Status](https://travis-ci.com/xavierdidelot/CreDating.svg?branch=master)](https://travis-ci.com/xavierdidelot/CreDating)
+[![Travis-CI Build Status](https://travis-ci.com/xavierdidelot/CreDating.svg?branch=master)](https://travis-ci.com/xavierdidelot/CreDating) [![Coverage Status](https://codecov.io/github/xavierdidelot/CreDating/coverage.svg?branch=master)](https://codecov.io/github/xavierdidelot/CreDating?branch=master)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 CreDating

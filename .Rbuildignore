@@ -4,3 +4,4 @@
 ^README-.*\.png$
 ^figures\/.*\.png$
 ^\.travis\.yml$
+^codecov\.yml$

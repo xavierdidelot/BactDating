@@ -9,7 +9,8 @@ Depends: R (>= 3.0.0)
 Imports: Rcpp (>= 0.12.13), ape, stats, graphics
 LinkingTo: Rcpp
 Suggests: knitr,
-    testthat
+    testthat,
+    covr
 Description: The CreDating project is still work in progress.
 VignetteBuilder: knitr
 License: MIT + file LICENSE
