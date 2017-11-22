@@ -2,7 +2,7 @@
 % Please edit documentation in R/roototip.R
 \name{leafDates}
 \alias{leafDates}
-\title{Compute dates of leaves for a given tree and date of root}
+\title{Compute dates of leaves for a given tree}
 \usage{
 leafDates(phy)
 }
@@ -13,5 +13,5 @@ leafDates(phy)
 Dates of leaves
 }
 \description{
-Compute dates of leaves for a given tree and date of root
+Compute dates of leaves for a given tree
 }

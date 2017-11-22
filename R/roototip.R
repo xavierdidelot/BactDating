@@ -55,7 +55,7 @@ roottotip = function(tree,date,permTest=10000,showFig=T,showPredInt='gamma',show
   return(list(rate=rate,ori=ori,pvalue=pvalue))
 }
 
-#' Compute dates of leaves for a given tree and date of root
+#' Compute dates of leaves for a given tree
 #' @param phy Tree
 #' @return Dates of leaves
 #' @export
@@ -66,6 +66,27 @@ leafDates = function (phy) {
   dates=rep(rootdate,nsam)
   for (i in 1:nsam) {
     w=i
+    while (1) {
+      r=which(phy$edge[,2]==w)
+      if (length(r)==0) break
+      dates[i]=dates[i]+phy$edge.length[r]
+      w=phy$edge[r,1]
+    }
+  }
+  return(dates)
+}
+
+#' Compute dates of internal nodes for a given tree
+#' @param phy Tree
+#' @return Dates of internal nodes
+#' @export
+nodeDates = function (phy) {
+  rootdate=phy$root.time
+  if (is.null(rootdate)) rootdate=0
+  nsam=length(phy$tip.label)
+  dates=rep(rootdate,nsam-1)
+  for (i in 2:(nsam-1)) {
+    w=i+nsam
     while (1) {
       r=which(phy$edge[,2]==w)
       if (length(r)==0) break
