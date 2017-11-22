@@ -4,7 +4,6 @@
 \name{harris2010}
 \alias{harris2010}
 \title{Data from Harris et al (2010)}
-\format{An object of class \code{list} of length 2.}
 \usage{
 data(harris2010)
 }

@@ -11,7 +11,8 @@ likelihoodPoisson = function(tab, rate) {
   muts = t2[, 2]
   if (min(muts)<0) stop('error3')
   if (ncol(tab)==5) {lengths=lengths*t2[,5];muts=muts*t2[,5]}
-  return(sum(-lengths * rate + round(muts) * log(lengths * rate)))
+  #return(sum(-lengths * rate + round(muts) * log(lengths * rate)))
+  return(sum(dpois(round(muts),lengths*rate,log=T)))
 }
 
 #' Negative-binomial likelihood function
@@ -45,6 +46,23 @@ likelihoodGamma = function(tab, rate) {
   if (min(muts)<0) stop('error3')
   if (ncol(tab)==5) {lengths=lengths*t2[,5];muts=muts*t2[,5]}
   return(sum(dgamma(muts,shape=rate*lengths,scale=1,log=T)))
+}
+
+#' Relaxed gamma likelihood function
+#' @param tab Table of nodes
+#' @param rate rate parameter
+#' @param ratevar variance of per branch rate
+#' @return log-likelihood
+likelihoodRelaxedgamma = function(tab, rate, ratevar) {
+  n = ceiling(nrow(tab)/2)
+  if (rate < 0) stop('error1')
+  t2 = tab[-(n + 1), ]
+  lengths = t2[, 3] - tab[t2[, 4], 3]
+  if (min(lengths) < 0) stop('error2')
+  muts = t2[, 2]
+  if (min(muts)<0) stop('error3')
+  if (ncol(tab)==5) {lengths=lengths*t2[,5];muts=muts*t2[,5]}
+  return(sum(dgamma(muts,shape=rate*rate*lengths/(rate+ratevar*lengths),scale=1+lengths*ratevar/rate,log=T)))
 }
 
 #' Coalescent prior function

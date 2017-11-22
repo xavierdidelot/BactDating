@@ -60,11 +60,15 @@ credate = function(tree, date, initRate = NA, initNeg = NA, initRatevar = NA, up
   if (useCoalPrior) prior=coalpriorC else updateNeg=F
 
   #Selection likelihood function
-  if (model == 'gamma' ||model == 'relaxedgamma') tree$edge.length=pmax(tree$edge.length,1e-7)
+  if (is.element(model,c('gamma','relaxedgamma','gammaR','relaxedgammaR'))) tree$edge.length=pmax(tree$edge.length,1e-7)
   if (model == 'poisson') likelihood=function(tab,rate,ratevar) return(likelihoodPoissonC(tab,rate))
+  if (model == 'poissonR') likelihood=function(tab,rate,ratevar) return(likelihoodPoisson(tab,rate))
   if (model == 'negbin') likelihood=function(tab,rate,ratevar) return(likelihoodNegbin(tab,r=rate,phi=1))
   if (model == 'gamma') likelihood=function(tab,rate,ratevar) return(likelihoodGammaC(tab,rate))
-  if (model == 'relaxedgamma') likelihood=function(tab,rate,ratevar) return(likelihoodRelaxedgammaC(tab,rate,ratevar)) else updateRatevar=F
+  if (model == 'gammaR') likelihood=function(tab,rate,ratevar) return(likelihoodGamma(tab,rate))
+  if (model == 'relaxedgamma') likelihood=function(tab,rate,ratevar) return(likelihoodRelaxedgammaC(tab,rate,ratevar))
+  if (model == 'relaxedgammaR') likelihood=function(tab,rate,ratevar) return(likelihoodRelaxedgamma(tab,rate,ratevar))
+  if (model != 'relaxedgamma'&&model!='relaxedgammaR') updateRatevar=F
   if (model == 'null') {updateRate=0;likelihood=function(tab,rate,ratevar) return(0)}
   if (!exists('likelihood')) stop('Unknown model.')
 
