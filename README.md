@@ -1,4 +1,6 @@
 
+[![Travis-CI Build Status](https://travis-ci.com/xavierdidelot/CreDating.svg?branch=master)](https://travis-ci.com/xavierdidelot/CreDating)
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 CreDating
 =========
