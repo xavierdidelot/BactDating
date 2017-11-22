@@ -20,10 +20,11 @@ credate = function(tree, date, initRate = NA, initNeg = NA, initRatevar = NA, up
 {
   #Rooting of tree without recombination
   if (is.rooted(tree)==F && useRec==F) {
-    first=which(date==min(date,na.rm = T))[1]
-    tree=root(tree,outgroup=first,resolve.root=T)
-    w=which(tree$edge[,1]==Ntip(tree)+1)
-    tree$edge.length[w]=rep(sum(tree$edge.length[w])/2,2)
+    tree=initRoot(tree,date)#TODO USE THIS FUNCTION ALSO WITH RECOMBINATION
+    #first=which(date==min(date,na.rm = T))[1]
+    #tree=root(tree,outgroup=first,resolve.root=T)
+    #w=which(tree$edge[,1]==Ntip(tree)+1)
+    #tree$edge.length[w]=rep(sum(tree$edge.length[w])/2,2)
   }
 
   #Rooting of tree with recombination
