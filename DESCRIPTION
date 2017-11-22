@@ -8,7 +8,8 @@ Maintainer: Xavier Didelot <xavier.didelot@gmail.com>
 Depends: R (>= 3.0.0)
 Imports: Rcpp (>= 0.12.13), ape, stats, graphics
 LinkingTo: Rcpp
-Suggests: knitr
+Suggests: knitr,
+    testthat
 Description: The CreDating project is still work in progress.
 VignetteBuilder: knitr
 License: MIT + file LICENSE
