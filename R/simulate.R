@@ -92,17 +92,27 @@ simcoaltree = function(dates=NA,neg=10) {
 #' @param tree Dated tree
 #' @param rate Substitution clock rate
 #' @param ratevar Per-branch variance on the clock rate (used only by relaxed gamma model)
-#' @param model Which model to use (poisson or gamma or gamma2)
+#' @param model Which model to use (poisson or gamma or relaxedgamma)
 #' @return An observed phylogenetic tree
 #' @export
-simobsphy = function(tree, rate = 10, ratevar = 0, model = 'gamma') {
+simobsphy = function(tree, rate = 10, ratevar = 10, model = 'gamma') {
   obsphy=tree
+  obsphy$prob=0
   obsphy$root.time=NULL
-  if (model=='poisson') obsphy$edge.length=unlist(lapply(obsphy$edge.length*rate,function (x) rpois(1,x)))
-  if (model=='gamma')   obsphy$edge.length=unlist(lapply(obsphy$edge.length*rate,function (x) rgamma(1,shape=x,scale=1)))
+  if (model=='poisson') {
+    e=unlist(lapply(obsphy$edge.length*rate,function (x) rpois(1,x)))
+    obsphy$prob=sum(mapply(dpois,e,rate*obsphy$edge.length,rep(T,length(obsphy$edge.length))))
+    obsphy$edge.length=e
+  }
+  if (model=='gamma') {
+    e=unlist(lapply(obsphy$edge.length*rate,function (x) rgamma(1,shape=x,scale=1)))
+    obsphy$prob=sum(log(mapply(dgamma,e,rate*obsphy$edge.length,rep(1,length(obsphy$edge.length)))))
+    obsphy$edge.length=e
+  }
   if (model=='relaxedgamma')  for (i in 1:length(obsphy$edge.length)) {
     l=obsphy$edge.length[i]
     obsphy$edge.length[i]=rgamma(1,shape=l*rate*rate/(rate+l*ratevar),scale=1+l*ratevar/rate)
+    obsphy$prob=obsphy$prob+dgamma(obsphy$edge.length[i],shape=l*rate*rate/(rate+l*ratevar),scale=1+l*ratevar/rate,log=T)
   }
   return(obsphy)
 }
