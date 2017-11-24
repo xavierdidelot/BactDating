@@ -4,12 +4,14 @@
 \alias{initRoot}
 \title{Initial tree rooting based on best root-to-tip correlation}
 \usage{
-initRoot(phy, date)
+initRoot(phy, date, useRec = F)
 }
 \arguments{
+\item{phy}{An unrooted phylogenetic tree}
+
 \item{date}{Dates of sampling}
 
-\item{tree}{Phylogenetic tree}
+\item{useRec}{Whether or not to use results from previous recombination analysis}
 }
 \value{
 Rooted tree

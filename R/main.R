@@ -18,33 +18,9 @@
 #' @export
 credate = function(tree, date, initRate = NA, initNeg = NA, initRatevar = NA, updateRate = T, updateNeg = T, updateRatevar = T, updateRoot = T, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T,  model = 'gamma', useRec = F, showProgress = F)
 {
-  #Rooting of tree without recombination
-  if (is.rooted(tree)==F && useRec==F) {
-    tree=initRoot(tree,date)#TODO USE THIS FUNCTION ALSO WITH RECOMBINATION
-    #first=which(date==min(date,na.rm = T))[1]
-    #tree=root(tree,outgroup=first,resolve.root=T)
-    #w=which(tree$edge[,1]==Ntip(tree)+1)
-    #tree$edge.length[w]=rep(sum(tree$edge.length[w])/2,2)
-  }
-
-  #Rooting of tree with recombination
-  if (useRec==T && is.null(tree$unrec)) stop("To use recombination, the proportion of unrecombined needs to be input.\n")
-  if (is.rooted(tree)==F && useRec==T) {
-    first=which(date==min(date,na.rm = T))[1]
-    tree$node.label=sprintf('n%d',1:Nnode(tree))
-    edgenames=cbind(c(tree$tip.label,tree$node.label)[tree$edge[,1]],c(tree$tip.label,tree$node.label)[tree$edge[,2]])
-    unrec=tree$unrec
-    unrecfirst=unrec[which(tree$edge[,2]==first)]
-    tree=root(tree,outgroup=first,resolve.root=T,edgelabel=F)
-    w=which(tree$edge[,1]==Ntip(tree)+1)
-    tree$edge.length[w]=rep(sum(tree$edge.length[w])/2,2)
-    tree$unrec=rep(NA,nrow(tree$edge))
-    tree$unrec[w]=unrecfirst
-    for (i in 1:nrow(tree$edge)) {
-      nams=c(tree$tip.label,tree$node.label)[tree$edge[i,]]
-      for (j in 1:nrow(edgenames)) if (setequal(nams,edgenames[j,])) {tree$unrec[i]=unrec[j];break}
-    }
-  }
+  #Initial rooting of tree, if needed
+  if (useRec==T && is.null(tree$unrec)) stop("To use recombination, the proportion of unrecombined needs to be input.")
+  if (is.rooted(tree)==F) tree=initRoot(tree,date,useRec)
 
   #If the initial rate was not specified, start with the rate implied by root-to-tip analysis
   if (is.na(initRate)) {

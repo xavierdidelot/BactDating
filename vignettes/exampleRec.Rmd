@@ -34,7 +34,8 @@ This is just an object of class `phylo`, unrooted and with the added field `unre
 representing the proportion that is unrecombined for each branch.
 ```{r}
 dates=1990:2010
-t=unroot(simobsphy(simcoaltree(dates)))
+truetree=simcoaltree(dates)
+t=unroot(simobsphy(truetree))
 t$unrec=runif(length(t$edge.length))
 plot(t)
 axisPhylo(backward = F)
@@ -48,6 +49,12 @@ We run CreDating as follows:
 ```{r}
 res=credate(t,dates,useRec=T)
 plot(res,'treeCI')
+```
+
+We can compare with the correct tree:
+```{r}
+plot(truetree)
+axisPhylo(backward = F)
 ```
 
 We can see what the MCMC traces look like:
