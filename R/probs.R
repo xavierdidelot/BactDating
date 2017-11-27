@@ -67,26 +67,26 @@ likelihoodRelaxedgamma = function(tab, rate, ratevar) {
 
 #' Coalescent prior function
 #' @param tab Table of nodes
-#' @param neg Coalescent time unit
+#' @param alpha Coalescent time unit
 #' @return The log-prior in Eq (1) of Drummond et al (2002) Genetics
-coalpriorR = function(tab, neg) {
+coalpriorR = function(tab, alpha) {
   n = ceiling(nrow(tab)/2)
-  p = -log(neg) * (n - 1)
+  p = -log(alpha) * (n - 1)
   l=nrow(tab)
   s <- sort.int(tab[, 3], method='quick',decreasing = T, index.return = TRUE)
   k=cumsum(2*(s$ix<=n)-1)
   difs=s$x[1:(l-1)]-s$x[2:l]#faster than -diff(s$x)
-  p=p-sum(k[1:(l-1)]*(k[1:(l-1)]-1)*difs)/(2*neg)
+  p=p-sum(k[1:(l-1)]*(k[1:(l-1)]-1)*difs)/(2*alpha)
   if (k[length(k)] != 1)
     stop('error')
   return(p)
 }
 
 #Provide equivalent R function to the C prior function
-  coalprior = function(leaves, intnodes, neg) {
+  coalprior = function(leaves, intnodes, alpha) {
   n = length(leaves)
   tab=matrix(0,n*2-1,4)
   tab[,3]=c(leaves,intnodes)
-  coalpriorR(tab,neg)
+  coalpriorR(tab,alpha)
   }
 

@@ -11,10 +11,10 @@ simdatedtree = function(nsam = 20, dateroot = 2000) {
 
 #' Simulation of coalescent dated tree
 #' @param dates Vector of dates at which samples are taken
-#' @param neg Coalescent time unit
+#' @param alpha Coalescent time unit
 #' @return A simulated dated tree
 #' @export
-simcoaltree = function(dates=NA,neg=10) {
+simcoaltree = function(dates=NA,alpha=10) {
   prob <- 0
   if (is.na(dates[1])) dates=1990:2010
     MySort <- sort(dates,decreasing=TRUE,index.return = TRUE); tim <- MySort$x; ind <- MySort$ix
@@ -22,17 +22,17 @@ simcoaltree = function(dates=NA,neg=10) {
     nodes <- cbind(0,ind[1],-Inf)#Start with one node at time -Inf and with the first isolate connected to it
     i <- 2
     while (i <= n) {#Graft branches one by one
-      r <- -log(runif(1)) * neg
+      r <- -log(runif(1)) * alpha
       curt <- tim[i];#Current time:start with date of isolate and go back in time until coalescence happens
       fi <- which( nodes[ ,1] < curt ) ;fi<-fi[1]
       if (fi<=nrow(nodes)) for (j in (fi:nrow(nodes)))  {
         if (r > (curt-nodes[j,1]) * (i-j))  {
-          prob <- prob + log(1-pexp((curt-nodes[j,1]) * (i-j),neg^(-1)))
+          prob <- prob + log(1-pexp((curt-nodes[j,1]) * (i-j),alpha^(-1)))
           r <- r-(curt-nodes[j,1]) * (i-j)
           curt <- nodes[j,1]
         } else {
           curt <- curt-r/(i-j);#Found the time for grafting
-          prob <- prob + log(dexp(r,neg^(-1)))
+          prob <- prob + log(dexp(r,alpha^(-1)))
           r <- 0
           break
         }

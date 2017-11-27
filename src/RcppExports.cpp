@@ -6,15 +6,15 @@
 using namespace Rcpp;
 
 // coalpriorC
-double coalpriorC(NumericVector leaves, NumericVector intnodes, double neg);
-RcppExport SEXP _CreDating_coalpriorC(SEXP leavesSEXP, SEXP intnodesSEXP, SEXP negSEXP) {
+double coalpriorC(NumericVector leaves, NumericVector intnodes, double alpha);
+RcppExport SEXP _CreDating_coalpriorC(SEXP leavesSEXP, SEXP intnodesSEXP, SEXP alphaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type leaves(leavesSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type intnodes(intnodesSEXP);
-    Rcpp::traits::input_parameter< double >::type neg(negSEXP);
-    rcpp_result_gen = Rcpp::wrap(coalpriorC(leaves, intnodes, neg));
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    rcpp_result_gen = Rcpp::wrap(coalpriorC(leaves, intnodes, alpha));
     return rcpp_result_gen;
 END_RCPP
 }

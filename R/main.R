@@ -2,10 +2,10 @@
 #' @param tree Tree wih branches measured in unit of substitutions
 #' @param date Sampling dates for the leaves of the tree
 #' @param initRate Initial rate of substitutions per genome (not per site), or zero to use root-to-tip estimate
-#' @param initNeg Initial coalescent time unit
+#' @param initAlpha Initial coalescent time unit
 #' @param initRatevar Initial variance on per-branch substituion rate (only used in relaxedgamma model)
 #' @param updateRate Whether or not to update the substitution rate
-#' @param updateNeg Whether or not to update the coalescent time unit
+#' @param updateAlpha Whether or not to update the coalescent time unit
 #' @param updateRatevar Whether or not to per-branch substituion rate (only used in relaxedgamma model)
 #' @param updateRoot Root finding algorithm (0=none, 1=on preset branch, 2=anywhere)
 #' @param nbIts Number of MCMC iterations to perform
@@ -16,7 +16,7 @@
 #' @param showProgress Whether or not to show a progress bar
 #' @return Dating results
 #' @export
-credate = function(tree, date, initRate = NA, initNeg = NA, initRatevar = NA, updateRate = T, updateNeg = T, updateRatevar = T, updateRoot = T, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T,  model = 'gamma', useRec = F, showProgress = F)
+credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, updateRate = T, updateAlpha = T, updateRatevar = T, updateRoot = T, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T,  model = 'gamma', useRec = F, showProgress = F)
 {
   #Initial rooting of tree, if needed
   if (useRec==T && is.null(tree$unrec)) stop("To use recombination, the proportion of unrecombined needs to be input.")
@@ -34,7 +34,7 @@ credate = function(tree, date, initRate = NA, initNeg = NA, initRatevar = NA, up
 
   #Select prior function
   prior=function(...) return(0)
-  if (useCoalPrior) prior=coalpriorC else updateNeg=F
+  if (useCoalPrior) prior=coalpriorC else updateAlpha=F
 
   #Selection likelihood function
   if (is.element(model,c('gamma','relaxedgamma','gammaR','relaxedgammaR'))) tree$edge.length=pmax(tree$edge.length,1e-7)
@@ -82,21 +82,21 @@ credate = function(tree, date, initRate = NA, initNeg = NA, initRatevar = NA, up
   tab[i, 1] = i
   tab[i, 3] = min(tab[children, 3]-tab[children,2]/rate)
 
-  #Sample Neg if no initial point provided
-  if (is.na(initNeg)) {
+  #Sample Alpha if no initial point provided
+  if (is.na(initAlpha)) {
     s <- sort(tab[, 3], decreasing = T, index.return = TRUE)
     k=cumsum(2*(s$ix<=n)-1)
     difs=-diff(s$x)
     b=sum(k[2:nrow(tab)]*(k[2:nrow(tab)]-1)*difs)/2
-    initNeg=1/rgamma(1,shape=n-1,scale=1/b)
+    initAlpha=1/rgamma(1,shape=n-1,scale=1/b)
   }
-  neg=initNeg
+  alpha=initAlpha
 
   #Start of MCMC algorithm
   l = likelihood(tab, rate, ratevar)
-  p = prior(ordereddate, tab[(n+1):nrow(tab),3], neg)
+  p = prior(ordereddate, tab[(n+1):nrow(tab),3], alpha)
   record = matrix(NA, floor(nbIts / thin), nrow(tab)*2 + 6)
-  colnames(record)<-c(rep(NA,nrow(tab)*2),'likelihood','rate','ratevar','neg','prior','root')
+  colnames(record)<-c(rep(NA,nrow(tab)*2),'likelihood','rate','ratevar','alpha','prior','root')
   if (showProgress) pb <- txtProgressBar(min=0,max=nbIts,style = 3)
   for (i in 1:nbIts) {
     #Record
@@ -111,7 +111,7 @@ credate = function(tree, date, initRate = NA, initNeg = NA, initRatevar = NA, up
       record[i / thin, 'likelihood'] = l
       record[i / thin, 'rate'] = rate
       record[i / thin, 'ratevar'] = ratevar
-      record[i / thin, 'neg'] = neg
+      record[i / thin, 'alpha'] = alpha
       record[i / thin, 'prior'] = p
       record[i / thin, 'root'] = curroot
     }
@@ -130,14 +130,14 @@ credate = function(tree, date, initRate = NA, initNeg = NA, initRatevar = NA, up
       if (log(runif(1))<l2-l) {l=l2;ratevar=ratevar2}
     }
 
-    if (updateNeg == T) {
+    if (updateAlpha == T) {
       #Gibbs move using inverse-gamma prior
       s <- sort(tab[, 3], decreasing = T, index.return = TRUE)
       k=cumsum(2*(s$ix<=n)-1)
       difs=-diff(s$x)
       b=sum(k[2:nrow(tab)]*(k[2:nrow(tab)]-1)*difs)/2
-      neg=1/rgamma(1,shape=n-1,scale=1/b)
-      p=prior(ordereddate, tab[(n+1):nrow(tab),3],neg)
+      alpha=1/rgamma(1,shape=n-1,scale=1/b)
+      p=prior(ordereddate, tab[(n+1):nrow(tab),3],alpha)
     }
 
     #MH to update internal dates
@@ -147,7 +147,7 @@ credate = function(tree, date, initRate = NA, initNeg = NA, initRatevar = NA, up
       if (tab[j,3]-old<0&&(!is.na(tab[j,4])&&tab[j,3]<tab[tab[j,4],3])) {tab[j,3]=old;next}#can't be older than father
       if (tab[j,3]-old>0&&j>n&&tab[j,3]>min(tab[which(tab[,4]==j),3])) {tab[j,3]=old;next}#can't be younger than sons
       l2 = likelihood(tab, rate, ratevar)
-      p2 = prior(ordereddate, tab[(n+1):nrow(tab),3], neg)
+      p2 = prior(ordereddate, tab[(n+1):nrow(tab),3], alpha)
       if (log(runif(1)) < l2 - l + p2 - p)
       {l = l2; p = p2}
       else
@@ -162,7 +162,7 @@ credate = function(tree, date, initRate = NA, initNeg = NA, initRatevar = NA, up
       if (tab[j,3]==max(tab[,3])||tab[j,3]==min(tab[,3])) {tab[j,3]=old;next}#stay within prior range
       l2 = likelihood(tab, rate, ratevar)
       ordereddate2=sort(tab[1:n,3],decreasing = T)
-      p2 = prior(ordereddate2, tab[(n+1):nrow(tab),3], neg)
+      p2 = prior(ordereddate2, tab[(n+1):nrow(tab),3], alpha)
       if (log(runif(1)) < l2 - l + p2 - p)
       {l = l2; p = p2; ordereddate = ordereddate2}
       else

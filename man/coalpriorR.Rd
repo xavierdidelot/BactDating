@@ -4,12 +4,12 @@
 \alias{coalpriorR}
 \title{Coalescent prior function}
 \usage{
-coalpriorR(tab, neg)
+coalpriorR(tab, alpha)
 }
 \arguments{
 \item{tab}{Table of nodes}
 
-\item{neg}{Coalescent time unit}
+\item{alpha}{Coalescent time unit}
 }
 \value{
 The log-prior in Eq (1) of Drummond et al (2002) Genetics

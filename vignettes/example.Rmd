@@ -20,7 +20,7 @@ We start by generating a coalescent tree with 10 leaves sampled in 2000, 10 leav
 
 ```{r}
 dates=c(rep(2000,10),rep(2010,10))
-phy=simcoaltree(dates,neg=10)
+phy=simcoaltree(dates,alpha=10)
 plot(phy,show.tip.label = F)
 axisPhylo(backward = F)
 ```
@@ -84,7 +84,7 @@ Let's start everything again with a new dataset using the relaxed model:
 rm(list=ls())
 set.seed(0)
 dates=c(rep(2000,10),rep(2010,10))
-phy <- simcoaltree(dates,neg=10)
+phy <- simcoaltree(dates,alpha=10)
 obsphy=simobsphy(phy,rate=10,model='relaxedgamma',ratevar = 100)
 res=roottotip(obsphy,dates)
 ```
