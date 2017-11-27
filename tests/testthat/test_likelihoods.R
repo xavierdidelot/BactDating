@@ -36,6 +36,15 @@ test_that("Likelihood in C++ and R give identical results.", {
   expect_equal(likelihoodRelaxedgamma(tab,5.5,4.1),likelihoodRelaxedgammaC(tab,5.5,4.1))
 })
 
+test_that("Likelihood of strict gamma is equal to relaxed gamma with no variance.", {
+  set.seed(0)
+  leaves=2010:2000
+  tree=simcoaltree(leaves,5.1)
+  phy=simobsphy(tree)
+  tab=makeTab(tree,phy)
+  expect_equal(likelihoodRelaxedgammaC(tab,5.5,0),likelihoodGammaC(tab,5.5))
+})
+
 test_that("Short MCMC runs give same results for C++ and R likelihoods.", {
   set.seed(0)
   leaves=2010:2000
