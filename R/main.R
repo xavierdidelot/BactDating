@@ -20,7 +20,7 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
 {
   #Initial rooting of tree, if needed
   if (useRec==T && is.null(tree$unrec)) stop("To use recombination, the proportion of unrecombined needs to be input.")
-  if (is.rooted(tree)==F) tree=initRoot(tree,date,useRec)
+  if (is.rooted(tree)==F) tree=initRoot(tree,date,useRec=useRec)
 
   #If the initial rate was not specified, start with the rate implied by root-to-tip analysis
   if (is.na(initRate)) {

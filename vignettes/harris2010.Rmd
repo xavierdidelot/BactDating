@@ -31,7 +31,7 @@ We run CreDating as follows:
 
 ```{r}
 ptm=proc.time()
-res=credate(unroot(harris2010$tree),harris2010$dates,nbIts=100000)
+res=credate(unroot(harris2010$tree),harris2010$dates)
 print(proc.time()-ptm)
 plot(res,'treeCI',show.tip.label = F)
 ```

@@ -58,40 +58,42 @@ roottotip = function(tree,date,permTest=10000,showFig=T,showPredInt='gamma',show
 #' Initial tree rooting based on best root-to-tip correlation
 #' @param phy An unrooted phylogenetic tree
 #' @param date Dates of sampling
+#' @param attempts Number of rooting attempts per branch
 #' @param useRec Whether or not to use results from previous recombination analysis
 #' @return Rooted tree
 #' @export
-initRoot = function(phy,date,useRec=F) {
+initRoot = function(phy,date,attempts=10,useRec=F) {
   n=length(date)
   bestcorrel=-Inf
-  for (w in c(1:Ntip(phy),Ntip(phy)+(2:Nnode(phy)))) {
+  for (w in c(1:Ntip(phy),Ntip(phy)+(2:Nnode(phy)))) for (a in 1:attempts) {
     if (w<=Ntip(phy)) tree=root(phy,outgroup=w,resolve.root = T) else tree=root(phy,node=w,resolve.root = T)
     wi=which(tree$edge[,1]==Ntip(tree)+1)
-    tree$edge.length[wi]=rep(sum(tree$edge.length[wi])/2,2)
+    tree$edge.length[wi]=sum(tree$edge.length[wi])*c(a,attempts+1-a)/(attempts+1)
     ys=leafDates(tree)
     correl=suppressWarnings(cor(date,ys,use='complete.obs'))
     if (is.na(correl)) correl=-Inf
-    if (correl>bestcorrel) {bestcorrel=correl;best=w}
+    if (correl>bestcorrel) {bestcorrel=correl;best=c(w,a)}
   }
   if (correl==-Inf) {#This happens for example if all dates are identical
-    best=1
+    best=c(1,1)
   }
 
+  w=best[1];a=best[2]
   if (useRec==F) {
     #Rooting without recombination
-    if (best<=Ntip(phy)) tree=root(phy,outgroup=best,resolve.root = T) else tree=root(phy,node=best,resolve.root = T)
+    if (w<=Ntip(phy)) tree=root(phy,outgroup=w,resolve.root = T) else tree=root(phy,node=w,resolve.root = T)
     wi=which(tree$edge[,1]==Ntip(tree)+1)
-    tree$edge.length[wi]=rep(sum(tree$edge.length[wi])/2,2)
+    tree$edge.length[wi]=sum(tree$edge.length[wi])*c(a,attempts+1-a)/(attempts+1)
 
   } else {
     #Rooting with recombination - need to be careful to keep correct unrec values on correct branch
     phy$node.label=sprintf('n%d',1:Nnode(phy))
     edgenames=cbind(c(phy$tip.label,phy$node.label)[phy$edge[,1]],c(phy$tip.label,phy$node.label)[phy$edge[,2]])
     unrec=phy$unrec
-    unrecbest=unrec[which(phy$edge[,2]==best)]
-    if (best<=Ntip(phy)) tree=root(phy,outgroup=best,resolve.root=T,edgelabel=F) else tree=root(phy,node=best,resolve.root=T,edgelabel=F)
+    unrecbest=unrec[which(phy$edge[,2]==w)]
+    if (w<=Ntip(phy)) tree=root(phy,outgroup=w,resolve.root=T,edgelabel=F) else tree=root(phy,node=w,resolve.root=T,edgelabel=F)
     wi=which(tree$edge[,1]==Ntip(tree)+1)
-    tree$edge.length[wi]=rep(sum(tree$edge.length[wi])/2,2)
+    tree$edge.length[wi]=sum(tree$edge.length[wi])*c(a,attempts+1-a)/(attempts+1)
     tree$unrec=rep(NA,nrow(tree$edge))
     tree$unrec[wi]=unrecbest
     for (i in 1:nrow(tree$edge)) {
