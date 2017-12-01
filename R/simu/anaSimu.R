@@ -4,21 +4,20 @@ dir='~/simuCreDating'
 if (Sys.info()["nodename"]=='xavierdidelot') {
   #SERVER SIDE
   library(CreDating)
-  xs=c()
-  ys1=c()
-  ys2=c()
-  ys3=c()
+  store=matrix(NA,100,8)
   for (ind in 1:100) {
     tryCatch({
       myind=ind
       load(sprintf('%s/run%d.RData',dir,ind))
       ind=myind
-      xs=c(xs,rate)
+      store[ind,1]=rate
       v=res$record[,'rate']
       v=sort(v[floor(length(v)/2):length(v)])
-      ys1=c(ys1,v[floor(length(v)*0.025)])
-      ys2=c(ys2,v[floor(length(v)*0.500)])
-      ys3=c(ys3,v[floor(length(v)*0.975)])
+      store[ind,c(2,3,4)]=v[floor(length(v)*c(0.025,0.5,0.975))]
+      store[ind,5]=alpha
+      v=res$record[,'alpha']
+      v=sort(v[floor(length(v)/2):length(v)])
+      store[ind,c(6,7,8)]=v[floor(length(v)*c(0.025,0.5,0.975))]
     },error=function(e) {},warning=function(w) {})
   }
   rm('res')
@@ -29,8 +28,8 @@ if (Sys.info()["nodename"]=='xavierdidelot') {
   system(sprintf('scp ubuntu@137.205.69.116:%s/all.RData /tmp',dir))
   load('/tmp/all.RData')
   pdf('/tmp/fig.pdf',6,6)
-  plot(xs,ys2,pch=16,xlab='Correct',ylab='Inferred')
-  segments(xs,ys1,xs,ys3)
+  plot(store[,1],store[,3],pch=16,xlab='Correct',ylab='Inferred')
+  segments(store[,1],store[,2],store[,1],store[,4])
   dev.off()
   system('open /tmp/fig.pdf')
 }

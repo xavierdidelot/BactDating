@@ -34,7 +34,7 @@ credate(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA,
 
 \item{useCoalPrior}{Whether or not to use a coalescent prior on the tree}
 
-\item{model}{Which model to use (poisson or negbin or gamma or relaxedgamma)}
+\item{model}{Which model to use (poisson or gamma or relaxedgamma or mixedgamma)}
 
 \item{useRec}{Whether or not to use results from previous recombination analysis}
 

@@ -11,7 +11,7 @@
 #' @param nbIts Number of MCMC iterations to perform
 #' @param thin Thining interval between recorded MCMC samples
 #' @param useCoalPrior Whether or not to use a coalescent prior on the tree
-#' @param model Which model to use (poisson or negbin or gamma or relaxedgamma)
+#' @param model Which model to use (poisson or gamma or relaxedgamma or mixedgamma)
 #' @param useRec Whether or not to use results from previous recombination analysis
 #' @param showProgress Whether or not to show a progress bar
 #' @return Dating results
@@ -40,10 +40,10 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
   if (is.element(model,c('gamma','relaxedgamma','gammaR','relaxedgammaR'))) tree$edge.length=pmax(tree$edge.length,1e-7)
   if (model == 'poisson') likelihood=function(tab,rate,ratevar) return(likelihoodPoissonC(tab,rate))
   if (model == 'poissonR') likelihood=function(tab,rate,ratevar) return(likelihoodPoisson(tab,rate))
-  if (model == 'negbin') likelihood=function(tab,rate,ratevar) return(likelihoodNegbin(tab,r=rate,phi=1))
+  #if (model == 'negbin') likelihood=function(tab,rate,ratevar) return(likelihoodNegbin(tab,r=rate,phi=1))
   if (model == 'gamma') likelihood=function(tab,rate,ratevar) return(likelihoodGammaC(tab,rate))
   if (model == 'gammaR') likelihood=function(tab,rate,ratevar) return(likelihoodGamma(tab,rate))
-  if (model == 'relaxedgamma') likelihood=function(tab,rate,ratevar) return(likelihoodRelaxedgammaC(tab,rate,ratevar))
+  if (model == 'relaxedgamma'||model == 'mixedgamma') likelihood=function(tab,rate,ratevar) return(likelihoodRelaxedgammaC(tab,rate,ratevar))
   if (model == 'relaxedgammaR') likelihood=function(tab,rate,ratevar) return(likelihoodRelaxedgamma(tab,rate,ratevar))
   if (model != 'relaxedgamma'&&model!='relaxedgammaR') updateRatevar=F
   if (model == 'null') {updateRate=0;likelihood=function(tab,rate,ratevar) return(0)}
@@ -126,6 +126,20 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
     if (updateRatevar == T) {
       #MH move using flat prior
       ratevar2=abs(rnorm(1,ratevar,0.1*initRatevar))
+      l2=likelihood(tab,rate,ratevar2)
+      if (log(runif(1))<l2-l) {l=l2;ratevar=ratevar2}
+    }
+
+    if (model == 'mixedgamma' && ratevar>0) {
+      #MH move using Exp(1) prior
+      ratevar2=abs(rnorm(1,ratevar,0.1*initRatevar))
+      l2=likelihood(tab,rate,ratevar2)
+      if (log(runif(1))<l2-l-ratevar2+ratevar) {l=l2;ratevar=ratevar2}
+    }
+
+    if (model == 'mixedgamma') {
+      #Reversible-jump move
+      if (ratevar==0) ratevar2=rexp(1) else ratevar2=0
       l2=likelihood(tab,rate,ratevar2)
       if (log(runif(1))<l2-l) {l=l2;ratevar=ratevar2}
     }
@@ -235,6 +249,7 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
     dic = dic
   )
   class(out) <- 'resCreDating'
+  if (model=='mixedgamma') out$pstrict=length(which(record[,'ratevar']==0))/nrow(record)
   return(out)
 }
 
@@ -254,3 +269,4 @@ modelcompare = function(res1,res2) {
   if (dif< -5 && dif>-10) cat('Model 2 is slightly better.\n')
   if (dif< -10) cat('Model 2 is definitely better.\n')
 }
+

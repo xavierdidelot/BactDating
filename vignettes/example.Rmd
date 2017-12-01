@@ -77,6 +77,12 @@ res3=credate(obsphy,dates,model='relaxedgamma')
 modelcompare(res,res3)
 ```
 
+##Third analysis using a mixed clock model
+```{r}
+res4=credate(obsphy,dates,model='mixedgamma')
+print(res4$pstrict)
+```
+
 ##Analysis of data generated with relaxed clock model
 
 Let's start everything again with a new dataset using the relaxed model:
@@ -105,4 +111,9 @@ Finally we analyse with the relaxed clock model:
 res3=credate(obsphy,dates,model='relaxedgamma')
 plot(res3,'trace')
 modelcompare(res,res3)
+```
+
+```{r}
+res4=credate(obsphy,dates,model='mixedgamma')
+print(res4$pstrict)
 ```
