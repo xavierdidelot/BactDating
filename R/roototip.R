@@ -155,6 +155,7 @@ allDates = function (phy) {
 nodeDates = function (phy) {
   rootdate=phy$root.time
   if (is.null(rootdate)) rootdate=0
+  #return(rootdate+dist.nodes(phy)[Ntip(phy)+1,])#This is not faster
   nsam=length(phy$tip.label)
   dates=rep(rootdate,nsam-1)
   for (i in 2:(nsam-1)) {
