@@ -4,14 +4,14 @@
 \alias{initRoot}
 \title{Initial tree rooting based on best root-to-tip correlation}
 \usage{
-initRoot(phy, date, attempts = 10, useRec = F)
+initRoot(phy, date, mtry = 10, useRec = F)
 }
 \arguments{
 \item{phy}{An unrooted phylogenetic tree}
 
 \item{date}{Dates of sampling}
 
-\item{attempts}{Number of rooting attempts per branch}
+\item{mtry}{Average number of rooting attempts per branch}
 
 \item{useRec}{Whether or not to use results from previous recombination analysis}
 }

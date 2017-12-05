@@ -43,8 +43,8 @@ roottotip = function(tree,date,permTest=10000,showFig=T,showPredInt='gamma',show
   xs=seq(ori,max(date,na.rm = T),0.1)
   plim=0.05
   if (showPredInt=='poisson') {
-  lines(xs,qpois(  plim/2,(xs-ori)*rate),lty='dashed')
-  lines(xs,qpois(1-plim/2,(xs-ori)*rate),lty='dashed')
+    lines(xs,qpois(  plim/2,(xs-ori)*rate),lty='dashed')
+    lines(xs,qpois(1-plim/2,(xs-ori)*rate),lty='dashed')
   }
   if (showPredInt=='gamma') {
     lines(xs,qgamma(  plim/2,shape=(xs-ori)*rate,scale=1),lty='dashed')
@@ -58,27 +58,33 @@ roottotip = function(tree,date,permTest=10000,showFig=T,showPredInt='gamma',show
 #' Initial tree rooting based on best root-to-tip correlation
 #' @param phy An unrooted phylogenetic tree
 #' @param date Dates of sampling
-#' @param attempts Number of rooting attempts per branch
+#' @param mtry Average number of rooting attempts per branch
 #' @param useRec Whether or not to use results from previous recombination analysis
 #' @return Rooted tree
 #' @export
-initRoot = function(phy,date,attempts=10,useRec=F) {
+initRoot = function(phy,date,mtry=10,useRec=F) {
   n=length(date)
   bestcorrel=-Inf
-  for (w in c(1:Ntip(phy),Ntip(phy)+(2:Nnode(phy)))) for (a in 1:attempts) {
+  denom=mean(phy$edge.length)
+  for (w in c(1:Ntip(phy),Ntip(phy)+(2:Nnode(phy)))) {
     if (w<=Ntip(phy)) tree=root(phy,outgroup=w,resolve.root = T) else tree=root(phy,node=w,resolve.root = T)
     wi=which(tree$edge[,1]==Ntip(tree)+1)
-    tree$edge.length[wi]=sum(tree$edge.length[wi])*c(a,attempts+1-a)/(attempts+1)
-    ys=leafDates(tree)
-    correl=suppressWarnings(cor(date,ys,use='complete.obs'))
-    if (is.na(correl)) correl=-Inf
-    if (correl>bestcorrel) {bestcorrel=correl;best=c(w,a)}
+    toshare=sum(tree$edge.length[wi])
+    attempts=max(1,ceiling(mtry*toshare/denom))
+    for (a in 1:attempts) {
+      tree$edge.length[wi]=toshare*c(a,attempts+1-a)/(attempts+1)
+      #ys=leafDates(tree)
+      ys=allDates(tree)[1:n]#This is faster
+      correl=suppressWarnings(cor(date,ys,use='complete.obs'))
+      if (is.na(correl)) correl=-Inf
+      if (correl>bestcorrel) {bestcorrel=correl;best=c(w,a,attempts)}
+    }
   }
   if (correl==-Inf) {#This happens for example if all dates are identical
     best=c(1,1)
   }
 
-  w=best[1];a=best[2]
+  w=best[1];a=best[2];attempts=best[3]
   if (useRec==F) {
     #Rooting without recombination
     if (w<=Ntip(phy)) tree=root(phy,outgroup=w,resolve.root = T) else tree=root(phy,node=w,resolve.root = T)
@@ -121,6 +127,23 @@ leafDates = function (phy) {
       dates[i]=dates[i]+phy$edge.length[r]
       w=phy$edge[r,1]
     }
+  }
+  return(dates)
+}
+
+#' Compute dates of leaves and internal nodes for a given tree
+#' @param phy Tree
+#' @return Dates of leaves and internal nodes
+#' @export
+allDates = function (phy) {
+  o=rev(postorder(phy))#preorder
+  rootdate=phy$root.time
+  if (is.null(rootdate)) rootdate=0
+  n=Ntip(phy)+Nnode(phy)
+  dates=rep(NA,n)
+  dates[Ntip(phy)+1]=rootdate
+  for (i in o) {
+    dates[phy$edge[i,2]]=dates[phy$edge[i,1]]+phy$edge.length[i]
   }
   return(dates)
 }
