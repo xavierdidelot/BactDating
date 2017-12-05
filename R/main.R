@@ -21,6 +21,7 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
   #Initial rooting of tree, if needed
   if (useRec==T && is.null(tree$unrec)) stop("To use recombination, the proportion of unrecombined needs to be input.")
   if (is.rooted(tree)==F) tree=initRoot(tree,date,useRec=useRec)
+  testSignal=F
 
   #If the initial rate was not specified, start with the rate implied by root-to-tip analysis
   if (is.na(initRate)) {
@@ -37,7 +38,7 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
   if (useCoalPrior) prior=coalpriorC else updateAlpha=F
 
   #Selection likelihood function
-  if (is.element(model,c('gamma','relaxedgamma','gammaR','relaxedgammaR'))) tree$edge.length=pmax(tree$edge.length,1e-7)
+  if (!is.element(model,c('poisson','poissonR'))) tree$edge.length=pmax(tree$edge.length,1e-7)
   if (model == 'poisson') likelihood=function(tab,rate,ratevar) return(likelihoodPoissonC(tab,rate))
   if (model == 'poissonR') likelihood=function(tab,rate,ratevar) return(likelihoodPoisson(tab,rate))
   #if (model == 'negbin') likelihood=function(tab,rate,ratevar) return(likelihoodNegbin(tab,r=rate,phi=1))
@@ -45,7 +46,7 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
   if (model == 'gammaR') likelihood=function(tab,rate,ratevar) return(likelihoodGamma(tab,rate))
   if (model == 'relaxedgamma'||model == 'mixedgamma') likelihood=function(tab,rate,ratevar) return(likelihoodRelaxedgammaC(tab,rate,ratevar))
   if (model == 'relaxedgammaR') likelihood=function(tab,rate,ratevar) return(likelihoodRelaxedgamma(tab,rate,ratevar))
-  if (model != 'relaxedgamma'&&model!='relaxedgammaR') updateRatevar=F
+  if (model != 'relaxedgamma'&&model!='relaxedgammaR'&&model!='mixedgamma') updateRatevar=F
   if (model == 'null') {updateRate=0;likelihood=function(tab,rate,ratevar) return(0)}
   if (!exists('likelihood')) stop('Unknown model.')
 
@@ -53,6 +54,7 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
   misDates=which(is.na(date))
   date[misDates]=mean(date,na.rm = T)
   ordereddate=sort(date,decreasing = T)
+  rangedate=c(min(date),max(date))
 
   #Create table of nodes (col1=name,col2=observed substitutions on branch above,col3=date,col4=father,col5=unrecombined proportion, only if useRec=T)
   n = Ntip(tree)
@@ -91,6 +93,7 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
     initAlpha=1/rgamma(1,shape=n-1,scale=1/b)
   }
   alpha=initAlpha
+  initHeight=max(tab[,3])-min(tab[,3])
 
   #Start of MCMC algorithm
   l = likelihood(tab, rate, ratevar)
@@ -114,23 +117,17 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
       record[i / thin, 'alpha'] = alpha
       record[i / thin, 'prior'] = p
       record[i / thin, 'root'] = curroot
+      if (testSignal) record[i / thin, 'signal'] = all(tab[1:n,3]==dates)
     }
 
     if (updateRate == T) {
-      #MH move using flat prior
+      #MH move using Exp(1) prior
       rate2=abs(rnorm(1,rate,0.1*initRate))
       l2=likelihood(tab,rate2,ratevar)
-      if (log(runif(1))<l2-l) {l=l2;rate=rate2}
+      if (log(runif(1))<l2-l-rate2+rate) {l=l2;rate=rate2}
     }
 
-    if (updateRatevar == T) {
-      #MH move using flat prior
-      ratevar2=abs(rnorm(1,ratevar,0.1*initRatevar))
-      l2=likelihood(tab,rate,ratevar2)
-      if (log(runif(1))<l2-l) {l=l2;ratevar=ratevar2}
-    }
-
-    if (model == 'mixedgamma' && ratevar>0) {
+    if (updateRatevar == T && ratevar>0) {
       #MH move using Exp(1) prior
       ratevar2=abs(rnorm(1,ratevar,0.1*initRatevar))
       l2=likelihood(tab,rate,ratevar2)
@@ -149,15 +146,15 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
       s <- sort(tab[, 3], decreasing = T, index.return = TRUE)
       k=cumsum(2*(s$ix<=n)-1)
       difs=-diff(s$x)
-      b=sum(k[2:nrow(tab)]*(k[2:nrow(tab)]-1)*difs)/2
-      alpha=1/rgamma(1,shape=n-1,scale=1/b)
+      b=(sum(k[2:nrow(tab)]*(k[2:nrow(tab)]-1)*difs)+2)/2
+      alpha=1/rgamma(1,shape=n,scale=1/b)
       p=prior(ordereddate, tab[(n+1):nrow(tab),3],alpha)
     }
 
     #MH to update internal dates
     for (j in c((n + 1):nrow(tab))) {
       old = tab[j, 3]
-      tab[j, 3] = old + rnorm(1)
+      tab[j, 3] = rnorm(1,old,initHeight*0.05)
       if (tab[j,3]-old<0&&(!is.na(tab[j,4])&&tab[j,3]<tab[tab[j,4],3])) {tab[j,3]=old;next}#can't be older than father
       if (tab[j,3]-old>0&&j>n&&tab[j,3]>min(tab[which(tab[,4]==j),3])) {tab[j,3]=old;next}#can't be younger than sons
       l2 = likelihood(tab, rate, ratevar)
@@ -171,9 +168,9 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
     #MH to update missing leaf dates
     for (j in misDates) {
       old = tab[j, 3]
-      tab[j, 3] = old + rnorm(1)
+      tab[j, 3] = rnorm(1,old,(rangedate[2]-rangedate[1])*0.05)
       if (tab[j,3]-old<0&&(!is.na(tab[j,4])&&tab[j,3]<tab[tab[j,4],3])) {tab[j,3]=old;next}#can't be older than father
-      if (tab[j,3]==max(tab[,3])||tab[j,3]==min(tab[,3])) {tab[j,3]=old;next}#stay within prior range
+      if (tab[j,3]>rangedate[2]||tab[j,3]<rangedate[1]) {tab[j,3]=old;next}#stay within prior range
       l2 = likelihood(tab, rate, ratevar)
       ordereddate2=sort(tab[1:n,3],decreasing = T)
       p2 = prior(ordereddate2, tab[(n+1):nrow(tab),3], alpha)
@@ -210,13 +207,29 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
         tab[left,2]=oldtab[a,2]*(1-r)
         tab[right,2]=oldtab[right,2]+oldtab[left,2]
         if (useRec) tab[left,5]=tab[a,5]
-        l2=likelihood(tab,rate, ratevar)
+        l2=likelihood(tab,rate,ratevar)
         if (log(runif(1))<l2-l+log(oldtab[a,2]/tab[right,2])) l=l2 else tab=oldtab
       }
     }
-  }
+
+    if (testSignal) {
+      #Model jump to test strength of temporal signal
+      maxdates=max(dates)
+      if (all(tab[1:n,3]==maxdates)) {
+        tab[1:n,3]=dates
+        l2=likelihood(tab,rate,ratevar)
+        if (log(runif(1))<l2-l) l=l2 else tab[1:n,3]=maxdates
+      } else {
+        tab[1:n,3]=maxdates
+        l2=likelihood(tab,rate,ratevar)
+        if (log(runif(1))<l2-l) l=l2 else tab[1:n,3]=dates
+      }
+    }
+
+  }#End of MCMC loop
 
   #Output
+  if (testSignal) tab[1:n,3]=dates
   inputtree = tree
   bestroot = as.numeric(names(sort(table(record[floor(nrow(record) / 2):nrow(record),'root']),decreasing=T)[1]))
   bestrows = intersect(floor(nrow(record) / 2):nrow(record),which(record[,'root']==bestroot))
@@ -250,6 +263,7 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
   )
   class(out) <- 'resCreDating'
   if (model=='mixedgamma') out$pstrict=length(which(record[,'ratevar']==0))/nrow(record)
+  if (testSignal) out$psignal=length(which(record[,'signal']==1))/nrow(record)
   return(out)
 }
 
