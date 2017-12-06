@@ -83,3 +83,16 @@ test_that("Likelihood in C++ and R give identical results on recombinant tree.",
   res2=credate(phy,leaves,nbIts=2,model='relaxedgammaR',useRec=T)
   expect_equal(res$record[1,'likelihood'],res2$record[1,'likelihood'])
 })
+
+
+test_that("Likelihood is consistent when increasing rate and reducing branch lengths.", {
+  set.seed(0)
+  leaves=2010:2000
+  tree=simcoaltree(leaves,5.1)
+  phy=simobsphy(tree)
+  tab=makeTab(tree,phy)
+  tab2=tab
+  tab2[,3]=tab2[,3]*10
+  expect_equal(likelihoodPoissonC(tab,5.5),likelihoodPoissonC(tab2,5.5/10))
+  expect_equal(likelihoodGammaC(tab,5.5),likelihoodGammaC(tab2,5.5/10))
+})

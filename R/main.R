@@ -121,24 +121,24 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
     }
 
     if (updateRate == T) {
-      #MH move using Exp(1) prior
+      #MH move using Gamma(1e-3,1e3) prior
       rate2=abs(rnorm(1,rate,0.1*initRate))
       l2=likelihood(tab,rate2,ratevar)
-      if (log(runif(1))<l2-l-rate2+rate) {l=l2;rate=rate2}
+      if (log(runif(1))<l2-l+dgamma(rate2,shape=1e-3,scale=1e3,log=T)-dgamma(rate,shape=1e-3,scale=1e3,log=T)) {l=l2;rate=rate2}
     }
 
     if (updateRatevar == T && ratevar>0) {
-      #MH move using Exp(1) prior
+      #MH move using Gamma(1e-3,1e3) prior
       ratevar2=abs(rnorm(1,ratevar,0.1*initRatevar))
       l2=likelihood(tab,rate,ratevar2)
-      if (log(runif(1))<l2-l-ratevar2+ratevar) {l=l2;ratevar=ratevar2}
+      if (log(runif(1))<l2-l+dgamma(ratevar2,shape=1e-3,scale=1e3,log=T)-dgamma(ratevar,shape=1e-3,scale=1e3,log=T)) {l=l2;ratevar=ratevar2}
     }
 
     if (model == 'mixedgamma') {
       #Reversible-jump move
       if (ratevar==0) ratevar2=rexp(1) else ratevar2=0
       l2=likelihood(tab,rate,ratevar2)
-      if (log(runif(1))<l2-l) {l=l2;ratevar=ratevar2}
+      if (log(runif(1))<l2-l+dgamma(ratevar2,shape=1e-3,scale=1e3,log=T)+ratevar2) {l=l2;ratevar=ratevar2}
     }
 
     if (updateAlpha == T) {
@@ -146,8 +146,8 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
       s <- sort(tab[, 3], decreasing = T, index.return = TRUE)
       k=cumsum(2*(s$ix<=n)-1)
       difs=-diff(s$x)
-      b=(sum(k[2:nrow(tab)]*(k[2:nrow(tab)]-1)*difs)+2)/2
-      alpha=1/rgamma(1,shape=n,scale=1/b)
+      su=sum(k[2:nrow(tab)]*(k[2:nrow(tab)]-1)*difs)
+      alpha=1/rgamma(1,shape=n+0.001-1,scale=2000/(su*1000+2))
       p=prior(ordereddate, tab[(n+1):nrow(tab),3],alpha)
     }
 
