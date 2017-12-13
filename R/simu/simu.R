@@ -7,14 +7,14 @@ dates=seq(2000,2010,0.1)
 
 if (ind<=100) {
   #Code for simulation with varying rate
-  alpha=10
+  alpha=5
   phy=simcoaltree(dates,alpha=alpha)
-  rate=ind/100*20
+  rate=ind/100*10
 } else {
   #Code for simulation with varying alpha
-  alpha=(ind-100)/100*20
+  alpha=(ind-100)/100*10
   phy=simcoaltree(dates,alpha=alpha)
-  rate=10
+  rate=5
 }
 
 obsphy=simobsphy(phy,rate=rate)
