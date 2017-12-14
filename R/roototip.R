@@ -81,7 +81,7 @@ initRoot = function(phy,date,mtry=10,useRec=F) {
     }
   }
   if (correl==-Inf) {#This happens for example if all dates are identical
-    best=c(1,1)
+    best=c(1,1,1)
   }
 
   w=best[1];a=best[2];attempts=best[3]

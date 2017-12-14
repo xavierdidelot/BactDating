@@ -25,7 +25,7 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
 
   #If the initial rate was not specified, start with the rate implied by root-to-tip analysis
   if (is.na(initRate)) {
-    r=unname(roottotip(tree,date,showFig=F)$rate)
+    r=suppressWarnings(unname(roottotip(tree,date,showFig=F)$rate))
     if (is.na(r) || r<0) r=1
     initRate=r
   }
@@ -77,7 +77,7 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
       next
     children = which(tab[, 4] == i)
     if (length(children) != 0)
-      tab[i, 3] = min(tab[children, 3]-tab[children,2]/rate)
+      tab[i, 3] = min(tab[children,3]-0.01,mean(tab[children, 3]-tab[children,2]/rate))
   }
   i = n + 1
   children = which(tab[, 4] == i)
