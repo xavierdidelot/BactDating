@@ -103,15 +103,15 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
   if (showProgress) pb <- txtProgressBar(min=0,max=nbIts,style = 3)
   children=vector("list", max(tab[,4],na.rm = T))
   for (i in 1:nrow(tab)) if (!is.na(tab[i,4])) children[[tab[i,4]]]=c(children[[tab[i,4]]],i)
+  curroot=NA
+  rootchildren=which(tab[,4]==(n+1))
+  for (j in 1:nrow(tree$edge)) if (setequal(rootchildren,tree$edge[j,])) {curroot=j;break}
+  if (is.na(curroot)) curroot=min(which(tree$edge[,1]==(n+1)))
 
   for (i in 1:nbIts) {
     #Record
     if (i %% thin == 0) {
       if (showProgress) setTxtProgressBar(pb, i)
-      rootchildren=which(tab[,4]==(n+1))
-      curroot=NA
-      for (j in 1:nrow(tree$edge)) if (setequal(rootchildren,tree$edge[j,])) {curroot=j;break}
-      if (is.na(curroot)) curroot=min(which(tree$edge[,1]==(n+1)))
       record[i / thin, 1:nrow(tab)] = tab[, 3]
       record[i / thin, (1:nrow(tab))+nrow(tab)]=tab[, 4]
       record[i / thin, 'likelihood'] = l
@@ -160,7 +160,13 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
       tab[j, 3] = rnorm(1,old,initHeight*0.05)
       if (tab[j,3]-old<0&&(!is.na(tab[j,4])&&tab[j,3]<tab[tab[j,4],3])) {tab[j,3]=old;next}#can't be older than father
       if (tab[j,3]-old>0&&tab[j,3]>min(tab[children[[j]],3])) {tab[j,3]=old;next}#can't be younger than sons
-      l2 = likelihood(tab, rate, ratevar)
+      if (j>(n+1)) {mintab=rbind(tab[children[[j]],],tab[tab[j,4],],tab[j,]);mintab[,4]=c(4,4,NA,3)}
+      else {mintab=rbind(tab[children[[j]],],tab[j,]);mintab[,4]=c(3,3,NA)}
+      l2=l+likelihood(mintab,rate,ratevar)
+      mintab[nrow(mintab),3]=old
+      l2=l2-likelihood(mintab,rate,ratevar)
+      #l2full=likelihood(tab, rate, ratevar)
+      #if (abs(l2-l2full)>1e-10) print('error')
       p2 = prior(ordereddate, tab[(n+1):nrow(tab),3], alpha)
       if (log(runif(1)) < l2 - l + p2 - p)
       {l = l2; p = p2}
@@ -174,7 +180,13 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
       tab[j, 3] = rnorm(1,old,(rangedate[2]-rangedate[1])*0.05)
       if (tab[j,3]-old<0&&(!is.na(tab[j,4])&&tab[j,3]<tab[tab[j,4],3])) {tab[j,3]=old;next}#can't be older than father
       if (tab[j,3]>rangedate[2]||tab[j,3]<rangedate[1]) {tab[j,3]=old;next}#stay within prior range
-      l2 = likelihood(tab, rate, ratevar)
+      mintab=rbind(tab[j,],tab[tab[j,4],])
+      mintab[,4]=c(2,NA)
+      l2=l+likelihood(mintab,rate,ratevar)
+      mintab[1,3]=old
+      l2=l2-likelihood(mintab,rate,ratevar)
+      #l2full=likelihood(tab, rate, ratevar)
+      #if (abs(l2-l2full)>1e-10) print('error')
       ordereddate2=sort(tab[1:n,3],decreasing = T)
       p2 = prior(ordereddate2, tab[(n+1):nrow(tab),3], alpha)
       if (log(runif(1)) < l2 - l + p2 - p)
@@ -215,7 +227,11 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
           {l=l2
           children=vector("list", max(tab[,4],na.rm = T))
           for (i in 1:nrow(tab)) if (!is.na(tab[i,4])) children[[tab[i,4]]]=c(children[[tab[i,4]]],i)
-          } else tab=oldtab
+          curroot=NA
+          rootchildren=which(tab[,4]==(n+1))
+          for (j in 1:nrow(tree$edge)) if (setequal(rootchildren,tree$edge[j,])) {curroot=j;break}
+          if (is.na(curroot)) curroot=min(which(tree$edge[,1]==(n+1)))
+        } else tab=oldtab
       }
     }
 
@@ -242,7 +258,7 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
   bestrows = intersect(floor(nrow(record) / 2):nrow(record),which(record[,'root']==bestroot))
   meanRec = colMeans(record[bestrows, ])
   for (i in 1:nrow(tree$edge)) {
-    tree$edge[i,1]=record[bestrows[1],nrow(tab)+tree$edge[i,2]]#tab[tree$edge[i,2],4]
+    tree$edge[i,1]=record[bestrows[1],nrow(tab)+tree$edge[i,2]]
     tree$edge.length[i] = meanRec[tree$edge[i, 2]] - meanRec[tree$edge[i, 1]]
   }
 

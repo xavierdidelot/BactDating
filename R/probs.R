@@ -5,7 +5,7 @@
 likelihoodPoisson = function(tab, rate) {
   n = ceiling(nrow(tab)/2)
   if (rate < 0) stop('error1')
-  t2 = tab[-(n + 1), ]
+  t2 = tab[-(n + 1), ,drop=F]
   lengths = t2[, 3] - tab[t2[, 4], 3]
   if (min(lengths) < 0) stop('error2')
   muts = t2[, 2]
@@ -23,7 +23,7 @@ likelihoodPoisson = function(tab, rate) {
 likelihoodNegbin = function(tab, r, phi) {
   n = ceiling(nrow(tab)/2)
   if (r < 0 || phi < 0) stop('error1')
-  t2 = tab[-(n + 1), ]
+  t2 = tab[-(n + 1), ,drop=F]
   lengths = t2[, 3] - tab[t2[, 4], 3]
   if (min(lengths) < 0) stop('error2')
   muts = t2[, 2]
@@ -39,7 +39,7 @@ likelihoodNegbin = function(tab, r, phi) {
 likelihoodGamma = function(tab, rate) {
   n = ceiling(nrow(tab)/2)
   if (rate < 0) stop('error1')
-  t2 = tab[-(n + 1), ]
+  t2 = tab[-(n + 1), ,drop=F]
   lengths = t2[, 3] - tab[t2[, 4], 3]
   if (min(lengths) < 0) stop('error2')
   muts = t2[, 2]
@@ -56,7 +56,7 @@ likelihoodGamma = function(tab, rate) {
 likelihoodRelaxedgamma = function(tab, rate, ratevar) {
   n = ceiling(nrow(tab)/2)
   if (rate < 0) stop('error1')
-  t2 = tab[-(n + 1), ]
+  t2 = tab[-(n + 1), ,drop=F]
   lengths = t2[, 3] - tab[t2[, 4], 3]
   if (min(lengths) < 0) stop('error2')
   muts = t2[, 2]

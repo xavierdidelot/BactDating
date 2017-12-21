@@ -28,7 +28,7 @@ double likelihoodGammaC(NumericMatrix tab, double rate) {
   int n = (tab.nrow()+1)/2;
   double p=0;
   double unrec=1;
-  for (int i=0;i<(n+n-1);i++) {
+  for (int i=0;i<tab.nrow();i++) {
     if (i==n) continue;
     if (tab.ncol()==5) unrec=tab(i,4);
     p+=R::dgamma(unrec*tab(i,1),unrec*rate*(tab(i,2)-tab(tab(i,3)-1,2)),1,1);
