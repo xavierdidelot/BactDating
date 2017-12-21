@@ -101,6 +101,9 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
   record = matrix(NA, floor(nbIts / thin), nrow(tab)*2 + 6)
   colnames(record)<-c(rep(NA,nrow(tab)*2),'likelihood','rate','ratevar','alpha','prior','root')
   if (showProgress) pb <- txtProgressBar(min=0,max=nbIts,style = 3)
+  children=vector("list", max(tab[,4],na.rm = T))
+  for (i in 1:nrow(tab)) if (!is.na(tab[i,4])) children[[tab[i,4]]]=c(children[[tab[i,4]]],i)
+
   for (i in 1:nbIts) {
     #Record
     if (i %% thin == 0) {
@@ -156,7 +159,7 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
       old = tab[j, 3]
       tab[j, 3] = rnorm(1,old,initHeight*0.05)
       if (tab[j,3]-old<0&&(!is.na(tab[j,4])&&tab[j,3]<tab[tab[j,4],3])) {tab[j,3]=old;next}#can't be older than father
-      if (tab[j,3]-old>0&&j>n&&tab[j,3]>min(tab[which(tab[,4]==j),3])) {tab[j,3]=old;next}#can't be younger than sons
+      if (tab[j,3]-old>0&&tab[j,3]>min(tab[children[[j]],3])) {tab[j,3]=old;next}#can't be younger than sons
       l2 = likelihood(tab, rate, ratevar)
       p2 = prior(ordereddate, tab[(n+1):nrow(tab),3], alpha)
       if (log(runif(1)) < l2 - l + p2 - p)
@@ -208,7 +211,11 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
         tab[right,2]=oldtab[right,2]+oldtab[left,2]
         if (useRec) tab[left,5]=tab[a,5]
         l2=likelihood(tab,rate,ratevar)
-        if (log(runif(1))<l2-l+log(oldtab[a,2]/tab[right,2])) l=l2 else tab=oldtab
+        if (log(runif(1))<l2-l+log(oldtab[a,2]/tab[right,2]))
+          {l=l2
+          children=vector("list", max(tab[,4],na.rm = T))
+          for (i in 1:nrow(tab)) if (!is.na(tab[i,4])) children[[tab[i,4]]]=c(children[[tab[i,4]]],i)
+          } else tab=oldtab
       }
     }
 
