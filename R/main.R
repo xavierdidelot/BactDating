@@ -187,7 +187,8 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
       l2=l2-likelihood(mintab,rate,ratevar)
       #l2full=likelihood(tab, rate, ratevar)
       #if (abs(l2-l2full)>1e-10) print('error')
-      ordereddate2=sort(tab[1:n,3],decreasing = T)
+      #ordereddate2=sort(tab[1:n,3],decreasing = T)
+      v=ordereddate[-match(old,ordereddate)];ordereddate2=c(v[v>tab[j,3]],tab[j,3],v[v<=tab[j,3]])
       p2 = prior(ordereddate2, tab[(n+1):nrow(tab),3], alpha)
       if (log(runif(1)) < l2 - l + p2 - p)
       {l = l2; p = p2; ordereddate = ordereddate2}
