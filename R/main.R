@@ -156,49 +156,47 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
     }
 
     #MH to update internal dates
+    rn=rnorm(nrow(tab)-n,0,initHeight*0.05)
     for (j in c((n + 1):nrow(tab))) {
-      old = tab[j, 3]
-      tab[j, 3] = rnorm(1,old,initHeight*0.05)
-      if (tab[j,3]-old<0&&(!is.na(tab[j,4])&&tab[j,3]<tab[tab[j,4],3])) {tab[j,3]=old;next}#can't be older than father
-      if (tab[j,3]-old>0&&tab[j,3]>min(tab[children[[j]],3])) {tab[j,3]=old;next}#can't be younger than sons
+      r=rn[j-n]
+      old=tab[j,3]
+      new=old+r
+      if (r<0&&(!is.na(tab[j,4])&&new<tab[tab[j,4],3])) next#can't be older than father
+      if (r>0&&new>min(tab[children[[j]],3])) next#can't be younger than sons
       if (j>(n+1)) {mintab=rbind(tab[children[[j]],],tab[tab[j,4],],tab[j,]);mintab[,4]=c(4,4,NA,3)}
       else {mintab=rbind(tab[children[[j]],],tab[j,]);mintab[,4]=c(3,3,NA)}
-      l2=l+likelihood(mintab,rate,ratevar)
-      mintab[nrow(mintab),3]=old
-      l2=l2-likelihood(mintab,rate,ratevar)
+      l2=l-likelihood(mintab,rate,ratevar)
+      mintab[nrow(mintab),3]=new
+      l2=l2+likelihood(mintab,rate,ratevar)
       #l2full=likelihood(tab, rate, ratevar)
       #if (abs(l2-l2full)>1e-10) print(sprintf('error %f %f',l2,l2full))
-      #orderednodedates2=sort(tab[(n+1):nrow(tab),3],method='quick',decreasing = T)
-      changeinorderedvec(orderednodedates,old,tab[j,3])
-#      v=orderednodedates[-match(old,orderednodedates)];orderednodedates2=c(v[v>tab[j,3]],tab[j,3],v[v<=tab[j,3]])
+      changeinorderedvec(orderednodedates,old,new)
       p2 = prior(orderedleafdates, orderednodedates, alpha)
       if (log(runif(1)) < l2 - l + p2 - p)
-      {l = l2; p = p2}
+      {l = l2; p = p2;tab[j,3]=new}
       else
-        {changeinorderedvec(orderednodedates,tab[j,3],old);tab[j, 3] = old}
+        changeinorderedvec(orderednodedates,new,old)
     }
 
     #MH to update missing leaf dates
     for (j in misDates) {
       old = tab[j, 3]
-      tab[j, 3] = rnorm(1,old,(rangedate[2]-rangedate[1])*0.05)
-      if (tab[j,3]-old<0&&(!is.na(tab[j,4])&&tab[j,3]<tab[tab[j,4],3])) {tab[j,3]=old;next}#can't be older than father
-      if (tab[j,3]>rangedate[2]||tab[j,3]<rangedate[1]) {tab[j,3]=old;next}#stay within prior range
+      new = rnorm(1,old,(rangedate[2]-rangedate[1])*0.05)
+      if (new-old<0&&(!is.na(tab[j,4])&&new<tab[tab[j,4],3])) next#can't be older than father
+      if (new>rangedate[2]||new<rangedate[1]) next#stay within prior range
       mintab=rbind(tab[j,],tab[tab[j,4],])
       mintab[,4]=c(2,NA)
-      l2=l+likelihood(mintab,rate,ratevar)
-      mintab[1,3]=old
-      l2=l2-likelihood(mintab,rate,ratevar)
+      l2=l-likelihood(mintab,rate,ratevar)
+      mintab[1,3]=new
+      l2=l2+likelihood(mintab,rate,ratevar)
       #l2full=likelihood(tab, rate, ratevar)
       #if (abs(l2-l2full)>1e-10) print(sprintf('error %f %f',l2,l2full))
-      #orderedleafdates2=sort(tab[1:n,3],decreasing = T)
-#      v=orderedleafdates[-match(old,orderedleafdates)];orderedleafdates2=c(v[v>tab[j,3]],tab[j,3],v[v<=tab[j,3]])
-      changeinorderedvec(orderedleafdates,old,tab[j,3])
+      changeinorderedvec(orderedleafdates,old,new)
       p2 = prior(orderedleafdates, orderednodedates, alpha)
       if (log(runif(1)) < l2 - l + p2 - p)
-      {l = l2; p = p2}
+      {l = l2; p = p2;tab[j,3]=new}
       else
-        {changeinorderedvec(orderedleafdates,tab[j,3],old);tab[j, 3] = old}
+        changeinorderedvec(orderedleafdates,new,old)
     }
 
     if (updateRoot) {
