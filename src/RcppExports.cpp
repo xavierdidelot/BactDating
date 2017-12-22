@@ -6,15 +6,15 @@
 using namespace Rcpp;
 
 // coalpriorC
-double coalpriorC(NumericVector leaves, NumericVector intnodes, double alpha);
-RcppExport SEXP _CreDating_coalpriorC(SEXP leavesSEXP, SEXP intnodesSEXP, SEXP alphaSEXP) {
+double coalpriorC(NumericVector leaves, NumericVector nodes, double alpha);
+RcppExport SEXP _CreDating_coalpriorC(SEXP leavesSEXP, SEXP nodesSEXP, SEXP alphaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type leaves(leavesSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type intnodes(intnodesSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nodes(nodesSEXP);
     Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
-    rcpp_result_gen = Rcpp::wrap(coalpriorC(leaves, intnodes, alpha));
+    rcpp_result_gen = Rcpp::wrap(coalpriorC(leaves, nodes, alpha));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -55,12 +55,25 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// changeinorderedvec
+void changeinorderedvec(NumericVector vec, double old, double n);
+RcppExport SEXP _CreDating_changeinorderedvec(SEXP vecSEXP, SEXP oldSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type vec(vecSEXP);
+    Rcpp::traits::input_parameter< double >::type old(oldSEXP);
+    Rcpp::traits::input_parameter< double >::type n(nSEXP);
+    changeinorderedvec(vec, old, n);
+    return R_NilValue;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_CreDating_coalpriorC", (DL_FUNC) &_CreDating_coalpriorC, 3},
     {"_CreDating_likelihoodGammaC", (DL_FUNC) &_CreDating_likelihoodGammaC, 2},
     {"_CreDating_likelihoodRelaxedgammaC", (DL_FUNC) &_CreDating_likelihoodRelaxedgammaC, 3},
     {"_CreDating_likelihoodPoissonC", (DL_FUNC) &_CreDating_likelihoodPoissonC, 2},
+    {"_CreDating_changeinorderedvec", (DL_FUNC) &_CreDating_changeinorderedvec, 3},
     {NULL, NULL, 0}
 };
 

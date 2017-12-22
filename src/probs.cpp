@@ -2,10 +2,10 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-double coalpriorC(NumericVector leaves, NumericVector intnodes, double alpha) {
+double coalpriorC(NumericVector leaves, NumericVector nodes, double alpha) {
   int n=leaves.length();
-  NumericVector nodes = clone(intnodes);
-  std::sort(nodes.begin(), nodes.end(), std::greater<double>());
+  //NumericVector nodes = clone(intnodes);
+  //std::sort(nodes.begin(), nodes.end(), std::greater<double>());
   double p = -log(alpha) * (n - 1);
   int i1=1,i2=0,k=1;
   double prev=leaves[0];
@@ -64,3 +64,16 @@ double likelihoodPoissonC(NumericMatrix tab, double rate) {
   return(p);
 }
 
+// [[Rcpp::export]]
+void changeinorderedvec(NumericVector vec,double old,double n) {
+  //NumericVector res = clone(vec);
+  int i=0;
+  while (vec(i)!=old) i++;
+  vec(i)=n;
+  while (1) {
+    if (i>0               &&vec(i-1)<vec(i)) {vec(i)=vec(i-1);vec(i-1)=n;i--;continue;}
+    if (i<(vec.length()-1)&&vec(i+1)>vec(i)) {vec(i)=vec(i+1);vec(i+1)=n;i++;continue;}
+    break;
+  }
+  //  return(res);
+}

@@ -53,7 +53,7 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
   #Deal with missing dates
   misDates=which(is.na(date))
   date[misDates]=mean(date,na.rm = T)
-  ordereddate=sort(date,decreasing = T)
+  orderedleafdates=sort(date,decreasing = T)
   rangedate=c(min(date),max(date))
 
   #Create table of nodes (col1=name,col2=observed substitutions on branch above,col3=date,col4=father,col5=unrecombined proportion, only if useRec=T)
@@ -97,7 +97,8 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
 
   #Start of MCMC algorithm
   l = likelihood(tab, rate, ratevar)
-  p = prior(ordereddate, tab[(n+1):nrow(tab),3], alpha)
+  orderednodedates=sort(tab[(n+1):nrow(tab),3],method='quick',decreasing = T)
+  p = prior(orderedleafdates,orderednodedates,alpha)
   record = matrix(NA, floor(nbIts / thin), nrow(tab)*2 + 6)
   colnames(record)<-c(rep(NA,nrow(tab)*2),'likelihood','rate','ratevar','alpha','prior','root')
   if (showProgress) pb <- txtProgressBar(min=0,max=nbIts,style = 3)
@@ -151,7 +152,7 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
       difs=-diff(s$x)
       su=sum(k[2:nrow(tab)]*(k[2:nrow(tab)]-1)*difs)
       alpha=1/rgamma(1,shape=n+0.001-1,scale=2000/(su*1000+2))
-      p=prior(ordereddate, tab[(n+1):nrow(tab),3],alpha)
+      p=prior(orderedleafdates,orderednodedates,alpha)
     }
 
     #MH to update internal dates
@@ -167,11 +168,14 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
       l2=l2-likelihood(mintab,rate,ratevar)
       #l2full=likelihood(tab, rate, ratevar)
       #if (abs(l2-l2full)>1e-10) print(sprintf('error %f %f',l2,l2full))
-      p2 = prior(ordereddate, tab[(n+1):nrow(tab),3], alpha)
+      #orderednodedates2=sort(tab[(n+1):nrow(tab),3],method='quick',decreasing = T)
+      changeinorderedvec(orderednodedates,old,tab[j,3])
+#      v=orderednodedates[-match(old,orderednodedates)];orderednodedates2=c(v[v>tab[j,3]],tab[j,3],v[v<=tab[j,3]])
+      p2 = prior(orderedleafdates, orderednodedates, alpha)
       if (log(runif(1)) < l2 - l + p2 - p)
       {l = l2; p = p2}
       else
-        tab[j, 3] = old
+        {changeinorderedvec(orderednodedates,tab[j,3],old);tab[j, 3] = old}
     }
 
     #MH to update missing leaf dates
@@ -187,13 +191,14 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
       l2=l2-likelihood(mintab,rate,ratevar)
       #l2full=likelihood(tab, rate, ratevar)
       #if (abs(l2-l2full)>1e-10) print(sprintf('error %f %f',l2,l2full))
-      #ordereddate2=sort(tab[1:n,3],decreasing = T)
-      v=ordereddate[-match(old,ordereddate)];ordereddate2=c(v[v>tab[j,3]],tab[j,3],v[v<=tab[j,3]])
-      p2 = prior(ordereddate2, tab[(n+1):nrow(tab),3], alpha)
+      #orderedleafdates2=sort(tab[1:n,3],decreasing = T)
+#      v=orderedleafdates[-match(old,orderedleafdates)];orderedleafdates2=c(v[v>tab[j,3]],tab[j,3],v[v<=tab[j,3]])
+      changeinorderedvec(orderedleafdates,old,tab[j,3])
+      p2 = prior(orderedleafdates, orderednodedates, alpha)
       if (log(runif(1)) < l2 - l + p2 - p)
-      {l = l2; p = p2; ordereddate = ordereddate2}
+      {l = l2; p = p2}
       else
-        tab[j, 3] = old
+        {changeinorderedvec(orderedleafdates,tab[j,3],old);tab[j, 3] = old}
     }
 
     if (updateRoot) {
@@ -205,7 +210,7 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
       tab[sides,2]=c(sum(old)*r,sum(old)*(1-r))
       l2=likelihood(tab,rate, ratevar)
       if (log(runif(1))<l2-l) l=l2 else tab[sides,2]=old
-    }
+  }
 
     if (updateRoot) {
       #Move root branch
@@ -307,4 +312,3 @@ modelcompare = function(res1,res2) {
   if (dif< -5 && dif>-10) cat('Model 2 is slightly better.\n')
   if (dif< -10) cat('Model 2 is definitely better.\n')
 }
-
