@@ -5,7 +5,7 @@
 \title{Root to tip correlation}
 \usage{
 roottotip(tree, date, permTest = 10000, showFig = T,
-  showPredInt = "gamma", showTree = T, show.tip.label = F)
+  showPredInt = "gamma", showText = T, showTree = T, show.tip.label = F)
 }
 \arguments{
 \item{tree}{Phylogenetic tree}
@@ -17,6 +17,8 @@ roottotip(tree, date, permTest = 10000, showFig = T,
 \item{showFig}{Whether or not to show the root-to-tip regression figure}
 
 \item{showPredInt}{To show 95percent confidence intervals, can be 'poisson' or 'gamma'}
+
+\item{showText}{Whether to show the title and axis labels}
 
 \item{showTree}{Whether to show the tree or not}
 

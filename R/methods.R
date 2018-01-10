@@ -21,11 +21,11 @@ plot.resCreDating = function(x, type='tree', ...) {
     for(i in 1:(Nnode(x$tree)+Ntip(x$tree)))
       if (x$CI[i,1]!=x$CI[i,2])
         lines(x=c(x$CI[i,1],x$CI[i,2])-x$tree$root.time,
-              y=rep(obj$yy[i],2),lwd=11,lend=0,
+              y=rep(obj$yy[i],2),lwd=5,lend=0,
               col=ifelse(i<=Ntip(x$tree),transred,transblue))
-    points(obj$xx[1:x$tree$Nnode+Ntip(x$tree)],
-           obj$yy[1:x$tree$Nnode+Ntip(x$tree)],pch=19,col="blue",
-           cex=1.8)
+    #points(obj$xx[1:x$tree$Nnode+Ntip(x$tree)],
+    #       obj$yy[1:x$tree$Nnode+Ntip(x$tree)],pch=19,col="blue",
+    #       cex=1)
   }
 
   if (type=='trace') {
@@ -39,7 +39,7 @@ plot.resCreDating = function(x, type='tree', ...) {
     v=x$record[,'root']
     u=sort(unique(v))
     for (i in 1:length(u)) v[which(x$record[,'root']==u[i])]=i
-    plot(v,main='Root branch',type='l',xlab='Sampled iterations',ylab='',yaxt='n')
+    plot(v,main='Root branch',type='p',pch=20,cex=0.2,xlab='Sampled iterations',ylab='',yaxt='n')
     axis(2,1:length(u),u)
   }
 
@@ -49,7 +49,7 @@ plot.resCreDating = function(x, type='tree', ...) {
     probs=as.vector(roots)
     probs=probs/sum(probs)
     probs=round(probs*1000)/10
-    edgelabels(probs,as.numeric(labels(roots)[[1]]))
+    edgelabels(probs,as.numeric(labels(roots)[[1]]),frame='none',adj=c(0.5,-0.1))
     axisPhylo(backward = F)
   }
 }

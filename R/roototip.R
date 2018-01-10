@@ -4,12 +4,13 @@
 #' @param permTest Number of permutations to perform to compute the p-value using a permutation test
 #' @param showFig Whether or not to show the root-to-tip regression figure
 #' @param showPredInt To show 95percent confidence intervals, can be 'poisson' or 'gamma'
+#' @param showText Whether to show the title and axis labels
 #' @param showTree Whether to show the tree or not
 #' @param show.tip.label Whether or not to show tip labels on the tree
 #' @return List containing estimated clock rate, date of origin and p-value
 #' @importFrom graphics abline
 #' @export
-roottotip = function(tree,date,permTest=10000,showFig=T,showPredInt='gamma',showTree=T,show.tip.label = F)
+roottotip = function(tree,date,permTest=10000,showFig=T,showPredInt='gamma',showText=T,showTree=T,show.tip.label = F)
 {
   if (var(date,na.rm=T)==0) {warning('Warning: All dates are identical.\n');return(list(rate=NA,ori=NA,pvalue=NA))}
   n=length(date)
@@ -37,7 +38,7 @@ roottotip = function(tree,date,permTest=10000,showFig=T,showPredInt='gamma',show
     plot(tree,show.tip.label = show.tip.label)
     axisPhylo(1,backward = F)
   }
-  plot(date,ys,xlab='Sampling date',ylab='Root-to-tip distance',xaxs='i',yaxs='i',pch=19,ylim=c(0,max(ys)),xlim=c(ori,max(date,na.rm = T)))
+  plot(date,ys,xlab=ifelse(showText,'Sampling date',''),ylab=ifelse(showText,'Root-to-tip distance',''),xaxs='i',yaxs='i',pch=19,ylim=c(0,max(ys)),xlim=c(ori,max(date,na.rm = T)))
   par(xpd=F)
   abline(res,lwd=2)
   xs=seq(ori,max(date,na.rm = T),0.1)
@@ -50,8 +51,10 @@ roottotip = function(tree,date,permTest=10000,showFig=T,showPredInt='gamma',show
     lines(xs,qgamma(  plim/2,shape=(xs-ori)*rate,scale=1),lty='dashed')
     lines(xs,qgamma(1-plim/2,shape=(xs-ori)*rate,scale=1),lty='dashed')
   }
+  if (showText) {
   if (pvalue==0) mtext(sprintf('Rate=%.2e,MRCA=%.2f,R2=%.2f,p<%.2e',rate,ori,r2,1/permTest), outer = TRUE, cex = 1.5)
   else           mtext(sprintf('Rate=%.2e,MRCA=%.2f,R2=%.2f,p=%.2e',rate,ori,r2,pvalue), outer = TRUE, cex = 1.5)
+  }
   return(list(rate=rate,ori=ori,pvalue=pvalue))
 }
 
