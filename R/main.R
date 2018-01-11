@@ -168,8 +168,7 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
       l2=l-likelihood(mintab,rate,ratevar)
       mintab[nrow(mintab),3]=new
       l2=l2+likelihood(mintab,rate,ratevar)
-      #l2full=likelihood(tab, rate, ratevar)
-      #if (abs(l2-l2full)>1e-10) print(sprintf('error %f %f',l2,l2full))
+      #tab2=tab;tab2[j,3]=new;l2full=likelihood(tab2,rate,ratevar);if (abs(l2-l2full)>1e-10) print(sprintf('error %f %f',l2,l2full))
       changeinorderedvec(orderednodedates,old,new)
       p2 = prior(orderedleafdates, orderednodedates, alpha)
       if (log(runif(1)) < l2 - l + p2 - p)
@@ -189,8 +188,7 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
       l2=l-likelihood(mintab,rate,ratevar)
       mintab[1,3]=new
       l2=l2+likelihood(mintab,rate,ratevar)
-      #l2full=likelihood(tab, rate, ratevar)
-      #if (abs(l2-l2full)>1e-10) print(sprintf('error %f %f',l2,l2full))
+      #tab2=tab;tab2[j,3]=new;l2full=likelihood(tab2,rate,ratevar);if (abs(l2-l2full)>1e-10) print(sprintf('error %f %f',l2,l2full))
       changeinorderedvec(orderedleafdates,old,new)
       p2 = prior(orderedleafdates, orderednodedates, alpha)
       if (log(runif(1)) < l2 - l + p2 - p)
@@ -260,7 +258,7 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
   inputtree = tree
   bestroot = as.numeric(names(sort(table(record[floor(nrow(record) / 2):nrow(record),'root']),decreasing=T)[1]))
   bestrows = intersect(floor(nrow(record) / 2):nrow(record),which(record[,'root']==bestroot))
-  meanRec = colMeans(record[bestrows, ])
+  meanRec = colMeans(record[bestrows, ,drop=F])
   for (i in 1:nrow(tree$edge)) {
     tree$edge[i,1]=record[bestrows[1],nrow(tab)+tree$edge[i,2]]
     tree$edge.length[i] = meanRec[tree$edge[i, 2]] - meanRec[tree$edge[i, 1]]
@@ -277,7 +275,7 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
   for (i in 1:nrow(tab)) {
     s=sort(record[bestrows,i])
     CI[i,1]=s[ceiling(length(s)*0.025)]
-    CI[i,2]=s[floor(length(s)*0.975)]
+    CI[i,2]=s[max(1,floor(length(s)*0.975))]
   }
   out = list(
     inputtree = inputtree,

@@ -9,6 +9,7 @@ makeTab=function(timedTree,phyTree) {
   for (i in c(1:n,(n+2):(2*n-1))) {
     e=which(timedTree$edge[,2]==i)
     tab[i,4]=timedTree$edge[e,1]
+    e=which(phyTree$edge[,2]==i)
     tab[i,2]=phyTree$edge.length[e]}
   return(tab)
 }
@@ -95,4 +96,15 @@ test_that("Likelihood is consistent when increasing rate and reducing branch len
   tab2[,3]=tab2[,3]*10
   expect_equal(likelihoodPoissonC(tab,5.5),likelihoodPoissonC(tab2,5.5/10))
   expect_equal(likelihoodGammaC(tab,5.5),likelihoodGammaC(tab2,5.5/10))
+})
+
+test_that("MCMC likelihood remains correct after many partial updates.", {
+  set.seed(0)
+  leaves=2010:2000
+  tree=simcoaltree(leaves,5.1)
+  phy=simobsphy(tree)
+  set.seed(0)
+  res=credate(phy,leaves,nbIts=10,thin=10,model='gamma',initRate=5.2,updateRate=F,updateRatevar=F,updateRoot=F)
+  tab=makeTab(res$tree,phy)
+  expect_equal(unname(res$record[1,'likelihood']),likelihoodGammaC(tab,5.2))
 })
