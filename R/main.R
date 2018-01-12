@@ -46,7 +46,7 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
   if (model == 'gammaR') likelihood=function(tab,rate,ratevar) return(likelihoodGamma(tab,rate))
   if (model == 'relaxedgamma'||model == 'mixedgamma') likelihood=function(tab,rate,ratevar) return(likelihoodRelaxedgammaC(tab,rate,ratevar))
   if (model == 'relaxedgammaR') likelihood=function(tab,rate,ratevar) return(likelihoodRelaxedgamma(tab,rate,ratevar))
-  if (model != 'relaxedgamma'&&model!='relaxedgammaR'&&model!='mixedgamma') updateRatevar=F
+  if (model != 'relaxedgamma'&&model!='relaxedgammaR'&&model!='mixedgamma') {updateRatevar=F;ratevar=0}
   if (model == 'null') {updateRate=0;likelihood=function(tab,rate,ratevar) return(0)}
   if (!exists('likelihood')) stop('Unknown model.')
 
@@ -140,9 +140,17 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
 
     if (model == 'mixedgamma') {
       #Reversible-jump move
-      if (ratevar==0) ratevar2=rexp(1) else ratevar2=0
+      if (ratevar==0) {
+        ratevar2=rexp(1)
+        qratio=ratevar2#-dexp(ratevar2,1,log=T)
+        pratio=dgamma(ratevar2,shape=1e-3,scale=1e3,log=T)
+      } else {
+        ratevar2=0
+        qratio=-ratevar#dexp(ratevar,1,log=T)
+        pratio=-dgamma(ratevar,shape=1e-3,scale=1e3,log=T)
+      }
       l2=likelihood(tab,rate,ratevar2)
-      if (log(runif(1))<l2-l+dgamma(ratevar2,shape=1e-3,scale=1e3,log=T)+ratevar2) {l=l2;ratevar=ratevar2}
+      if (log(runif(1))<l2-l+pratio+qratio) {l=l2;ratevar=ratevar2}
     }
 
     if (updateAlpha == T) {

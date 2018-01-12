@@ -30,9 +30,7 @@ res=roottotip(harris2010$tree,harris2010$dates)
 We run CreDating as follows:
 
 ```{r}
-ptm=proc.time()
-res=credate(unroot(harris2010$tree),harris2010$dates,nbIts=1e5)
-print(proc.time()-ptm)
+res=credate(unroot(harris2010$tree),harris2010$dates,nbIts=1e4,showProgress = T)
 plot(res,'treeCI',show.tip.label = F)
 ```
 

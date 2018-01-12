@@ -1,5 +1,5 @@
 ---
-title: "Example of using CreDating"
+title: "Example of using CreDating to test significance of temporal signal"
 author: "Xavier Didelot"
 date: '`r Sys.Date()`'
 output:
@@ -63,57 +63,10 @@ plot(res,'treeRoot')
 ```
 
 ##Testing significance of clock signal
-We run the algorithm again, with all sampling dates forced equal, and compare the fit of the two runs
-in order to assess the statistical significance of the temporal signal:
+We run the algorithm again, with all sampling dates forced equal, and compare the fit of the two runs in order to assess the statistical significance of the temporal signal:
 ```{r}
 res2=credate(obsphy,rep(2015,length(dates)))
 modelcompare(res,res2)
 ```
 
-##Second analysis using a relaxed clock model
-Let's do another analysis, using a relaxed clock model, and compare to the first analysis:
-```{r}
-res3=credate(obsphy,dates,model='relaxedgamma')
-modelcompare(res,res3)
-```
-
-##Third analysis using a mixed clock model
-```{r}
-res4=credate(obsphy,dates,model='mixedgamma')
-print(res4$pstrict)
-```
-
-##Analysis of data generated with relaxed clock model
-
-Let's start everything again with a new dataset using the relaxed model:
-```{r}
-rm(list=ls())
-set.seed(0)
-dates=c(rep(2000,10),rep(2010,10))
-phy <- simcoaltree(dates,alpha=10)
-obsphy=simobsphy(phy,rate=10,model='relaxedgamma',ratevar = 100)
-res=roottotip(obsphy,dates)
-```
-First we analyse using a strict clock model:
-```{r}
-res=credate(obsphy,dates)
-plot(res,'trace')
-```
-
-Let's see if the temporal signal is significant:
-```{r}
-res2=credate(obsphy,rep(2015,length(dates)))
-modelcompare(res,res2)
-```
-
-Finally we analyse with the relaxed clock model:
-```{r}
-res3=credate(obsphy,dates,model='relaxedgamma')
-plot(res3,'trace')
-modelcompare(res,res3)
-```
-
-```{r}
-res4=credate(obsphy,dates,model='mixedgamma')
-print(res4$pstrict)
-```
+Since the first model is found to be better, we conclude that the temporal signal is significant.

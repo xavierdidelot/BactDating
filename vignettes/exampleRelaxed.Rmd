@@ -1,0 +1,67 @@
+---
+title: "Example of using CreDating with relaxed clock model"
+author: "Xavier Didelot"
+date: '`r Sys.Date()`'
+output:
+  pdf_document: default
+---
+
+##Initialisation
+
+```{r}
+library(CreDating)
+library(ape)
+set.seed(0)
+```
+
+##Data generated from strict clock model
+
+We start by generating a coalescent tree with 10 leaves sampled in 2000, 10 leaves sampled in 2010, and a coalescent time unit of 10 years:
+
+```{r}
+dates=c(rep(2000,10),rep(2010,10))
+phy=simcoaltree(dates,alpha=10)
+plot(phy,show.tip.label = F)
+axisPhylo(backward = F)
+```
+
+On each branch we observe a number of substitutions which is distributed $\mathrm{Gamma}(rl,1)$
+where $l$ is the branch length and 
+$r=10$ per year is the substitution rate. We can simulate an observed phylogenetic tree
+and perform a root-to-tip analysis as follows:
+
+```{r}
+obsphy=simobsphy(phy,rate=10)
+res=roottotip(obsphy,dates)
+```
+##Analysis of data from strict clock model
+
+We run the mixture-model dating analysis as follows:
+
+```{r}
+res=credate(obsphy,dates,model='mixedgamma',updateRoot=F)
+plot(res,'trace')
+print(res$pstrict)
+```
+
+##Data generated from relaxed clock model
+
+Let's start again with a new dataset using the relaxed model:
+```{r}
+rm(list=ls())
+set.seed(0)
+dates=c(rep(2000,10),rep(2010,10))
+phy <- simcoaltree(dates,alpha=10)
+obsphy=simobsphy(phy,rate=10,model='relaxedgamma',ratevar = 100)
+res=roottotip(obsphy,dates)
+```
+
+#Analysis of data from relaxed clock model
+
+We run the analysis as previously:
+
+```{r}
+res=credate(obsphy,dates,model='mixedgamma',updateRoot=F)
+plot(res,'trace')
+print(res$pstrict)
+```
