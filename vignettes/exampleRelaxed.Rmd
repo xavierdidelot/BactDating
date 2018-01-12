@@ -16,11 +16,11 @@ set.seed(0)
 
 ##Data generated from strict clock model
 
-We start by generating a coalescent tree with 10 leaves sampled in 2000, 10 leaves sampled in 2010, and a coalescent time unit of 10 years:
+We start by generating a coalescent tree with 10 leaves sampled at regular intervals between 1990 and 2010, and a coalescent time unit of 5 years:
 
 ```{r}
-dates=c(rep(2000,10),rep(2010,10))
-phy=simcoaltree(dates,alpha=10)
+dates=1990:2010
+phy=simcoaltree(dates,alpha=5)
 plot(phy,show.tip.label = F)
 axisPhylo(backward = F)
 ```
@@ -48,10 +48,7 @@ print(res$pstrict)
 
 Let's start again with a new dataset using the relaxed model:
 ```{r}
-rm(list=ls())
 set.seed(0)
-dates=c(rep(2000,10),rep(2010,10))
-phy <- simcoaltree(dates,alpha=10)
 obsphy=simobsphy(phy,rate=10,model='relaxedgamma',ratevar = 100)
 res=roottotip(obsphy,dates)
 ```
@@ -61,7 +58,7 @@ res=roottotip(obsphy,dates)
 We run the analysis as previously:
 
 ```{r}
-res=credate(obsphy,dates,model='mixedgamma',updateRoot=F)
+res=credate(obsphy,dates,model='mixedgamma',updateRoot=F,nbIts=1e6)
 plot(res,'trace')
 print(res$pstrict)
 ```

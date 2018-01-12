@@ -3,14 +3,15 @@
 #' @param date Dates of sampling
 #' @param permTest Number of permutations to perform to compute the p-value using a permutation test
 #' @param showFig Whether or not to show the root-to-tip regression figure
+#' @param colored Whether or not to use colors illustrating dates
 #' @param showPredInt To show 95percent confidence intervals, can be 'poisson' or 'gamma'
 #' @param showText Whether to show the title and axis labels
 #' @param showTree Whether to show the tree or not
-#' @param show.tip.label Whether or not to show tip labels on the tree
 #' @return List containing estimated clock rate, date of origin and p-value
 #' @importFrom graphics abline
+#' @importFrom grDevices rgb
 #' @export
-roottotip = function(tree,date,permTest=10000,showFig=T,showPredInt='gamma',showText=T,showTree=T,show.tip.label = F)
+roottotip = function(tree,date,permTest=10000,showFig=T,colored=T,showPredInt='gamma',showText=T,showTree=T)
 {
   if (var(date,na.rm=T)==0) {warning('Warning: All dates are identical.\n');return(list(rate=NA,ori=NA,pvalue=NA))}
   n=length(date)
@@ -33,12 +34,14 @@ roottotip = function(tree,date,permTest=10000,showFig=T,showPredInt='gamma',show
   if (rate<0) {warning('The linear regression suggests a negative rate.');return(list(rate=rate,ori=ori,pvalue=pvalue))}
   if (showFig==F) return(list(rate=rate,ori=ori,pvalue=pvalue))
   par(xpd=NA,oma = c(0, 0, 2, 0))
+  if (colored) cols=rgb((date-min(date))/(max(date)-min(date)),0,1-(date-min(date))/(max(date)-min(date)),0.5) else cols='black'
   if (showTree) {
     par(mfrow=c(1,2))
-    plot(tree,show.tip.label = show.tip.label)
+    plot(tree,show.tip.label = F)
+    if (colored) tiplabels(col=cols,pch=19,adj=5)
     axisPhylo(1,backward = F)
   }
-  plot(date,ys,xlab=ifelse(showText,'Sampling date',''),ylab=ifelse(showText,'Root-to-tip distance',''),xaxs='i',yaxs='i',pch=19,ylim=c(0,max(ys)),xlim=c(ori,max(date,na.rm = T)))
+  plot(date,ys,col=cols,xlab=ifelse(showText,'Sampling date',''),ylab=ifelse(showText,'Root-to-tip distance',''),xaxs='i',yaxs='i',pch=19,ylim=c(0,max(ys)),xlim=c(ori,max(date,na.rm = T)))
   par(xpd=F)
   abline(res,lwd=2)
   xs=seq(ori,max(date,na.rm = T),0.1)
