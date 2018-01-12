@@ -34,11 +34,14 @@ roottotip = function(tree,date,permTest=10000,showFig=T,colored=T,showPredInt='g
   if (rate<0) {warning('The linear regression suggests a negative rate.');return(list(rate=rate,ori=ori,pvalue=pvalue))}
   if (showFig==F) return(list(rate=rate,ori=ori,pvalue=pvalue))
   par(xpd=NA,oma = c(0, 0, 2, 0))
-  if (colored) cols=rgb((date-min(date))/(max(date)-min(date)),0,1-(date-min(date))/(max(date)-min(date)),0.5) else cols='black'
+  if (colored) {
+    normed=(date-min(date,na.rm=T))/(max(date,na.rm=T)-min(date,na.rm=T))
+    cols=rgb(ifelse(is.na(normed),0.5,normed),0,1-ifelse(is.na(normed),0.5,normed),ifelse(is.na(normed),1,0.5))
+  } else cols='black'
   if (showTree) {
     par(mfrow=c(1,2))
     plot(tree,show.tip.label = F)
-    if (colored) tiplabels(col=cols,pch=19,adj=5)
+    if (colored) tiplabels(col=cols,pch=19,adj=max(ys,na.rm=T)/50)
     axisPhylo(1,backward = F)
   }
   plot(date,ys,col=cols,xlab=ifelse(showText,'Sampling date',''),ylab=ifelse(showText,'Root-to-tip distance',''),xaxs='i',yaxs='i',pch=19,ylim=c(0,max(ys)),xlim=c(ori,max(date,na.rm = T)))
