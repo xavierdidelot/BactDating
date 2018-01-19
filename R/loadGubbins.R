@@ -15,7 +15,10 @@ loadGubbins = function(prefix)
     j=tree$edge[i,2]
     if (j<=n) nam=tree$tip.label[j] else nam=tree$node.label[j-n]
     w=which(t[,1]==nam)
-    tree$unrec[i]=t[w,10]/t[w,9]
+    j=tree$edge[i,1]
+    if (j<=n) nam=tree$tip.label[j] else nam=tree$node.label[j-n]
+    w2=which(t[,1]==nam)
+    tree$unrec[i]=1-(t[w,6]-t[w2,6])/max(t[,9])
   }
   return(tree)
 }
