@@ -18,15 +18,15 @@ credate(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA,
 
 \item{initAlpha}{Initial coalescent time unit}
 
-\item{initRatevar}{Initial variance on per-branch substituion rate (only used in relaxedgamma model)}
+\item{initRatevar}{Initial variance on per-branch substitution rate (only used in relaxedgamma and mixedgamma models)}
 
 \item{updateRate}{Whether or not to update the substitution rate}
 
 \item{updateAlpha}{Whether or not to update the coalescent time unit}
 
-\item{updateRatevar}{Whether or not to per-branch substituion rate (only used in relaxedgamma model)}
+\item{updateRatevar}{Whether or not to per-branch substitution rate (only used in relaxedgamma and mixedgamma models)}
 
-\item{updateRoot}{Root finding algorithm (0=none, 1=on preset branch, 2=anywhere)}
+\item{updateRoot}{Whether or not to use the root finding algorithm}
 
 \item{nbIts}{Number of MCMC iterations to perform}
 

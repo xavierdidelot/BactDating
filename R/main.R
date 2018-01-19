@@ -3,11 +3,11 @@
 #' @param date Sampling dates for the leaves of the tree
 #' @param initRate Initial rate of substitutions per genome (not per site), or zero to use root-to-tip estimate
 #' @param initAlpha Initial coalescent time unit
-#' @param initRatevar Initial variance on per-branch substituion rate (only used in relaxedgamma model)
+#' @param initRatevar Initial variance on per-branch substitution rate (only used in relaxedgamma and mixedgamma models)
 #' @param updateRate Whether or not to update the substitution rate
 #' @param updateAlpha Whether or not to update the coalescent time unit
-#' @param updateRatevar Whether or not to per-branch substituion rate (only used in relaxedgamma model)
-#' @param updateRoot Root finding algorithm (0=none, 1=on preset branch, 2=anywhere)
+#' @param updateRatevar Whether or not to per-branch substitution rate (only used in relaxedgamma and mixedgamma models)
+#' @param updateRoot Whether or not to use the root finding algorithm
 #' @param nbIts Number of MCMC iterations to perform
 #' @param thin Thining interval between recorded MCMC samples
 #' @param useCoalPrior Whether or not to use a coalescent prior on the tree
