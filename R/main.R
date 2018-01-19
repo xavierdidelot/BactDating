@@ -121,7 +121,7 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
       record[i / thin, 'alpha'] = alpha
       record[i / thin, 'prior'] = p
       record[i / thin, 'root'] = curroot
-      if (testSignal) record[i / thin, 'signal'] = all(tab[1:n,3]==dates)
+      if (testSignal) record[i / thin, 'signal'] = all(tab[1:n,3]==date)
     }
 
     if (updateRate == T) {
@@ -247,22 +247,22 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
 
     if (testSignal) {
       #Model jump to test strength of temporal signal
-      maxdates=max(dates)
+      maxdates=max(date)
       if (all(tab[1:n,3]==maxdates)) {
-        tab[1:n,3]=dates
+        tab[1:n,3]=date
         l2=likelihood(tab,rate,ratevar)
         if (log(runif(1))<l2-l) l=l2 else tab[1:n,3]=maxdates
       } else {
         tab[1:n,3]=maxdates
         l2=likelihood(tab,rate,ratevar)
-        if (log(runif(1))<l2-l) l=l2 else tab[1:n,3]=dates
+        if (log(runif(1))<l2-l) l=l2 else tab[1:n,3]=date
       }
     }
 
   }#End of MCMC loop
 
   #Output
-  if (testSignal) tab[1:n,3]=dates
+  if (testSignal) tab[1:n,3]=date
   inputtree = tree
   bestroot = as.numeric(names(sort(table(record[floor(nrow(record) / 2):nrow(record),'root']),decreasing=T)[1]))
   bestrows = intersect(floor(nrow(record) / 2):nrow(record),which(record[,'root']==bestroot))

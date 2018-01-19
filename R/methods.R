@@ -64,9 +64,18 @@ print.resCreDating <- function(x, ...)
   stopifnot(inherits(x, "resCreDating"))
   cat( 'Phylogenetic tree dated using CreDating\n')
   print(x$tree,...)
-  cat(paste( 'Mean date of root:', x$rootdate, '\n'))
-  cat(paste('Probability of root branch:', x$rootprob, '\n'))
-  cat(paste('Mean clock rate:',mean(x$record[round(nrow(x$record)/2):nrow(x$record),ncol(x$record)-2])))
+  cat(sprintf('Probability of root branch=%.2f\n', x$rootprob))
+  for (nam in c('likelihood','prior','rate','ratevar','alpha')) {
+    v=x$record[,nam]
+    v=v[(1+length(v)/2):length(v)]
+    v=sort(v)
+    vals=c(mean(v),v[pmax(1,floor(length(v)*c(0.025,0.975)))])
+    cat(sprintf('%s=%.2e [%.2e;%.2e]\n',nam,vals[1],vals[2],vals[3]))
+  }
+  v=x$record[,Ntip(x$tree)+1]
+  v=sort(v[(1+length(v)/2):length(v)])
+  vals=c(mean(v),v[pmax(1,floor(length(v)*c(0.025,0.975)))])
+  cat(sprintf('Root date=%.2f [%.2f;%.2f]\n',vals[1],vals[2],vals[3]))
   invisible(x)
 }
 
@@ -76,5 +85,8 @@ print.resCreDating <- function(x, ...)
 #' @return Print out details of CreDating results
 #' @export
 summary.resCreDating <- function(object, ...){
-  print.resCreDating(object,...)
+  stopifnot(inherits(object, "resCreDating"))
+  cat( 'Phylogenetic tree dated using CreDating\n')
+  print(object$tree,...)
+  invisible(object)
 }

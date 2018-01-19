@@ -4,8 +4,8 @@
 \alias{roottotip}
 \title{Root to tip correlation}
 \usage{
-roottotip(tree, date, permTest = 10000, showFig = T,
-  showPredInt = "gamma", showText = T, showTree = T, show.tip.label = F)
+roottotip(tree, date, permTest = 10000, showFig = T, colored = T,
+  showPredInt = "gamma", showText = T, showTree = T)
 }
 \arguments{
 \item{tree}{Phylogenetic tree}
@@ -16,13 +16,13 @@ roottotip(tree, date, permTest = 10000, showFig = T,
 
 \item{showFig}{Whether or not to show the root-to-tip regression figure}
 
+\item{colored}{Whether or not to use colors illustrating dates}
+
 \item{showPredInt}{To show 95percent confidence intervals, can be 'poisson' or 'gamma'}
 
 \item{showText}{Whether to show the title and axis labels}
 
 \item{showTree}{Whether to show the tree or not}
-
-\item{show.tip.label}{Whether or not to show tip labels on the tree}
 }
 \value{
 List containing estimated clock rate, date of origin and p-value
