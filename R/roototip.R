@@ -1,6 +1,7 @@
 #' Root to tip correlation
 #' @param tree Phylogenetic tree
 #' @param date Dates of sampling
+#' @param rate Evolutionary rate, estimated unless provided
 #' @param permTest Number of permutations to perform to compute the p-value using a permutation test
 #' @param showFig Whether or not to show the root-to-tip regression figure
 #' @param colored Whether or not to use colors illustrating dates
@@ -11,12 +12,18 @@
 #' @importFrom graphics abline
 #' @importFrom grDevices rgb
 #' @export
-roottotip = function(tree,date,permTest=10000,showFig=T,colored=T,showPredInt='gamma',showText=T,showTree=T)
+roottotip = function(tree,date,rate=NA,permTest=10000,showFig=T,colored=T,showPredInt='gamma',showText=T,showTree=T)
 {
-  if (var(date,na.rm=T)==0) {warning('Warning: All dates are identical.\n');return(list(rate=NA,ori=NA,pvalue=NA))}
+  if (var(date,na.rm=T)==0 && is.na(rate)) {warning('Warning: All dates are identical.\n');return(list(rate=NA,ori=NA,pvalue=NA))}
   n=length(date)
   ys=leafDates(tree)
-  res=lm(ys~date)
+  if (is.na(rate)) {
+    res=lm(ys~date)
+  }
+  else {
+    res=lm(I(ys-rate*date)~1)
+    res$coefficients=c(res$coefficients,rate)
+  }
   ori=-coef(res)[1]/coef(res)[2]
   rate=coef(res)[2]
   r2=summary(res)$r.squared
@@ -41,10 +48,11 @@ roottotip = function(tree,date,permTest=10000,showFig=T,colored=T,showPredInt='g
   if (showTree) {
     par(mfrow=c(1,2))
     plot(tree,show.tip.label = F)
-    if (colored) tiplabels(col=cols,pch=19,adj=max(ys,na.rm=T)/50)
+    if (colored) tiplabels(col=cols,pch=19)
     axisPhylo(1,backward = F)
   }
   plot(date,ys,col=cols,xlab=ifelse(showText,'Sampling date',''),ylab=ifelse(showText,'Root-to-tip distance',''),xaxs='i',yaxs='i',pch=19,ylim=c(0,max(ys)),xlim=c(ori,max(date,na.rm = T)))
+  #text(date,ys,labels=1:length(date))
   par(xpd=F)
   abline(res,lwd=2)
   xs=seq(ori,max(date,na.rm = T),0.1)

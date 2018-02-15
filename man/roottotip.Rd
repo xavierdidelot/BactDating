@@ -4,13 +4,15 @@
 \alias{roottotip}
 \title{Root to tip correlation}
 \usage{
-roottotip(tree, date, permTest = 10000, showFig = T, colored = T,
-  showPredInt = "gamma", showText = T, showTree = T)
+roottotip(tree, date, rate = NA, permTest = 10000, showFig = T,
+  colored = T, showPredInt = "gamma", showText = T, showTree = T)
 }
 \arguments{
 \item{tree}{Phylogenetic tree}
 
 \item{date}{Dates of sampling}
+
+\item{rate}{Evolutionary rate, estimated unless provided}
 
 \item{permTest}{Number of permutations to perform to compute the p-value using a permutation test}
 
