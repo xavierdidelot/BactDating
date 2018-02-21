@@ -1,7 +1,7 @@
 rm(list=ls())
 dir='~/simuCreDating'
 
-if (Sys.info()["nodename"]=='xavierdidelot') {
+if (Sys.info()["nodename"]=='server1b') {
   #SERVER SIDE
   library(CreDating)
   store=matrix(NA,200,8)
@@ -25,7 +25,7 @@ if (Sys.info()["nodename"]=='xavierdidelot') {
 } else {
 
   #LAPTOP SIDE
-#  system(sprintf('scp ubuntu@137.205.69.116:%s/all.RData /tmp',dir))
+#  system(sprintf('scp ubuntu@137.205.69.104:%s/all.RData /tmp',dir))
   load('/tmp/all.RData')
   allstore=store
   store=allstore[1:100,]

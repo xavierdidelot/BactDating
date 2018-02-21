@@ -59,6 +59,7 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
   #Create table of nodes (col1=name,col2=observed substitutions on branch above,col3=date,col4=father,col5=unrecombined proportion, only if useRec=T)
   n = Ntip(tree)
   tab = matrix(NA, n + tree$Nnode, ifelse(useRec,5,4))
+  nrowtab = nrow(tab)
   for (r in 1:(nrow(tree$edge))) {
     i = tree$edge[r, 2]
     tab[i, 1] = i
@@ -86,11 +87,11 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
 
   #Sample Alpha if no initial point provided
   if (is.na(initAlpha)) {
-    s <- sort(tab[, 3], decreasing = T, index.return = TRUE)
+    s <- sort.int(tab[, 3], method='quick',decreasing = T, index.return = TRUE)
     k=cumsum(2*(s$ix<=n)-1)
-    difs=-diff(s$x)
-    b=sum(k[2:nrow(tab)]*(k[2:nrow(tab)]-1)*difs)/2
-    initAlpha=1/rgamma(1,shape=n-1,scale=1/b)
+    difs=s$x[1:(nrowtab-1)]-s$x[2:nrowtab]
+    su=sum(k[1:(nrowtab-1)]*(k[1:(nrowtab-1)]-1)*difs)
+    initAlpha=1/rgamma(1,shape=n+0.001-1,scale=2000/(su*1000+2))
   }
   alpha=initAlpha
   initHeight=max(tab[,3])-min(tab[,3])
@@ -155,10 +156,10 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
 
     if (updateAlpha == T) {
       #Gibbs move using inverse-gamma prior
-      s <- sort(tab[, 3], decreasing = T, index.return = TRUE)
+      s <- sort.int(tab[, 3], method='quick',decreasing = T, index.return = TRUE)
       k=cumsum(2*(s$ix<=n)-1)
-      difs=-diff(s$x)
-      su=sum(k[2:nrow(tab)]*(k[2:nrow(tab)]-1)*difs)
+      difs=s$x[1:(nrowtab-1)]-s$x[2:nrowtab]
+      su=sum(k[1:(nrowtab-1)]*(k[1:(nrowtab-1)]-1)*difs)
       alpha=1/rgamma(1,shape=n+0.001-1,scale=2000/(su*1000+2))
       p=prior(orderedleafdates,orderednodedates,alpha)
     }
