@@ -14,6 +14,10 @@
 #' @export
 roottotip = function(tree,date,rate=NA,permTest=10000,showFig=T,colored=T,showPredInt='gamma',showText=T,showTree=T)
 {
+  #Rerranging of dates, if needed
+  if (!is.null(names(date))) date=findDates(tree,date)
+  print(date)
+
   if (var(date,na.rm=T)==0 && is.na(rate)) {warning('Warning: All dates are identical.\n');return(list(rate=NA,ori=NA,pvalue=NA))}
   n=length(date)
   ys=leafDates(tree)
@@ -186,3 +190,14 @@ nodeDates = function (phy) {
   }
   return(dates)
 }
+
+findDates = function(tree,dates)
+{
+  date2=rep(NA,Ntip(tree))
+  for (i in 1:Ntip(tree)) {
+    wi=which(names(dates)==tree$tip.label[i])
+    if (length(wi)==1) date2[i]=dates[wi]
+  }
+  return(date2)
+}
+

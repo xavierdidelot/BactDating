@@ -18,6 +18,8 @@
 #' @export
 credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, updateRate = T, updateAlpha = T, updateRatevar = T, updateRoot = T, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T,  model = 'gamma', useRec = F, showProgress = F)
 {
+  #Rerranging of dates, if needed
+  if (!is.null(names(date))) date=findDates(tree,date)
   #Initial rooting of tree, if needed
   if (useRec==T && is.null(tree$unrec)) stop("To use recombination, the proportion of unrecombined needs to be input.")
   if (is.rooted(tree)==F) tree=initRoot(tree,date,useRec=useRec)
