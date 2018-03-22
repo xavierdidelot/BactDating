@@ -102,8 +102,8 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
   l = likelihood(tab, rate, ratevar)
   orderednodedates=sort(tab[(n+1):nrow(tab),3],method='quick',decreasing = T)
   p = prior(orderedleafdates,orderednodedates,alpha)
-  record = matrix(NA, floor(nbIts / thin), nrow(tab)*2 + 6)
-  colnames(record)<-c(rep(NA,nrow(tab)*2),'likelihood','rate','ratevar','alpha','prior','root')
+  record = matrix(NA, floor(nbIts / thin), nrow(tab)*3 + 6)
+  colnames(record)<-c(rep(NA,nrow(tab)*3),'likelihood','rate','ratevar','alpha','prior','root')
   if (showProgress) pb <- txtProgressBar(min=0,max=nbIts,style = 3)
   children=vector("list", max(tab[,4],na.rm = T))
   for (i in 1:nrow(tab)) if (!is.na(tab[i,4])) children[[tab[i,4]]]=c(children[[tab[i,4]]],i)
@@ -118,6 +118,7 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
       if (showProgress) setTxtProgressBar(pb, i)
       record[i / thin, 1:nrow(tab)] = tab[, 3]
       record[i / thin, (1:nrow(tab))+nrow(tab)]=tab[, 4]
+      record[i / thin, (1:nrow(tab))+2*nrow(tab)]=tab[, 2]
       record[i / thin, 'likelihood'] = l
       record[i / thin, 'rate'] = rate
       record[i / thin, 'ratevar'] = ratevar
@@ -273,6 +274,7 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
   for (i in 1:nrow(tree$edge)) {
     tree$edge[i,1]=record[bestrows[1],nrow(tab)+tree$edge[i,2]]
     tree$edge.length[i] = meanRec[tree$edge[i, 2]] - meanRec[tree$edge[i, 1]]
+    tree$subs[i] = meanRec[nrow(tab)*2+tree$edge[i,2]]
   }
 
   #Calculate DIC
@@ -291,6 +293,7 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
   out = list(
     inputtree = inputtree,
     tree = tree,
+    model = model,
     record = record,
     rootdate = unname(meanRec[n + 1]),
     rootprob = length(bestrows)*2/nrow(record),

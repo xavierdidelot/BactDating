@@ -1,6 +1,6 @@
 #' Plotting methods
 #' @param x Output from running function credating
-#' @param type Type of plot to do. Currently either 'tree' or 'treeCI' or 'trace' or 'treeRoot'
+#' @param type Type of plot to do. Currently either 'tree' or 'treeCI' or 'trace' or 'treeRoot' or 'scatter'
 #' @param ... Additional parameters are passed on
 #' @return Plot of CreDating results
 #' @importFrom grDevices rgb
@@ -51,6 +51,28 @@ plot.resCreDating = function(x, type='tree', ...) {
     probs=round(probs*1000)/10
     edgelabels(probs,as.numeric(labels(roots)[[1]]),frame='none',adj=c(0.5,-0.1))
     axisPhylo(backward = F)
+  }
+
+  if (type=='scatter') {
+    xs=x$tree$edge.length
+    ys=x$tree$subs
+    plot(xs,ys,xlab='Branch duration',ylab='Substitutions',xaxs='i',yaxs='i',pch=19,xlim=c(0,max(xs)*1.05),ylim=c(0,max(ys)*1.05))
+    par(xpd=F)
+    ori=0
+    xs=seq(ori,max(xs)*1.05,0.1)
+    plim=0.05
+    rate=mean(x$record[(nrow(x$record)/2):nrow(x$record),'rate'])
+    if (x$model=='poisson') {
+      lines(xs,qpois(  plim/2,(xs-ori)*rate),lty='dashed')
+      lines(xs,qpois(1-plim/2,(xs-ori)*rate),lty='dashed')
+    }
+    else {#if (x$model=='gamma') {
+      lines(xs,qgamma(  plim/2,shape=(xs-ori)*rate,scale=1),lty='dashed')
+      lines(xs,qgamma(1-plim/2,shape=(xs-ori)*rate,scale=1),lty='dashed')
+    }
+
+
+
   }
 }
 
