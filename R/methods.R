@@ -54,25 +54,33 @@ plot.resCreDating = function(x, type='tree', ...) {
   }
 
   if (type=='scatter') {
+#    normed=(date-min(date,na.rm=T))/(max(date,na.rm=T)-min(date,na.rm=T))
+#    cols=rgb(ifelse(is.na(normed),0.5,normed),0,1-ifelse(is.na(normed),0.5,normed),ifelse(is.na(normed),1,0.5))
     xs=x$tree$edge.length
     ys=x$tree$subs
-    plot(xs,ys,xlab='Branch duration',ylab='Substitutions',xaxs='i',yaxs='i',pch=19,xlim=c(0,max(xs)*1.05),ylim=c(0,max(ys)*1.05))
+    ma=max(xs)*1.05
+    rate=mean(x$record[(nrow(x$record)/2):nrow(x$record),'rate'])
+    plot(c(0,ma),c(0,rate*ma),type='l',xlab='Branch duration',ylab='Substitutions',xaxs='i',yaxs='i',xlim=c(0,max(xs)*1.05),ylim=c(0,max(ys)*1.05))
     par(xpd=F)
     ori=0
-    xs=seq(ori,max(xs)*1.05,0.1)
-    plim=0.05
-    rate=mean(x$record[(nrow(x$record)/2):nrow(x$record),'rate'])
+    xss=seq(ori,ma,0.1)
+    plim=0.01
+#    lines(xs,xs*rate)
     if (x$model=='poisson') {
-      lines(xs,qpois(  plim/2,(xs-ori)*rate),lty='dashed')
-      lines(xs,qpois(1-plim/2,(xs-ori)*rate),lty='dashed')
+      lines(xss,qpois(  plim/2,(xss-ori)*rate),lty='dashed')
+      lines(xss,qpois(1-plim/2,(xss-ori)*rate),lty='dashed')
+      ll=dpois(round(ys),xs*rate,log=T)
     }
     else {#if (x$model=='gamma') {
-      lines(xs,qgamma(  plim/2,shape=(xs-ori)*rate,scale=1),lty='dashed')
-      lines(xs,qgamma(1-plim/2,shape=(xs-ori)*rate,scale=1),lty='dashed')
+      lines(xss,qgamma(  plim/2,shape=(xss-ori)*rate,scale=1),lty='dashed')
+      lines(xss,qgamma(1-plim/2,shape=(xss-ori)*rate,scale=1),lty='dashed')
+      ll=dgamma(ys,xs*rate,1,log=T)
     }
-
-
-
+    normed=(ll-min(ll))/(max(ll)-min(ll))
+    cols=rgb(normed,0,1-normed)
+    points(xs,ys,pch=19,col=cols)
+    base=seq(0,1,0.25)
+    legend("topleft",legend=sprintf('%.2e',base*(max(ll)-min(ll))+min(ll)),pch=19,col=rgb(base,0,1-base))
   }
 }
 
