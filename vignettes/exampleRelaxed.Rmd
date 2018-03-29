@@ -1,5 +1,5 @@
 ---
-title: "Example of using CreDating with relaxed clock model"
+title: "Example of using BactDating with relaxed clock model"
 author: "Xavier Didelot"
 date: '`r Sys.Date()`'
 output:
@@ -9,7 +9,7 @@ output:
 ##Initialisation
 
 ```{r}
-library(CreDating)
+library(BactDating)
 library(ape)
 set.seed(0)
 ```
@@ -39,7 +39,7 @@ res=roottotip(obsphy,dates)
 We run the mixture-model dating analysis as follows:
 
 ```{r}
-res=credate(obsphy,dates,model='mixedgamma',updateRoot=F)
+res=bactdate(obsphy,dates,model='mixedgamma',updateRoot=F)
 plot(res,'trace')
 print(res$pstrict)
 ```
@@ -58,7 +58,7 @@ res=roottotip(obsphy,dates)
 We run the analysis as previously:
 
 ```{r}
-res=credate(obsphy,dates,model='mixedgamma',updateRoot=F,nbIts=1e6)
+res=bactdate(obsphy,dates,model='mixedgamma',updateRoot=F,nbIts=1e6)
 plot(res,'trace')
 print(res$pstrict)
 ```

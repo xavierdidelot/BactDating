@@ -1,5 +1,5 @@
 ---
-title: "Example of using CreDating to test significance of temporal signal"
+title: "Example of using BactDating to test significance of temporal signal"
 author: "Xavier Didelot"
 date: '`r Sys.Date()`'
 output:
@@ -9,7 +9,7 @@ output:
 ##Initialisation
 
 ```{r}
-library(CreDating)
+library(BactDating)
 library(ape)
 set.seed(0)
 ```
@@ -48,7 +48,7 @@ dates[length(dates)]=NA
 We run the dating analysis as follows:
 
 ```{r}
-res=credate(obsphy,dates)
+res=bactdate(obsphy,dates)
 plot(res,'trace')
 ```
 
@@ -65,7 +65,7 @@ plot(res,'treeRoot')
 ##Testing significance of clock signal
 We run the algorithm again, with all sampling dates forced equal, and compare the fit of the two runs in order to assess the statistical significance of the temporal signal:
 ```{r}
-res2=credate(obsphy,rep(2015,length(dates)))
+res2=bactdate(obsphy,rep(2015,length(dates)))
 modelcompare(res,res2)
 ```
 

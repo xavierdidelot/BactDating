@@ -1,5 +1,5 @@
 ---
-title: "Example of using CreDating after recombination analysis"
+title: "Example of using BactDating after recombination analysis"
 author: "Xavier Didelot"
 date: '`r Sys.Date()`'
 output:
@@ -9,7 +9,7 @@ output:
 ##Initialisation
 
 ```{r}
-library(CreDating)
+library(BactDating)
 library(ape)
 set.seed(0)
 ```
@@ -44,10 +44,10 @@ edgelabels(round(100*t$unrec))
 
 ##Analysis
 
-We run CreDating as follows:
+We run BactDating as follows:
 
 ```{r}
-res=credate(t,dates,useRec=T)
+res=bactdate(t,dates,useRec=T)
 plot(res,'treeCI')
 ```
 

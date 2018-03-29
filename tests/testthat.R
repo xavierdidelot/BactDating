@@ -1,4 +1,4 @@
 library(testthat)
-library(CreDating)
+library(BactDating)
 
-test_check("CreDating")
+test_check("BactDating")

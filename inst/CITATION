@@ -1,13 +1,13 @@
-citHeader("To cite CreDating:")
+citHeader("To cite BactDating:")
 
 citEntry(
 entry="Article",
-title = "CreDating: Bayesian dating of phylogenetic trees",
+title = "BactDating: Bayesian dating of phylogenetic trees",
 journal= "in preparation",
 year = "2018",
 author = "Didelot X and Wilson DJ",
 volume = "",
 pages = "",
 doi = "",
-textVersion = "Didelot X and Wilson DJ (in preparation). CreDating: Bayesian dating of phylogenetic trees."
+textVersion = "Didelot X and Wilson DJ (in preparation). BactDating: Bayesian dating of phylogenetic trees."
 )

@@ -2,22 +2,22 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 coalpriorC <- function(leaves, nodes, alpha) {
-    .Call('_CreDating_coalpriorC', PACKAGE = 'CreDating', leaves, nodes, alpha)
+    .Call('_BactDating_coalpriorC', PACKAGE = 'BactDating', leaves, nodes, alpha)
 }
 
 likelihoodGammaC <- function(tab, rate) {
-    .Call('_CreDating_likelihoodGammaC', PACKAGE = 'CreDating', tab, rate)
+    .Call('_BactDating_likelihoodGammaC', PACKAGE = 'BactDating', tab, rate)
 }
 
 likelihoodRelaxedgammaC <- function(tab, rate, ratevar) {
-    .Call('_CreDating_likelihoodRelaxedgammaC', PACKAGE = 'CreDating', tab, rate, ratevar)
+    .Call('_BactDating_likelihoodRelaxedgammaC', PACKAGE = 'BactDating', tab, rate, ratevar)
 }
 
 likelihoodPoissonC <- function(tab, rate) {
-    .Call('_CreDating_likelihoodPoissonC', PACKAGE = 'CreDating', tab, rate)
+    .Call('_BactDating_likelihoodPoissonC', PACKAGE = 'BactDating', tab, rate)
 }
 
 changeinorderedvec <- function(vec, old, n) {
-    invisible(.Call('_CreDating_changeinorderedvec', PACKAGE = 'CreDating', vec, old, n))
+    invisible(.Call('_BactDating_changeinorderedvec', PACKAGE = 'BactDating', vec, old, n))
 }
 

@@ -1,5 +1,5 @@
 ---
-title: "Application of CreDating on Harris et al (2010)"
+title: "Application of BactDating on Harris et al (2010)"
 author: "Xavier Didelot"
 date: '`r Sys.Date()`'
 output:
@@ -9,7 +9,7 @@ output:
 ##Initialisation
 
 ```{r}
-library(CreDating)
+library(BactDating)
 library(ape)
 set.seed(0)
 data(harris2010)
@@ -27,10 +27,10 @@ res=roottotip(harris2010$tree,harris2010$dates)
 
 ##Analysis
 
-We run CreDating as follows:
+We run BactDating as follows:
 
 ```{r}
-res=credate(unroot(harris2010$tree),harris2010$dates,nbIts=1e4,showProgress = T,model='mixedgamma')
+res=bactdate(unroot(harris2010$tree),harris2010$dates,nbIts=1e4,showProgress = T,model='mixedgamma')
 plot(res,'treeCI',show.tip.label = F)
 ```
 

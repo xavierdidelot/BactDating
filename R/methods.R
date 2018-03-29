@@ -2,10 +2,10 @@
 #' @param x Output from running function credating
 #' @param type Type of plot to do. Currently either 'tree' or 'treeCI' or 'trace' or 'treeRoot' or 'scatter'
 #' @param ... Additional parameters are passed on
-#' @return Plot of CreDating results
+#' @return Plot of BactDating results
 #' @importFrom grDevices rgb
 #' @export
-plot.resCreDating = function(x, type='tree', ...) {
+plot.resBactDating = function(x, type='tree', ...) {
 
   if (type=='tree') {
     plot.phylo(x$tree, ...)
@@ -60,6 +60,7 @@ plot.resCreDating = function(x, type='tree', ...) {
     ys=x$tree$subs
     ma=max(xs)*1.05
     rate=mean(x$record[(nrow(x$record)/2):nrow(x$record),'rate'])
+    par(mfrow=c(1,2))
     plot(c(0,ma),c(0,rate*ma),type='l',xlab='Branch duration',ylab='Substitutions',xaxs='i',yaxs='i',xlim=c(0,max(xs)*1.05),ylim=c(0,max(ys)*1.05))
     par(xpd=F)
     ori=0
@@ -80,19 +81,23 @@ plot.resCreDating = function(x, type='tree', ...) {
     cols=rgb(normed,0,1-normed)
     points(xs,ys,pch=19,col=cols)
     base=seq(0,1,0.25)
-    legend("topleft",legend=sprintf('%.2e',base*(max(ll)-min(ll))+min(ll)),pch=19,col=rgb(base,0,1-base))
+    legend("topleft",cex=0.5,legend=sprintf('%.2e',base*(max(ll)-min(ll))+min(ll)),pch=19,col=rgb(base,0,1-base))
+
+    plot(x$tree,show.tip.label = F,edge.color=cols)
+    axisPhylo(1,backward = F)
+
   }
 }
 
-#' Print function for resCreDating objects
-#' @param x output from credate
+#' Print function for resBactDating objects
+#' @param x output from bactdate
 #' @param ... Passed on to print.phylo
-#' @return Print out details of CreDating results
+#' @return Print out details of BactDating results
 #' @export
-print.resCreDating <- function(x, ...)
+print.resBactDating <- function(x, ...)
 {
-  stopifnot(inherits(x, "resCreDating"))
-  cat( 'Phylogenetic tree dated using CreDating\n')
+  stopifnot(inherits(x, "resBactDating"))
+  cat( 'Phylogenetic tree dated using BactDating\n')
   print(x$tree,...)
   cat(sprintf('Probability of root branch=%.2f\n', x$rootprob))
   for (nam in c('likelihood','prior','rate','ratevar','alpha')) {
@@ -109,14 +114,14 @@ print.resCreDating <- function(x, ...)
   invisible(x)
 }
 
-#' Summary function for resCreDating objects
-#' @param object output from credate
+#' Summary function for resBactDating objects
+#' @param object output from bactdate
 #' @param ... Passed on to print.phylo
-#' @return Print out details of CreDating results
+#' @return Print out details of BactDating results
 #' @export
-summary.resCreDating <- function(object, ...){
-  stopifnot(inherits(object, "resCreDating"))
-  cat( 'Phylogenetic tree dated using CreDating\n')
+summary.resBactDating <- function(object, ...){
+  stopifnot(inherits(object, "resBactDating"))
+  cat( 'Phylogenetic tree dated using BactDating\n')
   print(object$tree,...)
   invisible(object)
 }

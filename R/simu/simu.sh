@@ -1,1 +1,1 @@
-Rscript -e "setwd('~/simuCreDating');ind=$1;source('~/CreDating/R/simu/simu.R')" &> ~/simuCreDating/log$1 
+Rscript -e "setwd('~/simuBactDating');ind=$1;source('~/BactDating/R/simu/simu.R')" &> ~/simuBactDating/log$1 

@@ -1,9 +1,9 @@
 rm(list=ls())
-dir='~/simuCreDating'
+dir='~/simuBactDating'
 
 if (Sys.info()["nodename"]=='server1b') {
   #SERVER SIDE
-  library(CreDating)
+  library(BactDating)
   store=matrix(NA,200,8)
   for (ind in 1:200) {
     tryCatch({

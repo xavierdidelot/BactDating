@@ -1,6 +1,6 @@
-Package: CreDating
+Package: BactDating
 Type: Package
-Title: CreDating project
+Title: BactDating project
 Version: 0.1
 Date: 2017-09-22
 Author: Xavier Didelot <xavier.didelot@gmail.com>
@@ -11,7 +11,7 @@ LinkingTo: Rcpp
 Suggests: knitr,
     testthat,
     covr
-Description: The CreDating project is still work in progress.
+Description: The BactDating project is still work in progress.
 VignetteBuilder: knitr
 License: MIT + file LICENSE
 RoxygenNote: 6.0.1

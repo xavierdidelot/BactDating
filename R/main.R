@@ -16,7 +16,7 @@
 #' @param showProgress Whether or not to show a progress bar
 #' @return Dating results
 #' @export
-credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, updateRate = T, updateAlpha = T, updateRatevar = T, updateRoot = T, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T,  model = 'gamma', useRec = F, showProgress = F)
+bactdate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, updateRate = T, updateAlpha = T, updateRatevar = T, updateRoot = T, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T,  model = 'gamma', useRec = F, showProgress = F)
 {
   #Rerranging of dates, if needed
   if (!is.null(names(date))) date=findDates(tree,date)
@@ -300,15 +300,15 @@ credate = function(tree, date, initRate = NA, initAlpha = NA, initRatevar = NA, 
     CI = CI,
     dic = dic
   )
-  class(out) <- 'resCreDating'
+  class(out) <- 'resBactDating'
   if (model=='mixedgamma') out$pstrict=length(which(record[,'ratevar']==0))/nrow(record)
   if (testSignal) out$psignal=length(which(record[,'signal']==1))/nrow(record)
   return(out)
 }
 
 #' Perform Bayesian comparison between two models based on DIC values
-#' @param res1 An output from the credate function
-#' @param res2 Another output from the credate function
+#' @param res1 An output from the bactdate function
+#' @param res2 Another output from the bactdate function
 #' @return Prints out results of model comparison
 #' @export
 modelcompare = function(res1,res2) {

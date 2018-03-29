@@ -1,4 +1,4 @@
-library(CreDating)
+library(BactDating)
 library(ape)
 rm(list=setdiff(ls(),'ind'))
 if (!exists('ind')) ind=1
@@ -19,5 +19,5 @@ if (ind<=100) {
 
 obsphy=simobsphy(phy,rate=rate)
 obsphy=unroot(obsphy)
-res=credate(obsphy,dates,showProgress=T,nbIts=1000000)
+res=bactdate(obsphy,dates,showProgress=T,nbIts=1000000)
 save.image(sprintf('run%d.RData',ind))

@@ -7,9 +7,9 @@
 modelcompare(res1, res2)
 }
 \arguments{
-\item{res1}{An output from the credate function}
+\item{res1}{An output from the bactdate function}
 
-\item{res2}{Another output from the credate function}
+\item{res2}{Another output from the bactdate function}
 }
 \value{
 Prints out results of model comparison

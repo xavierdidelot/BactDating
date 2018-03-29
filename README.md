@@ -1,25 +1,25 @@
 
-<!-- [![Travis-CI Build Status](https://travis-ci.com/xavierdidelot/CreDating.svg?branch=master)](https://travis-ci.com/xavierdidelot/CreDating)
-[![Coverage Status](https://codecov.io/github/xavierdidelot/CreDating/coverage.svg?branch=master)](https://codecov.io/github/xavierdidelot/CreDating?branch=master) -->
+<!-- [![Travis-CI Build Status](https://travis-ci.com/xavierdidelot/BactDating.svg?branch=master)](https://travis-ci.com/xavierdidelot/BactDating)
+[![Coverage Status](https://codecov.io/github/xavierdidelot/BactDating/coverage.svg?branch=master)](https://codecov.io/github/xavierdidelot/BactDating?branch=master) -->
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-CreDating
+BactDating
 =========
 
-The goal of CreDating is to perform Bayesian dating of the nodes of phylogenetic tree. This typically involves simultaneous Bayesian estimation of the molecular clock rate and coalescent rate. Additional features include inference of root location, lost sampling dates and different evolutionary models.
+The goal of BactDating is to perform Bayesian dating of the nodes of phylogenetic tree. This typically involves simultaneous Bayesian estimation of the molecular clock rate and coalescent rate. Additional features include inference of root location, lost sampling dates and different evolutionary models.
 
 Installation
 ------------
 
-You can install CreDating from github with:
+You can install BactDating from github with:
 
 ``` r
-devtools::install_github("xavierdidelot/CreDating")
+devtools::install_github("xavierdidelot/BactDating")
 ```
 
 The package can then be loaded using:
 
 ``` r
-library(CreDating)
+library(BactDating)
 ```
 
 Example
@@ -47,7 +47,7 @@ r=roottotip(obsphy,1990:2010)
 We can run the dating analysis on this phylogeny as follows:
 
 ``` r
-res=credate(obsphy,1990:2010)
+res=bactdate(obsphy,1990:2010)
 plot(res,'treeCI')
 ```
 
@@ -56,6 +56,6 @@ plot(res,'treeCI')
 More information and getting help
 ---------------------------------
 
-For more detailed examples of how to use CreDating, see the vignettes [here](https://github.com/xavierdidelot/CreDating/tree/master/vignettes). See also the help included in the package using the R command `help(package='CreDating')`.
+For more detailed examples of how to use BactDating, see the vignettes [here](https://github.com/xavierdidelot/BactDating/tree/master/vignettes). See also the help included in the package using the R command `help(package='BactDating')`.
 
-If you have any problem or question please create an issue [here](https://github.com/xavierdidelot/CreDating/issues) or get in touch by emailing `xavier.didelot@gmail.com`
+If you have any problem or question please create an issue [here](https://github.com/xavierdidelot/BactDating/issues) or get in touch by emailing `xavier.didelot@gmail.com`

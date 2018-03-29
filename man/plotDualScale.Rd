@@ -4,7 +4,7 @@
 \alias{plotDualScale}
 \title{Plot tree rescaled using dual scale}
 \usage{
-plotDualScale(tree, minDate = 1990, squash = 5)
+plotDualScale(tree, minDate = 1990, squash = 5, ...)
 }
 \arguments{
 \item{tree}{Timed tree}
@@ -12,6 +12,8 @@ plotDualScale(tree, minDate = 1990, squash = 5)
 \item{minDate}{Date before which dates are to be compressed}
 
 \item{squash}{Interval of time to give to all dates prior to minDate}
+
+\item{...}{Remaining parameters are passed on to plot.phylo}
 }
 \value{
 Rescaled timed tree
