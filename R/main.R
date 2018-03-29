@@ -16,7 +16,7 @@
 #' @param showProgress Whether or not to show a progress bar
 #' @return Dating results
 #' @export
-bactdate = function(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA, updateRate = T, updateAlpha = T, updateRatestd = T, updateRoot = T, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T,  model = 'gamma', useRec = F, showProgress = F)
+bactdate = function(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA, updateRate = T, updateAlpha = T, updateRatestd = T, updateRoot = T, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T,  model = 'mixedgamma', useRec = F, showProgress = F)
 {
   #Rerranging of dates, if needed
   if (!is.null(names(date))) date=findDates(tree,date)

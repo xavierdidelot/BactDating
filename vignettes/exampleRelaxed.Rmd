@@ -39,7 +39,7 @@ res=roottotip(obsphy,dates)
 We run the mixture-model dating analysis as follows:
 
 ```{r}
-res=bactdate(obsphy,dates,model='mixedgamma',updateRoot=F)
+res=bactdate(obsphy,dates,updateRoot=F)
 plot(res,'trace')
 print(res$pstrict)
 ```
@@ -58,7 +58,7 @@ res=roottotip(obsphy,dates)
 We run the analysis as previously:
 
 ```{r}
-res=bactdate(obsphy,dates,model='mixedgamma',updateRoot=F)
+res=bactdate(obsphy,dates,updateRoot=F)
 plot(res,'trace')
 print(res$pstrict)
 ```

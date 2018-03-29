@@ -7,7 +7,7 @@
 bactdate(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA,
   updateRate = T, updateAlpha = T, updateRatestd = T, updateRoot = T,
   nbIts = 10000, thin = ceiling(nbIts/1000), useCoalPrior = T,
-  model = "gamma", useRec = F, showProgress = F)
+  model = "mixedgamma", useRec = F, showProgress = F)
 }
 \arguments{
 \item{tree}{Tree wih branches measured in unit of substitutions}
