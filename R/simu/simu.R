@@ -10,14 +10,22 @@ if (ind<=100) {
   alpha=5
   phy=simcoaltree(dates,alpha=alpha)
   rate=ind/100*10
-} else {
+  ratestd=0
+} elseif (ind<=200) {
   #Code for simulation with varying alpha
   alpha=(ind-100)/100*10
   phy=simcoaltree(dates,alpha=alpha)
   rate=5
+  ratestd=0
+} else {
+  #Code for simulation with varying ratestd
+  alpha=5
+  rate=5
+  ratestd=(ind-200)/100*10
+  phy=simcoaltree(dates,alpha=alpha)
 }
 
-obsphy=simobsphy(phy,rate=rate)
+obsphy=simobsphy(phy,rate=rate,ratestd=ratestd,model='relaxedgamma')
 obsphy=unroot(obsphy)
-res=bactdate(obsphy,dates,showProgress=T,nbIts=1000000)
+res=bactdate(obsphy,dates,showProgress=T,nbIts=1e3)#1e6
 save.image(sprintf('run%d.RData',ind))
