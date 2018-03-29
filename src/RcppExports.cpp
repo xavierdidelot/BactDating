@@ -31,15 +31,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // likelihoodRelaxedgammaC
-double likelihoodRelaxedgammaC(NumericMatrix tab, double rate, double ratevar);
-RcppExport SEXP _BactDating_likelihoodRelaxedgammaC(SEXP tabSEXP, SEXP rateSEXP, SEXP ratevarSEXP) {
+double likelihoodRelaxedgammaC(NumericMatrix tab, double rate, double ratestd);
+RcppExport SEXP _BactDating_likelihoodRelaxedgammaC(SEXP tabSEXP, SEXP rateSEXP, SEXP ratestdSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericMatrix >::type tab(tabSEXP);
     Rcpp::traits::input_parameter< double >::type rate(rateSEXP);
-    Rcpp::traits::input_parameter< double >::type ratevar(ratevarSEXP);
-    rcpp_result_gen = Rcpp::wrap(likelihoodRelaxedgammaC(tab, rate, ratevar));
+    Rcpp::traits::input_parameter< double >::type ratestd(ratestdSEXP);
+    rcpp_result_gen = Rcpp::wrap(likelihoodRelaxedgammaC(tab, rate, ratestd));
     return rcpp_result_gen;
 END_RCPP
 }

@@ -30,7 +30,7 @@ res=roottotip(harris2010$tree,harris2010$dates)
 We run BactDating as follows:
 
 ```{r}
-res=bactdate(unroot(harris2010$tree),harris2010$dates,nbIts=1e4,showProgress = T,model='mixedgamma')
+res=bactdate(unroot(harris2010$tree),harris2010$dates,nbIts=1e4,showProgress = F,model='mixedgamma')
 plot(res,'treeCI',show.tip.label = F)
 ```
 
@@ -39,7 +39,9 @@ We can see what the MCMC traces look like:
 ```{r}
   plot(res,'trace')
 ```
+
 Let's see where the root is likely to be:
+
 ```{r}
 plot(res,'treeRoot',show.tip.label=F)
 ```

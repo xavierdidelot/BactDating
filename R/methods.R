@@ -35,7 +35,7 @@ plot.resBactDating = function(x, type='tree', ...) {
     plot(x$record[,Ntip(x$tree)+1],main='Date of root',type='l',xlab='Sampled iterations',ylab='')
     plot(x$record[,'rate'],main='Clock rate',type='l',xlab='Sampled iterations',ylab='')
     plot(x$record[,'alpha'],main='Coalescent time unit',type='l',xlab='Sampled iterations',ylab='')
-    plot(x$record[,'ratevar'],main='Clock rate variance',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,'ratestd'],main='Clock rate std',type='l',xlab='Sampled iterations',ylab='')
     v=x$record[,'root']
     u=sort(unique(v))
     for (i in 1:length(u)) v[which(x$record[,'root']==u[i])]=i
@@ -100,7 +100,7 @@ print.resBactDating <- function(x, ...)
   cat( 'Phylogenetic tree dated using BactDating\n')
   print(x$tree,...)
   cat(sprintf('Probability of root branch=%.2f\n', x$rootprob))
-  for (nam in c('likelihood','prior','rate','ratevar','alpha')) {
+  for (nam in c('likelihood','prior','rate','ratestd','alpha')) {
     v=x$record[,nam]
     v=v[(1+length(v)/2):length(v)]
     v=sort(v)

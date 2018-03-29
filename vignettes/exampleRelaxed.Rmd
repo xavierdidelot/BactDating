@@ -49,7 +49,7 @@ print(res$pstrict)
 Let's start again with a new dataset using the relaxed model:
 ```{r}
 set.seed(0)
-obsphy=simobsphy(phy,rate=10,model='relaxedgamma',ratevar = 100)
+obsphy=simobsphy(phy,rate=10,model='relaxedgamma',ratestd = 5)
 res=roottotip(obsphy,dates)
 ```
 
@@ -58,7 +58,7 @@ res=roottotip(obsphy,dates)
 We run the analysis as previously:
 
 ```{r}
-res=bactdate(obsphy,dates,model='mixedgamma',updateRoot=F,nbIts=1e6)
+res=bactdate(obsphy,dates,model='mixedgamma',updateRoot=F)
 plot(res,'trace')
 print(res$pstrict)
 ```

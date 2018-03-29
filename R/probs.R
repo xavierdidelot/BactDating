@@ -51,9 +51,9 @@ likelihoodGamma = function(tab, rate) {
 #' Relaxed gamma likelihood function
 #' @param tab Table of nodes
 #' @param rate rate parameter
-#' @param ratevar variance of per branch rate
+#' @param ratestd std of per branch rate
 #' @return log-likelihood
-likelihoodRelaxedgamma = function(tab, rate, ratevar) {
+likelihoodRelaxedgamma = function(tab, rate, ratestd) {
   n = ceiling(nrow(tab)/2)
   if (rate < 0) stop('error1')
   t2 = tab[-(n + 1), ,drop=F]
@@ -62,6 +62,7 @@ likelihoodRelaxedgamma = function(tab, rate, ratevar) {
   muts = t2[, 2]
   if (min(muts)<0) stop('error3')
   if (ncol(tab)==5) {lengths=lengths*t2[,5];muts=muts*t2[,5]}
+  ratevar=ratestd^2
   return(sum(dgamma(muts,shape=rate*rate*lengths/(rate+ratevar*lengths),scale=1+lengths*ratevar/rate,log=T)))
 }
 
