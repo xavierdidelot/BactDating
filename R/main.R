@@ -209,7 +209,7 @@ bactdate = function(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA,
         changeinorderedvec(orderedleafdates,new,old)
     }
 
-    if (updateRoot) {
+    if (updateRoot == T || updateRoot == 'branch') {
       #Move root on current branch
       root=which(is.na(tab[,4]))
       sides=which(tab[,4]==root)
@@ -220,7 +220,7 @@ bactdate = function(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA,
       if (log(runif(1))<l2-l) l=l2 else tab[sides,2]=old
   }
 
-    if (updateRoot) {
+    if (updateRoot == T) {
       #Move root branch
       root=which(is.na(tab[,4]))
       sides=which(tab[,4]==root)

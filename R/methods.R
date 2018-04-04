@@ -60,6 +60,7 @@ plot.resBactDating = function(x, type='tree', ...) {
     ys=x$tree$subs
     ma=max(xs)*1.05
     rate=mean(x$record[(nrow(x$record)/2):nrow(x$record),'rate'])
+    ratestd=mean(x$record[(nrow(x$record)/2):nrow(x$record),'ratestd'])
     par(mfrow=c(1,2))
     plot(c(0,ma),c(0,rate*ma),type='l',xlab='Branch duration',ylab='Substitutions',xaxs='i',yaxs='i',xlim=c(0,max(xs)*1.05),ylim=c(0,max(ys)*1.05))
     par(xpd=F)
@@ -72,10 +73,14 @@ plot.resBactDating = function(x, type='tree', ...) {
       lines(xss,qpois(1-plim/2,(xss-ori)*rate),lty='dashed')
       ll=dpois(round(ys),xs*rate,log=T)
     }
-    else {#if (x$model=='gamma') {
+    else if (x$model=='gamma') {
       lines(xss,qgamma(  plim/2,shape=(xss-ori)*rate,scale=1),lty='dashed')
       lines(xss,qgamma(1-plim/2,shape=(xss-ori)*rate,scale=1),lty='dashed')
-      ll=dgamma(ys,xs*rate,1,log=T)
+      ll=dgamma(ys,shape=xs*rate,scale=1,log=T)
+    } else {
+      lines(xss,qgamma(  plim/2,shape=(xss-ori)*rate^2/(rate+(xss-ori)*ratestd^2),scale=1+(xss-ori)*ratestd^2/rate),lty='dashed')
+      lines(xss,qgamma(1-plim/2,shape=(xss-ori)*rate^2/(rate+(xss-ori)*ratestd^2),scale=1+(xss-ori)*ratestd^2/rate),lty='dashed')
+      ll=dgamma(ys,shape=xs*rate^2/(rate+xs*ratestd^2),scale=1+xs*ratestd^2/rate,log=T)
     }
     normed=(ll-min(ll))/(max(ll)-min(ll))
     cols=rgb(normed,0,1-normed)

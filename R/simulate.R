@@ -95,7 +95,8 @@ simcoaltree = function(dates=NA,alpha=10) {
 #' @param model Which model to use (poisson or gamma or relaxedgamma)
 #' @return An observed phylogenetic tree
 #' @export
-simobsphy = function(tree, rate = 10, ratestd = 10, model = 'gamma') {
+simobsphy = function(tree, rate = 10, ratestd = 0, model = 'gamma') {
+  if (ratestd>0) model='relaxedgamma'
   obsphy=tree
   obsphy$prob=0
   obsphy$root.time=NULL

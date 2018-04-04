@@ -11,7 +11,7 @@ if (ind<=100) {
   phy=simcoaltree(dates,alpha=alpha)
   rate=ind/100*10
   ratestd=0
-} elseif (ind<=200) {
+} else if (ind<=200) {
   #Code for simulation with varying alpha
   alpha=(ind-100)/100*10
   phy=simcoaltree(dates,alpha=alpha)

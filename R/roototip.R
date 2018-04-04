@@ -156,9 +156,10 @@ leafDates = function (phy) {
 #' @return Dates of leaves and internal nodes
 #' @export
 allDates = function (phy) {
-  o=rev(postorder(phy))#preorder
   rootdate=phy$root.time
   if (is.null(rootdate)) rootdate=0
+  return(rootdate+unname(dist.nodes(phy)[Ntip(phy)+1,]))
+  o=rev(postorder(phy))#preorder
   n=Ntip(phy)+Nnode(phy)
   dates=rep(NA,n)
   dates[Ntip(phy)+1]=rootdate
