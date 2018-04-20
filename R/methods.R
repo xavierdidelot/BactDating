@@ -13,8 +13,11 @@ plot.resBactDating = function(x, type='tree', ...) {
   }
 
   if (type=='treeCI') {
-    plot.phylo(x$tree, x.lim=c(min(x$CI),max(x$CI))-x$tree$root.time,...)
-    axisPhylo(backward = F)
+    xl=c(min(x$CI),max(x$CI))-x$tree$root.time
+    plot.phylo(x$tree, x.lim=xl,...)
+    pre=pretty(xl+x$tree$root.time)
+    axis(1,pre-x$tree$root.time,pre)
+#    axisPhylo(backward = F)
     obj<-get("last_plot.phylo",envir=.PlotPhyloEnv)
     transblue=rgb(0,0,1,0.4)
     transred =rgb(1,0,0,0.4)
@@ -30,6 +33,7 @@ plot.resBactDating = function(x, type='tree', ...) {
 
   if (type=='trace') {
     par(mfrow=c(2,4))
+    plot(x$record[,'likelihood']+x$record[,'prior'],main='Posterior',type='l',xlab='Sampled iterations',ylab='')
     plot(x$record[,'likelihood'],main='Likelihood',type='l',xlab='Sampled iterations',ylab='')
     plot(x$record[,'prior'],main='Prior',type='l',xlab='Sampled iterations',ylab='')
     plot(x$record[,Ntip(x$tree)+1],main='Date of root',type='l',xlab='Sampled iterations',ylab='')
@@ -48,8 +52,11 @@ plot.resBactDating = function(x, type='tree', ...) {
     plot.phylo(x$inputtree, ...)
     probs=as.vector(roots)
     probs=probs/sum(probs)
-    probs=round(probs*1000)/10
-    edgelabels(probs,as.numeric(labels(roots)[[1]]),frame='none',adj=c(0.5,-0.1))
+    probs=round(probs*100)
+    labs=as.numeric(labels(roots)[[1]])
+    labs=labs[which(probs>0)]
+    probs=probs[which(probs>0)]
+    edgelabels(probs,labs,frame='none',adj=c(0.5,-0.1))
     axisPhylo(backward = F)
   }
 
@@ -85,6 +92,9 @@ plot.resBactDating = function(x, type='tree', ...) {
     normed=(ll-min(ll))/(max(ll)-min(ll))
     cols=rgb(normed,0,1-normed)
     points(xs,ys,pch=19,col=cols)
+    #w=which(ll<sort(ll)[round(0.01*length(ll))])
+    #print(cbind(x$tree$edge[w,2],ll[w]))
+    #text(xs[w],ys[w]+0.5,x$tree$edge[w,2],cex=0.5)
     base=seq(0,1,0.25)
     legend("topleft",cex=0.5,legend=sprintf('%.2e',base*(max(ll)-min(ll))+min(ll)),pch=19,col=rgb(base,0,1-base))
 
