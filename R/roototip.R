@@ -46,7 +46,7 @@ roottotip = function(tree,date,rate=NA,permTest=10000,showFig=T,colored=T,showPr
   par(xpd=NA,oma = c(0, 0, 2, 0))
   if (colored) {
     normed=(date-min(date,na.rm=T))/(max(date,na.rm=T)-min(date,na.rm=T))
-    cols=rgb(ifelse(is.na(normed),0.5,normed),0,1-ifelse(is.na(normed),0.5,normed),ifelse(is.na(normed),1,0.5))
+    cols=rgb(ifelse(is.na(normed),0,normed),ifelse(is.na(normed),0.5,0),1-ifelse(is.na(normed),1,normed),0.5)
   } else cols='black'
   if (showTree) {
     par(mfrow=c(1,2))
@@ -83,6 +83,9 @@ roottotip = function(tree,date,rate=NA,permTest=10000,showFig=T,colored=T,showPr
 #' @return Rooted tree
 #' @export
 initRoot = function(phy,date,mtry=10,useRec=F) {
+  #Rerranging of dates, if needed
+  if (!is.null(names(date))) date=findDates(tree,date)
+
   n=length(date)
   bestcorrel=-Inf
   denom=mean(phy$edge.length)
@@ -196,6 +199,7 @@ findDates = function(tree,dates)
   date2=rep(NA,Ntip(tree))
   for (i in 1:Ntip(tree)) {
     wi=which(names(dates)==tree$tip.label[i])
+    if (length(wi)>1) wi=wi[1]
     if (length(wi)==1) date2[i]=dates[wi]
   }
   return(date2)
