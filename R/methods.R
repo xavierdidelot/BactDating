@@ -1,22 +1,23 @@
 #' Plotting methods
 #' @param x Output from running function credating
 #' @param type Type of plot to do. Currently either 'tree' or 'treeCI' or 'trace' or 'treeRoot' or 'scatter'
+#' @param show.axis Whether or not to show the tree axis in mode tree, treeCI or treeRoot
 #' @param ... Additional parameters are passed on
 #' @return Plot of BactDating results
 #' @importFrom grDevices rgb
 #' @export
-plot.resBactDating = function(x, type='tree', ...) {
+plot.resBactDating = function(x, type='tree', show.axis=T, ...) {
 
   if (type=='tree') {
     plot.phylo(x$tree, ...)
-    axisPhylo(backward = F)
+    if (show.axis) axisPhylo(backward = F)
   }
 
   if (type=='treeCI') {
     xl=c(min(x$CI),max(x$CI))-x$tree$root.time
     plot.phylo(x$tree, x.lim=xl,...)
     pre=pretty(xl+x$tree$root.time)
-    axis(1,pre-x$tree$root.time,pre)
+    if (show.axis) axis(1,pre-x$tree$root.time,pre)
 #    axisPhylo(backward = F)
     obj<-get("last_plot.phylo",envir=.PlotPhyloEnv)
     transblue=rgb(0,0,1,0.4)
@@ -57,7 +58,7 @@ plot.resBactDating = function(x, type='tree', ...) {
     labs=labs[which(probs>0)]
     probs=probs[which(probs>0)]
     edgelabels(probs,labs,frame='none',adj=c(0.5,-0.1))
-    axisPhylo(backward = F)
+    if (show.axis) axisPhylo(backward = F)
   }
 
   if (type=='scatter') {

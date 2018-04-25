@@ -4,12 +4,14 @@
 \alias{plot.resBactDating}
 \title{Plotting methods}
 \usage{
-\method{plot}{resBactDating}(x, type = "tree", ...)
+\method{plot}{resBactDating}(x, type = "tree", show.axis = T, ...)
 }
 \arguments{
 \item{x}{Output from running function credating}
 
 \item{type}{Type of plot to do. Currently either 'tree' or 'treeCI' or 'trace' or 'treeRoot' or 'scatter'}
+
+\item{show.axis}{Whether or not to show the tree axis in mode tree, treeCI or treeRoot}
 
 \item{...}{Additional parameters are passed on}
 }

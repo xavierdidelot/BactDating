@@ -4,7 +4,7 @@
 \alias{simobsphy}
 \title{Simulation of observed phylogeny given a dated tree}
 \usage{
-simobsphy(tree, rate = 10, ratestd = 10, model = "gamma")
+simobsphy(tree, rate = 10, ratestd = 0, model = "gamma")
 }
 \arguments{
 \item{tree}{Dated tree}
