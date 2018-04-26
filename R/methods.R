@@ -74,7 +74,7 @@ plot.resBactDating = function(x, type='tree', show.axis=T, ...) {
     par(xpd=F)
     ori=0
     xss=seq(ori,ma,0.1)
-    plim=0.01
+    plim=0.05
 #    lines(xs,xs*rate)
     if (x$model=='poisson') {
       lines(xss,qpois(  plim/2,(xss-ori)*rate),lty='dashed')

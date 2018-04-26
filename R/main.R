@@ -19,7 +19,14 @@
 bactdate = function(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA, updateRate = T, updateAlpha = T, updateRatestd = T, updateRoot = T, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T,  model = 'mixedgamma', useRec = F, showProgress = F)
 {
   #Rerranging of dates, if needed
-  if (!is.null(names(date))) date=findDates(tree,date)
+  if (is.matrix(date)) {
+    rangedate=date
+    if (!is.null(rownames(rangedate))) rangedate=cbind(findDates(tree,rangedate[,1]),findDates(tree,rangedate[,2]))
+    date=(rangedate[,1]+rangedate[,2])/2
+  } else rangedate=NULL
+  if (is.vector(date) && !is.null(names(date))) date=findDates(tree,date)
+  if (is.null(rangedate)) rangedate=cbind(date,date)
+
   #Initial rooting of tree, if needed
   if (useRec==T && is.null(tree$unrec)) stop("To use recombination, the proportion of unrecombined needs to be input.")
   if (is.rooted(tree)==F) tree=initRoot(tree,date,useRec=useRec)
@@ -33,7 +40,7 @@ bactdate = function(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA,
   }
   rate=initRate
   if (is.na(initRatestd)) initRatestd=rate
-  ratestd=initRatestd
+  ratestd=0
 
   #Select prior function
   prior=function(...) return(0)
@@ -53,10 +60,11 @@ bactdate = function(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA,
   if (!exists('likelihood')) stop('Unknown model.')
 
   #Deal with missing dates
-  misDates=which(is.na(date))
-  date[misDates]=mean(date,na.rm = T)
+  rangedate[which(is.na(rangedate[,1])),1]=min(rangedate[,1],na.rm = T)
+  rangedate[which(is.na(rangedate[,2])),2]=max(rangedate[,2],na.rm = T)
+  misDates=which(rangedate[,1]!=rangedate[,2])
+  date[misDates]=(rangedate[misDates,1]+rangedate[misDates,2])/2
   orderedleafdates=sort(date,decreasing = T)
-  rangedate=c(min(date),max(date))
 
   #Create table of nodes (col1=name,col2=observed substitutions on branch above,col3=date,col4=father,col5=unrecombined proportion, only if useRec=T)
   n = Ntip(tree)
@@ -130,14 +138,14 @@ bactdate = function(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA,
 
     if (updateRate == T) {
       #MH move using Gamma(1e-3,1e3) prior
-      rate2=abs(rnorm(1,rate,0.1*initRate))
+      rate2=abs(rnorm(1,rate,0.1*ifelse(initRate==0,1e-3,initRate)))
       l2=likelihood(tab,rate2,ratestd)
       if (log(runif(1))<l2-l+dgamma(rate2,shape=1e-3,scale=1e3,log=T)-dgamma(rate,shape=1e-3,scale=1e3,log=T)) {l=l2;rate=rate2}
     }
 
     if (updateRatestd == T && ratestd>0) {
       #MH move using Gamma(1e-3,1e3) prior
-      ratestd2=abs(rnorm(1,ratestd,0.1*initRatestd))
+      ratestd2=abs(rnorm(1,ratestd,0.1*ifelse(initRatestd==0,1e-3,initRatestd)))
       l2=likelihood(tab,rate,ratestd2)
       if (log(runif(1))<l2-l+dgamma(ratestd2,shape=1e-3,scale=1e3,log=T)-dgamma(ratestd,shape=1e-3,scale=1e3,log=T)) {l=l2;ratestd=ratestd2}
     }
@@ -168,7 +176,7 @@ bactdate = function(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA,
     }
 
     #MH to update internal dates
-    rn=rnorm(nrow(tab)-n,0,initHeight*0.05)
+    rn=rnorm(nrow(tab)-n,0,ifelse(initHeight==0,1,initHeight)*0.05)
     for (j in c((n + 1):nrow(tab))) {
       r=rn[j-n]
       old=tab[j,3]
@@ -192,9 +200,9 @@ bactdate = function(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA,
     #MH to update missing leaf dates
     for (j in misDates) {
       old = tab[j, 3]
-      new = rnorm(1,old,(rangedate[2]-rangedate[1])*0.05)
+      new = rnorm(1,old,(rangedate[j,2]-rangedate[j,1])*0.05)
       if (new-old<0&&(!is.na(tab[j,4])&&new<tab[tab[j,4],3])) next#can't be older than father
-      if (new>rangedate[2]||new<rangedate[1]) next#stay within prior range
+      if (new>rangedate[j,2]||new<rangedate[j,1]) next#stay within prior range
       mintab=rbind(tab[j,],tab[tab[j,4],])
       mintab[,4]=c(2,NA)
       l2=l-likelihood(mintab,rate,ratestd)
