@@ -4,6 +4,10 @@ author: "Xavier Didelot"
 date: '`r Sys.Date()`'
 output:
   pdf_document: default
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Application of BactDating on Harris et al (2010)}
+  %\usepackage[utf8]{inputenc}
 ---
 
 ##Initialisation

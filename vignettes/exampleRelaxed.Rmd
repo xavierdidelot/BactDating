@@ -1,9 +1,13 @@
 ---
-title: "Example of using BactDating with relaxed clock model"
+title: "Using BactDating to test the clock model"
 author: "Xavier Didelot"
 date: '`r Sys.Date()`'
 output:
   pdf_document: default
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Using BactDating to test the clock model}
+  %\usepackage[utf8]{inputenc}
 ---
 
 ##Initialisation
