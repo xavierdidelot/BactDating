@@ -1,3 +1,4 @@
+#Test prior functions
 context("Test prior functions")
 
 test_that("Coalescent prior in C++ gives expected result on small example.", {

@@ -1,3 +1,4 @@
+#Test utility functions
 context("Test utility functions")
 
 test_that("The function changeinorderedvec behaves as expected.", {

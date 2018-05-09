@@ -1,14 +1,17 @@
 ---
-title: "Application of BactDating on Harris et al (2010)"
+title: "Application of BactDating on S. aureus ST239"
 author: "Xavier Didelot"
 date: '`r Sys.Date()`'
 output:
   pdf_document: default
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Application of BactDating on Harris et al (2010)}
+  %\VignetteIndexEntry{Application of BactDating on S. aureus ST239}
   %\usepackage[utf8]{inputenc}
 ---
+
+In this vignette we demonstrate the usage of BactDating on a dataset of
+Staphylococcus aureus ST239 published by Harris et al (2010).
 
 ##Initialisation
 
@@ -16,8 +19,8 @@ vignette: >
 library(BactDating)
 library(ape)
 set.seed(0)
-data(harris2010)
-plot(harris2010$tree, show.tip.label = F)
+data(staph)
+plot(staph$tree, show.tip.label = F)
 axisPhylo(backward = F)
 ```
 
@@ -26,7 +29,7 @@ axisPhylo(backward = F)
 Let's do a root-to-tip regression analysis:
 
 ```{r}
-res=roottotip(harris2010$tree,harris2010$dates)
+res=roottotip(staph$tree,staph$dates)
 ```
 
 ##Analysis
@@ -34,7 +37,7 @@ res=roottotip(harris2010$tree,harris2010$dates)
 We run BactDating as follows:
 
 ```{r}
-res=bactdate(unroot(harris2010$tree),harris2010$dates,nbIts=1e4)
+res=bactdate(unroot(staph$tree),staph$dates,nbIts=1e4)
 plot(res,'treeCI',show.tip.label = F)
 ```
 

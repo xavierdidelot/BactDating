@@ -1,3 +1,4 @@
+#Test likelihood functions
 context("Test likelihood functions")
 
 makeTab=function(timedTree,phyTree) {
