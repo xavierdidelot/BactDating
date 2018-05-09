@@ -2,12 +2,12 @@ citHeader("To cite BactDating:")
 
 citEntry(
 entry="Article",
-title = "BactDating: Bayesian dating of phylogenetic trees",
+title = "Bayesian inference of ancestral dates on bacterial phylogenetic trees",
 journal= "in preparation",
 year = "2018",
-author = "Didelot X and Wilson DJ",
+author = "Didelot X and others",
 volume = "",
 pages = "",
 doi = "",
-textVersion = "Didelot X and Wilson DJ (in preparation). BactDating: Bayesian dating of phylogenetic trees."
+textVersion = "Didelot X et al (in preparation). Bayesian inference of ancestral dates on bacterial phylogenetic trees."
 )

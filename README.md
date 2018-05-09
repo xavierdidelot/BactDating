@@ -1,6 +1,4 @@
 
-<!-- [![Travis-CI Build Status](https://travis-ci.com/xavierdidelot/BactDating.svg?branch=master)](https://travis-ci.com/xavierdidelot/BactDating)
-[![Coverage Status](https://codecov.io/github/xavierdidelot/BactDating/coverage.svg?branch=master)](https://codecov.io/github/xavierdidelot/BactDating?branch=master) -->
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 BactDating
 ==========
@@ -33,7 +31,7 @@ plot(tree)
 ape::axisPhylo(backward=F)
 ```
 
-![](figures/README-unnamed-chunk-3-1.png)
+![](man/figures/unnamed-chunk-3-1.png)
 
 Next we generate an observed phylogeny based on this timed tree, and perform a root-to-tip analysis:
 
@@ -42,7 +40,7 @@ obsphy=simobsphy(tree)
 r=roottotip(obsphy,1990:2010)
 ```
 
-![](figures/README-unnamed-chunk-4-1.png)
+![](man/figures/unnamed-chunk-4-1.png)
 
 We can run the dating analysis on this phylogeny as follows:
 
@@ -51,7 +49,7 @@ res=bactdate(obsphy,1990:2010)
 plot(res,'treeCI')
 ```
 
-![](figures/README-unnamed-chunk-5-1.png)
+![](man/figures/unnamed-chunk-5-1.png)
 
 More information and getting help
 ---------------------------------

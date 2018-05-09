@@ -1,0 +1,9 @@
+pandoc: 1.19.2.1
+pkgdown: 1.0.0
+pkgdown_sha: ~
+articles:
+  Staph: Staph.html
+  exampleRec: exampleRec.html
+  exampleRelaxed: exampleRelaxed.html
+  exampleTest: exampleTest.html
+

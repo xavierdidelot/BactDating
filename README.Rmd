@@ -2,16 +2,13 @@
 output: github_document
 ---
 
-<!-- [![Travis-CI Build Status](https://travis-ci.com/xavierdidelot/BactDating.svg?branch=master)](https://travis-ci.com/xavierdidelot/BactDating)
-[![Coverage Status](https://codecov.io/github/xavierdidelot/BactDating/coverage.svg?branch=master)](https://codecov.io/github/xavierdidelot/BactDating?branch=master) -->
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "figures/README-"
+  fig.path = "man/figures/"
 )
 set.seed(0)
 ```
