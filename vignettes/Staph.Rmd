@@ -1,5 +1,5 @@
 ---
-title: "Application of BactDating on S. aureus ST239"
+title: "Using BactDating on a real dataset"
 author: "Xavier Didelot"
 date: '`r Sys.Date()`'
 output:
