@@ -19,11 +19,11 @@ test_that("Likelihood is equal to probability of simulation.", {
   set.seed(0)
   leaves=2010:2000
   tree=simcoaltree(leaves,5.1)
-  phy=simobsphy(tree,model='poisson',rate=5.5)
+  phy=simobsphy(tree,model='poisson',mu=5.5)
   expect_equal(likelihoodPoissonC(makeTab(tree,phy),5.5),phy$prob)
-  phy=simobsphy(tree,model='gamma',rate=5.5)
+  phy=simobsphy(tree,model='gamma',mu=5.5)
   expect_equal(likelihoodGammaC(makeTab(tree,phy),5.5),phy$prob)
-  phy=simobsphy(tree,model='relaxedgamma',rate=5.5,ratestd=4.1)
+  phy=simobsphy(tree,model='relaxedgamma',mu=5.5,sigma=4.1)
   expect_equal(likelihoodRelaxedgammaC(makeTab(tree,phy),5.5,4.1),phy$prob)
 })
 
@@ -105,7 +105,7 @@ test_that("MCMC likelihood remains correct after many partial updates.", {
   tree=simcoaltree(leaves,5.1)
   phy=simobsphy(tree)
   set.seed(0)
-  res=bactdate(phy,leaves,nbIts=10,thin=10,model='gamma',initRate=5.2,updateRate=F,updateRatestd=F,updateRoot=F)
+  res=bactdate(phy,leaves,nbIts=10,thin=10,model='gamma',initMu=5.2,updateMu=F,updateSigma=F,updateRoot=F)
   tab=makeTab(res$tree,phy)
   expect_equal(unname(res$record[1,'likelihood']),likelihoodGammaC(tab,5.2))
 })

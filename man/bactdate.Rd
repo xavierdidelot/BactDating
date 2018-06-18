@@ -4,8 +4,8 @@
 \alias{bactdate}
 \title{Main function}
 \usage{
-bactdate(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA,
-  updateRate = T, updateAlpha = T, updateRatestd = T, updateRoot = T,
+bactdate(tree, date, initMu = NA, initAlpha = NA, initSigma = NA,
+  updateMu = T, updateAlpha = T, updateSigma = T, updateRoot = T,
   nbIts = 10000, thin = ceiling(nbIts/1000), useCoalPrior = T,
   model = "mixedgamma", useRec = F, showProgress = F)
 }
@@ -14,17 +14,17 @@ bactdate(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA,
 
 \item{date}{Sampling dates for the leaves of the tree}
 
-\item{initRate}{Initial rate of substitutions per genome (not per site), or zero to use root-to-tip estimate}
+\item{initMu}{Initial rate of substitutions per genome (not per site), or zero to use root-to-tip estimate}
 
 \item{initAlpha}{Initial coalescent time unit}
 
-\item{initRatestd}{Initial std on per-branch substitution rate (only used in relaxedgamma and mixedgamma models)}
+\item{initSigma}{Initial std on per-branch substitution rate (only used in relaxedgamma and mixedgamma models)}
 
-\item{updateRate}{Whether or not to update the substitution rate}
+\item{updateMu}{Whether or not to update the substitution rate}
 
 \item{updateAlpha}{Whether or not to update the coalescent time unit}
 
-\item{updateRatestd}{Whether or not to per-branch substitution rate (only used in relaxedgamma and mixedgamma models)}
+\item{updateSigma}{Whether or not to per-branch substitution rate (only used in relaxedgamma and mixedgamma models)}
 
 \item{updateRoot}{Whether or not to use the root finding algorithm}
 

@@ -90,31 +90,31 @@ simcoaltree = function(dates=NA,alpha=10) {
 
 #' Simulation of observed phylogeny given a dated tree
 #' @param tree Dated tree
-#' @param rate Substitution clock rate
-#' @param ratestd Per-branch std on the clock rate (used only by relaxed gamma model)
+#' @param mu Substitution clock rate
+#' @param sigma Per-branch std on the clock rate (used only by relaxed gamma model)
 #' @param model Which model to use (poisson or gamma or relaxedgamma)
 #' @return An observed phylogenetic tree
 #' @export
-simobsphy = function(tree, rate = 10, ratestd = 0, model = 'gamma') {
-  if (ratestd>0) model='relaxedgamma'
+simobsphy = function(tree, mu = 10, sigma = 0, model = 'gamma') {
+  if (sigma>0) model='relaxedgamma'
   obsphy=tree
   obsphy$prob=0
   obsphy$root.time=NULL
   if (model=='poisson') {
-    e=unlist(lapply(obsphy$edge.length*rate,function (x) rpois(1,x)))
-    obsphy$prob=sum(mapply(dpois,e,rate*obsphy$edge.length,rep(T,length(obsphy$edge.length))))
+    e=unlist(lapply(obsphy$edge.length*mu,function (x) rpois(1,x)))
+    obsphy$prob=sum(mapply(dpois,e,mu*obsphy$edge.length,rep(T,length(obsphy$edge.length))))
     obsphy$edge.length=e
   }
   if (model=='gamma') {
-    e=unlist(lapply(obsphy$edge.length*rate,function (x) rgamma(1,shape=x,scale=1)))
-    obsphy$prob=sum(log(mapply(dgamma,e,rate*obsphy$edge.length,rep(1,length(obsphy$edge.length)))))
+    e=unlist(lapply(obsphy$edge.length*mu,function (x) rgamma(1,shape=x,scale=1)))
+    obsphy$prob=sum(log(mapply(dgamma,e,mu*obsphy$edge.length,rep(1,length(obsphy$edge.length)))))
     obsphy$edge.length=e
   }
   if (model=='relaxedgamma')  for (i in 1:length(obsphy$edge.length)) {
     l=obsphy$edge.length[i]
-    ratevar=ratestd^2
-    obsphy$edge.length[i]=rgamma(1,shape=l*rate*rate/(rate+l*ratevar),scale=1+l*ratevar/rate)
-    obsphy$prob=obsphy$prob+dgamma(obsphy$edge.length[i],shape=l*rate*rate/(rate+l*ratevar),scale=1+l*ratevar/rate,log=T)
+    ratevar=sigma^2
+    obsphy$edge.length[i]=rgamma(1,shape=l*mu*mu/(mu+l*ratevar),scale=1+l*ratevar/mu)
+    obsphy$prob=obsphy$prob+dgamma(obsphy$edge.length[i],shape=l*mu*mu/(mu+l*ratevar),scale=1+l*ratevar/mu,log=T)
   }
   return(obsphy)
 }

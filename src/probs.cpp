@@ -24,20 +24,20 @@ double coalpriorC(NumericVector leaves, NumericVector nodes, double alpha) {
 }
 
 // [[Rcpp::export]]
-double likelihoodGammaC(NumericMatrix tab, double rate) {
+double likelihoodGammaC(NumericMatrix tab, double mu) {
   int n = (tab.nrow()+1)/2;
   double p=0;
   double unrec=1;
   for (int i=0;i<tab.nrow();i++) {
     if (i==n) continue;
     if (tab.ncol()==5) unrec=tab(i,4);
-    p+=R::dgamma(unrec*tab(i,1),unrec*rate*(tab(i,2)-tab(tab(i,3)-1,2)),1,1);
+    p+=R::dgamma(unrec*tab(i,1),unrec*mu*(tab(i,2)-tab(tab(i,3)-1,2)),1,1);
   }
   return(p);
 }
 
 // [[Rcpp::export]]
-double likelihoodRelaxedgammaC(NumericMatrix tab, double rate, double ratestd) {
+double likelihoodRelaxedgammaC(NumericMatrix tab, double mu, double sigma) {
   int n = (tab.nrow()+1)/2;
   double p=0;
   double l=0;
@@ -46,21 +46,21 @@ double likelihoodRelaxedgammaC(NumericMatrix tab, double rate, double ratestd) {
     if (i==n) continue;
     l=tab(i,2)-tab(tab(i,3)-1,2);
     if (tab.ncol()==5) {unrec=tab(i,4);l=l*unrec;}
-    double ratevar=ratestd*ratestd;
-    p+=R::dgamma(unrec*tab(i,1),l*rate*rate/(rate+l*ratevar),1.0+l*ratevar/rate,1);
+    double ratevar=sigma*sigma;
+    p+=R::dgamma(unrec*tab(i,1),l*mu*mu/(mu+l*ratevar),1.0+l*ratevar/mu,1);
   }
   return(p);
 }
 
 // [[Rcpp::export]]
-double likelihoodPoissonC(NumericMatrix tab, double rate) {
+double likelihoodPoissonC(NumericMatrix tab, double mu) {
   int n = (tab.nrow()+1)/2;
   double p=0;
   double unrec=1;
   for (int i=0;i<tab.nrow();i++) {
     if (i==n) continue;
     if (tab.ncol()==5) unrec=tab(i,4);
-    p+=R::dpois(round(unrec*tab(i,1)),unrec*rate*(tab(i,2)-tab(tab(i,3)-1,2)),1);
+    p+=R::dpois(round(unrec*tab(i,1)),unrec*mu*(tab(i,2)-tab(tab(i,3)-1,2)),1);
   }
   return(p);
 }

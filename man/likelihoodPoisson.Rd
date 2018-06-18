@@ -4,12 +4,12 @@
 \alias{likelihoodPoisson}
 \title{Poisson likelihood function}
 \usage{
-likelihoodPoisson(tab, rate)
+likelihoodPoisson(tab, mu)
 }
 \arguments{
 \item{tab}{Table of nodes}
 
-\item{rate}{Substitution rate}
+\item{mu}{Substitution clock rate}
 }
 \value{
 log-likelihood

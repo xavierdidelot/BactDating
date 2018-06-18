@@ -4,14 +4,14 @@
 \alias{simobsphy}
 \title{Simulation of observed phylogeny given a dated tree}
 \usage{
-simobsphy(tree, rate = 10, ratestd = 0, model = "gamma")
+simobsphy(tree, mu = 10, sigma = 0, model = "gamma")
 }
 \arguments{
 \item{tree}{Dated tree}
 
-\item{rate}{Substitution clock rate}
+\item{mu}{Substitution clock rate}
 
-\item{ratestd}{Per-branch std on the clock rate (used only by relaxed gamma model)}
+\item{sigma}{Per-branch std on the clock rate (used only by relaxed gamma model)}
 
 \item{model}{Which model to use (poisson or gamma or relaxedgamma)}
 }

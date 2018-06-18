@@ -1,12 +1,12 @@
 #' Main function
 #' @param tree Tree wih branches measured in unit of substitutions
 #' @param date Sampling dates for the leaves of the tree
-#' @param initRate Initial rate of substitutions per genome (not per site), or zero to use root-to-tip estimate
+#' @param initMu Initial rate of substitutions per genome (not per site), or zero to use root-to-tip estimate
 #' @param initAlpha Initial coalescent time unit
-#' @param initRatestd Initial std on per-branch substitution rate (only used in relaxedgamma and mixedgamma models)
-#' @param updateRate Whether or not to update the substitution rate
+#' @param initSigma Initial std on per-branch substitution rate (only used in relaxedgamma and mixedgamma models)
+#' @param updateMu Whether or not to update the substitution rate
 #' @param updateAlpha Whether or not to update the coalescent time unit
-#' @param updateRatestd Whether or not to per-branch substitution rate (only used in relaxedgamma and mixedgamma models)
+#' @param updateSigma Whether or not to per-branch substitution rate (only used in relaxedgamma and mixedgamma models)
 #' @param updateRoot Whether or not to use the root finding algorithm
 #' @param nbIts Number of MCMC iterations to perform
 #' @param thin Thining interval between recorded MCMC samples
@@ -16,7 +16,7 @@
 #' @param showProgress Whether or not to show a progress bar
 #' @return Dating results
 #' @export
-bactdate = function(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA, updateRate = T, updateAlpha = T, updateRatestd = T, updateRoot = T, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T,  model = 'mixedgamma', useRec = F, showProgress = F)
+bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, updateMu = T, updateAlpha = T, updateSigma = T, updateRoot = T, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T,  model = 'mixedgamma', useRec = F, showProgress = F)
 {
   #Rerranging of dates, if needed
   if (is.matrix(date)) {
@@ -33,14 +33,14 @@ bactdate = function(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA,
   testSignal=F
 
   #If the initial rate was not specified, start with the rate implied by root-to-tip analysis
-  if (is.na(initRate)) {
+  if (is.na(initMu)) {
     r=suppressWarnings(unname(roottotip(tree,date,showFig=F)$rate))
     if (is.na(r) || r<0) r=1
-    initRate=r
+    initMu=r
   }
-  rate=initRate
-  if (is.na(initRatestd)) initRatestd=rate
-  ratestd=0
+  mu=initMu
+  if (is.na(initSigma)) initSigma=mu
+  sigma=0
 
   #Select prior function
   prior=function(...) return(0)
@@ -48,15 +48,15 @@ bactdate = function(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA,
 
   #Selection likelihood function
   if (!is.element(model,c('poisson','poissonR'))) tree$edge.length=pmax(tree$edge.length,1e-7)
-  if (model == 'poisson') likelihood=function(tab,rate,ratestd) return(likelihoodPoissonC(tab,rate))
-  if (model == 'poissonR') likelihood=function(tab,rate,ratestd) return(likelihoodPoisson(tab,rate))
-  #if (model == 'negbin') likelihood=function(tab,rate,ratestd) return(likelihoodNegbin(tab,r=rate,phi=1))
-  if (model == 'gamma') likelihood=function(tab,rate,ratestd) return(likelihoodGammaC(tab,rate))
-  if (model == 'gammaR') likelihood=function(tab,rate,ratestd) return(likelihoodGamma(tab,rate))
-  if (model == 'relaxedgamma'||model == 'mixedgamma') likelihood=function(tab,rate,ratestd) return(likelihoodRelaxedgammaC(tab,rate,ratestd))
-  if (model == 'relaxedgammaR') likelihood=function(tab,rate,ratestd) return(likelihoodRelaxedgamma(tab,rate,ratestd))
-  if (model != 'relaxedgamma'&&model!='relaxedgammaR'&&model!='mixedgamma') {updateRatestd=F;ratestd=0}
-  if (model == 'null') {updateRate=0;likelihood=function(tab,rate,ratestd) return(0)}
+  if (model == 'poisson') likelihood=function(tab,mu,sigma) return(likelihoodPoissonC(tab,mu))
+  if (model == 'poissonR') likelihood=function(tab,mu,sigma) return(likelihoodPoisson(tab,mu))
+  #if (model == 'negbin') likelihood=function(tab,rate,sigma) return(likelihoodNegbin(tab,r=rate,phi=1))
+  if (model == 'gamma') likelihood=function(tab,mu,sigma) return(likelihoodGammaC(tab,mu))
+  if (model == 'gammaR') likelihood=function(tab,mu,sigma) return(likelihoodGamma(tab,mu))
+  if (model == 'relaxedgamma'||model == 'mixedgamma') likelihood=function(tab,mu,sigma) return(likelihoodRelaxedgammaC(tab,mu,sigma))
+  if (model == 'relaxedgammaR') likelihood=function(tab,mu,sigma) return(likelihoodRelaxedgamma(tab,mu,sigma))
+  if (model != 'relaxedgamma'&&model!='relaxedgammaR'&&model!='mixedgamma') {updateSigma=F;sigma=0}
+  if (model == 'null') {updateMu=0;likelihood=function(tab,mu,sigma) return(0)}
   if (!exists('likelihood')) stop('Unknown model.')
 
   #Deal with missing dates
@@ -88,12 +88,12 @@ bactdate = function(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA,
       next
     children = which(tab[, 4] == i)
     if (length(children) != 0)
-      tab[i, 3] = min(tab[children,3]-0.01,mean(tab[children, 3]-tab[children,2]/rate))
+      tab[i, 3] = min(tab[children,3]-0.01,mean(tab[children, 3]-tab[children,2]/mu))
   }
   i = n + 1
   children = which(tab[, 4] == i)
   tab[i, 1] = i
-  tab[i, 3] = min(tab[children, 3]-tab[children,2]/rate)
+  tab[i, 3] = min(tab[children, 3]-tab[children,2]/mu)
 
   #Sample Alpha if no initial point provided
   if (is.na(initAlpha)) {
@@ -107,11 +107,11 @@ bactdate = function(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA,
   initHeight=max(tab[,3])-min(tab[,3])
 
   #Start of MCMC algorithm
-  l = likelihood(tab, rate, ratestd)
+  l = likelihood(tab, mu, sigma)
   orderednodedates=sort(tab[(n+1):nrow(tab),3],method='quick',decreasing = T)
   p = prior(orderedleafdates,orderednodedates,alpha)
   record = matrix(NA, floor(nbIts / thin), nrow(tab)*3 + 6)
-  colnames(record)<-c(rep(NA,nrow(tab)*3),'likelihood','rate','ratestd','alpha','prior','root')
+  colnames(record)<-c(rep(NA,nrow(tab)*3),'likelihood','mu','sigma','alpha','prior','root')
   if (showProgress) pb <- txtProgressBar(min=0,max=nbIts,style = 3)
   children=vector("list", max(tab[,4],na.rm = T))
   for (i in 1:nrow(tab)) if (!is.na(tab[i,4])) children[[tab[i,4]]]=c(children[[tab[i,4]]],i)
@@ -128,41 +128,41 @@ bactdate = function(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA,
       record[i / thin, (1:nrow(tab))+nrow(tab)]=tab[, 4]
       record[i / thin, (1:nrow(tab))+2*nrow(tab)]=tab[, 2]
       record[i / thin, 'likelihood'] = l
-      record[i / thin, 'rate'] = rate
-      record[i / thin, 'ratestd'] = ratestd
+      record[i / thin, 'mu'] = mu
+      record[i / thin, 'sigma'] = sigma
       record[i / thin, 'alpha'] = alpha
       record[i / thin, 'prior'] = p
       record[i / thin, 'root'] = curroot
       if (testSignal) record[i / thin, 'signal'] = all(tab[1:n,3]==date)
     }
 
-    if (updateRate == T) {
+    if (updateMu == T) {
       #MH move using Gamma(1e-3,1e3) prior
-      rate2=abs(rnorm(1,rate,0.1*ifelse(initRate==0,1e-3,initRate)))
-      l2=likelihood(tab,rate2,ratestd)
-      if (log(runif(1))<l2-l+dgamma(rate2,shape=1e-3,scale=1e3,log=T)-dgamma(rate,shape=1e-3,scale=1e3,log=T)) {l=l2;rate=rate2}
+      rate2=abs(rnorm(1,mu,0.1*ifelse(initMu==0,1e-3,initMu)))
+      l2=likelihood(tab,rate2,sigma)
+      if (log(runif(1))<l2-l+dgamma(rate2,shape=1e-3,scale=1e3,log=T)-dgamma(mu,shape=1e-3,scale=1e3,log=T)) {l=l2;mu=rate2}
     }
 
-    if (updateRatestd == T && ratestd>0) {
+    if (updateSigma == T && sigma>0) {
       #MH move using Gamma(1e-3,1e3) prior
-      ratestd2=abs(rnorm(1,ratestd,0.1*ifelse(initRatestd==0,1e-3,initRatestd)))
-      l2=likelihood(tab,rate,ratestd2)
-      if (log(runif(1))<l2-l+dgamma(ratestd2,shape=1e-3,scale=1e3,log=T)-dgamma(ratestd,shape=1e-3,scale=1e3,log=T)) {l=l2;ratestd=ratestd2}
+      sigma2=abs(rnorm(1,sigma,0.1*ifelse(initSigma==0,1e-3,initSigma)))
+      l2=likelihood(tab,mu,sigma2)
+      if (log(runif(1))<l2-l+dgamma(sigma2,shape=1e-3,scale=1e3,log=T)-dgamma(sigma,shape=1e-3,scale=1e3,log=T)) {l=l2;sigma=sigma2}
     }
 
     if (model == 'mixedgamma') {
       #Reversible-jump move
-      if (ratestd==0) {
-        ratestd2=rexp(1)
-        qratio=ratestd2#-dexp(ratestd2,1,log=T)
-        pratio=dgamma(ratestd2,shape=1e-3,scale=1e3,log=T)
+      if (sigma==0) {
+        sigma2=rexp(1)
+        qratio=sigma2#-dexp(sigma2,1,log=T)
+        pratio=dgamma(sigma2,shape=1e-3,scale=1e3,log=T)
       } else {
-        ratestd2=0
-        qratio=-ratestd#dexp(ratestd,1,log=T)
-        pratio=-dgamma(ratestd,shape=1e-3,scale=1e3,log=T)
+        sigma2=0
+        qratio=-sigma#dexp(sigma,1,log=T)
+        pratio=-dgamma(sigma,shape=1e-3,scale=1e3,log=T)
       }
-      l2=likelihood(tab,rate,ratestd2)
-      if (log(runif(1))<l2-l+pratio+qratio) {l=l2;ratestd=ratestd2}
+      l2=likelihood(tab,mu,sigma2)
+      if (log(runif(1))<l2-l+pratio+qratio) {l=l2;sigma=sigma2}
     }
 
     if (updateAlpha == T) {
@@ -185,10 +185,10 @@ bactdate = function(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA,
       if (r>0&&new>min(tab[children[[j]],3])) next#can't be younger than sons
       if (j>(n+1)) {mintab=rbind(tab[children[[j]],],tab[tab[j,4],],tab[j,]);mintab[,4]=c(4,4,NA,3)}
       else {mintab=rbind(tab[children[[j]],],tab[j,]);mintab[,4]=c(3,3,NA)}
-      l2=l-likelihood(mintab,rate,ratestd)
+      l2=l-likelihood(mintab,mu,sigma)
       mintab[nrow(mintab),3]=new
-      l2=l2+likelihood(mintab,rate,ratestd)
-      #tab2=tab;tab2[j,3]=new;l2full=likelihood(tab2,rate,ratestd);if (abs(l2-l2full)>1e-10) print(sprintf('error %f %f',l2,l2full))
+      l2=l2+likelihood(mintab,mu,sigma)
+      #tab2=tab;tab2[j,3]=new;l2full=likelihood(tab2,rate,sigma);if (abs(l2-l2full)>1e-10) print(sprintf('error %f %f',l2,l2full))
       changeinorderedvec(orderednodedates,old,new)
       p2 = prior(orderedleafdates, orderednodedates, alpha)
       if (log(runif(1)) < l2 - l + p2 - p)
@@ -205,10 +205,10 @@ bactdate = function(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA,
       if (new>rangedate[j,2]||new<rangedate[j,1]) next#stay within prior range
       mintab=rbind(tab[j,],tab[tab[j,4],])
       mintab[,4]=c(2,NA)
-      l2=l-likelihood(mintab,rate,ratestd)
+      l2=l-likelihood(mintab,mu,sigma)
       mintab[1,3]=new
-      l2=l2+likelihood(mintab,rate,ratestd)
-      #tab2=tab;tab2[j,3]=new;l2full=likelihood(tab2,rate,ratestd);if (abs(l2-l2full)>1e-10) print(sprintf('error %f %f',l2,l2full))
+      l2=l2+likelihood(mintab,mu,sigma)
+      #tab2=tab;tab2[j,3]=new;l2full=likelihood(tab2,rate,sigma);if (abs(l2-l2full)>1e-10) print(sprintf('error %f %f',l2,l2full))
       changeinorderedvec(orderedleafdates,old,new)
       p2 = prior(orderedleafdates, orderednodedates, alpha)
       if (log(runif(1)) < l2 - l + p2 - p)
@@ -224,7 +224,7 @@ bactdate = function(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA,
       old=tab[sides,2]
       r=runif(1)
       tab[sides,2]=c(sum(old)*r,sum(old)*(1-r))
-      l2=likelihood(tab,rate, ratestd)
+      l2=likelihood(tab,mu, sigma)
       if (log(runif(1))<l2-l) l=l2 else tab[sides,2]=old
   }
 
@@ -244,7 +244,7 @@ bactdate = function(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA,
         tab[left,2]=oldtab[a,2]*(1-r)
         tab[right,2]=oldtab[right,2]+oldtab[left,2]
         if (useRec) tab[left,5]=tab[a,5]
-        l2=likelihood(tab,rate,ratestd)
+        l2=likelihood(tab,mu,sigma)
         if (log(runif(1))<l2-l+log(oldtab[a,2]/tab[right,2]))
           {l=l2
           children=vector("list", max(tab[,4],na.rm = T))
@@ -262,11 +262,11 @@ bactdate = function(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA,
       maxdates=max(date)
       if (all(tab[1:n,3]==maxdates)) {
         tab[1:n,3]=date
-        l2=likelihood(tab,rate,ratestd)
+        l2=likelihood(tab,mu,sigma)
         if (log(runif(1))<l2-l) l=l2 else tab[1:n,3]=maxdates
       } else {
         tab[1:n,3]=maxdates
-        l2=likelihood(tab,rate,ratestd)
+        l2=likelihood(tab,mu,sigma)
         if (log(runif(1))<l2-l) l=l2 else tab[1:n,3]=date
       }
     }
@@ -289,7 +289,7 @@ bactdate = function(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA,
   meantab=tab
   meantab[,3]=meanRec[1:nrow(tab)]
   meantab[,4]=meanRec[(1:nrow(tab))+nrow(tab)]
-  dic=-2*likelihood(meantab,meanRec['rate'],meanRec['ratestd'])+var(-2*record[bestrows,'likelihood'])
+  dic=-2*likelihood(meantab,meanRec['mu'],meanRec['sigma'])+var(-2*record[bestrows,'likelihood'])
 
   tree$root.time = max(date)-max(leafDates(tree))
   CI = matrix(NA, nrow(tab), 2)
@@ -309,7 +309,7 @@ bactdate = function(tree, date, initRate = NA, initAlpha = NA, initRatestd = NA,
     dic = dic
   )
   class(out) <- 'resBactDating'
-  if (model=='mixedgamma') out$pstrict=length(which(record[,'ratestd']==0))/nrow(record)
+  if (model=='mixedgamma') out$pstrict=length(which(record[,'sigma']==0))/nrow(record)
   if (testSignal) out$psignal=length(which(record[,'signal']==1))/nrow(record)
   return(out)
 }

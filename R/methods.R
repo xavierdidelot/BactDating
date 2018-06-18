@@ -38,9 +38,9 @@ plot.resBactDating = function(x, type='tree', show.axis=T, ...) {
     plot(x$record[,'likelihood'],main='Likelihood',type='l',xlab='Sampled iterations',ylab='')
     plot(x$record[,'prior'],main='Prior',type='l',xlab='Sampled iterations',ylab='')
     plot(x$record[,Ntip(x$tree)+1],main='Date of root',type='l',xlab='Sampled iterations',ylab='')
-    plot(x$record[,'rate'],main='Clock rate',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,'mu'],main='Clock rate',type='l',xlab='Sampled iterations',ylab='')
     plot(x$record[,'alpha'],main='Coalescent time unit',type='l',xlab='Sampled iterations',ylab='')
-    plot(x$record[,'ratestd'],main='Clock rate std',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,'sigma'],main='Clock rate std',type='l',xlab='Sampled iterations',ylab='')
     v=x$record[,'root']
     u=sort(unique(v))
     for (i in 1:length(u)) v[which(x$record[,'root']==u[i])]=i
@@ -67,8 +67,8 @@ plot.resBactDating = function(x, type='tree', show.axis=T, ...) {
     xs=x$tree$edge.length
     ys=x$tree$subs
     ma=max(xs)*1.05
-    rate=mean(x$record[(nrow(x$record)/2):nrow(x$record),'rate'])
-    ratestd=mean(x$record[(nrow(x$record)/2):nrow(x$record),'ratestd'])
+    rate=mean(x$record[(nrow(x$record)/2):nrow(x$record),'mu'])
+    sigma=mean(x$record[(nrow(x$record)/2):nrow(x$record),'sigma'])
     par(mfrow=c(1,2))
     plot(c(0,ma),c(0,rate*ma),type='l',xlab='Branch duration',ylab='Substitutions',xaxs='i',yaxs='i',xlim=c(0,max(xs)*1.05),ylim=c(0,max(ys)*1.05))
     par(xpd=F)
@@ -86,9 +86,9 @@ plot.resBactDating = function(x, type='tree', show.axis=T, ...) {
       lines(xss,qgamma(1-plim/2,shape=(xss-ori)*rate,scale=1),lty='dashed')
       ll=dgamma(ys,shape=xs*rate,scale=1,log=T)
     } else {
-      lines(xss,qgamma(  plim/2,shape=(xss-ori)*rate^2/(rate+(xss-ori)*ratestd^2),scale=1+(xss-ori)*ratestd^2/rate),lty='dashed')
-      lines(xss,qgamma(1-plim/2,shape=(xss-ori)*rate^2/(rate+(xss-ori)*ratestd^2),scale=1+(xss-ori)*ratestd^2/rate),lty='dashed')
-      ll=dgamma(ys,shape=xs*rate^2/(rate+xs*ratestd^2),scale=1+xs*ratestd^2/rate,log=T)
+      lines(xss,qgamma(  plim/2,shape=(xss-ori)*rate^2/(rate+(xss-ori)*sigma^2),scale=1+(xss-ori)*sigma^2/rate),lty='dashed')
+      lines(xss,qgamma(1-plim/2,shape=(xss-ori)*rate^2/(rate+(xss-ori)*sigma^2),scale=1+(xss-ori)*sigma^2/rate),lty='dashed')
+      ll=dgamma(ys,shape=xs*rate^2/(rate+xs*sigma^2),scale=1+xs*sigma^2/rate,log=T)
     }
     normed=(ll-min(ll))/(max(ll)-min(ll))
     cols=rgb(normed,0,1-normed)
@@ -116,7 +116,7 @@ print.resBactDating <- function(x, ...)
   cat( 'Phylogenetic tree dated using BactDating\n')
   print(x$tree,...)
   cat(sprintf('Probability of root branch=%.2f\n', x$rootprob))
-  for (nam in c('likelihood','prior','rate','ratestd','alpha')) {
+  for (nam in c('likelihood','prior','mu','sigma','alpha')) {
     v=x$record[,nam]
     v=v[(1+length(v)/2):length(v)]
     v=sort(v)

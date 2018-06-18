@@ -35,7 +35,7 @@ $r=10$ per year is the substitution rate. We can simulate an observed phylogenet
 and perform a root-to-tip analysis as follows:
 
 ```{r}
-obsphy=simobsphy(phy,rate=10)
+obsphy=simobsphy(phy,mu=10)
 res=roottotip(obsphy,dates)
 ```
 ##Analysis of data from strict clock model
@@ -53,7 +53,7 @@ print(res$pstrict)
 Let's start again with a new dataset using the relaxed model:
 ```{r}
 set.seed(0)
-obsphy=simobsphy(phy,rate=10,model='relaxedgamma',ratestd = 5)
+obsphy=simobsphy(phy,mu=10,model='relaxedgamma',sigma = 5)
 res=roottotip(obsphy,dates)
 ```
 

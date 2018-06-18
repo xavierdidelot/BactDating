@@ -88,7 +88,7 @@
       <h1>Using BactDating to test significance of the temporal signal</h1>
                         <h4 class="author">Xavier Didelot</h4>
             
-            <h4 class="date">2018-06-15</h4>
+            <h4 class="date">2018-06-18</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/xavierdidelot/BactDating/blob/master/vignettes/exampleTest.Rmd"><code>vignettes/exampleTest.Rmd</code></a></small>
       <div class="hidden name"><code>exampleTest.Rmd</code></div>
@@ -114,7 +114,7 @@ phy=<span class="kw"><a href="../reference/simcoaltree.html">simcoaltree</a></sp
 <span class="kw"><a href="http://www.rdocumentation.org/packages/ape/topics/axisPhylo">axisPhylo</a></span>(<span class="dt">backward =</span> F)</code></pre></div>
 <p><img src="exampleTest_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
 <p>On each branch we observe a number of substitutions which is distributed <span class="math inline">\(\mathrm{Gamma}(rl,1)\)</span> where <span class="math inline">\(l\)</span> is the branch length and <span class="math inline">\(r=10\)</span> per year is the substitution rate. We can simulate an observed phylogenetic tree and perform a root-to-tip analysis as follows:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">obsphy=<span class="kw"><a href="../reference/simobsphy.html">simobsphy</a></span>(phy,<span class="dt">rate=</span><span class="dv">10</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">obsphy=<span class="kw"><a href="../reference/simobsphy.html">simobsphy</a></span>(phy,<span class="dt">mu=</span><span class="dv">10</span>)
 res=<span class="kw"><a href="../reference/roottotip.html">roottotip</a></span>(obsphy,dates)</code></pre></div>
 <p><img src="exampleTest_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 <p>Let’s consider that we do not know where is the root of the observed phylogeny, and that the date of the last sample has been lost:</p>

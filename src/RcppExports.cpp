@@ -19,39 +19,39 @@ BEGIN_RCPP
 END_RCPP
 }
 // likelihoodGammaC
-double likelihoodGammaC(NumericMatrix tab, double rate);
-RcppExport SEXP _BactDating_likelihoodGammaC(SEXP tabSEXP, SEXP rateSEXP) {
+double likelihoodGammaC(NumericMatrix tab, double mu);
+RcppExport SEXP _BactDating_likelihoodGammaC(SEXP tabSEXP, SEXP muSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericMatrix >::type tab(tabSEXP);
-    Rcpp::traits::input_parameter< double >::type rate(rateSEXP);
-    rcpp_result_gen = Rcpp::wrap(likelihoodGammaC(tab, rate));
+    Rcpp::traits::input_parameter< double >::type mu(muSEXP);
+    rcpp_result_gen = Rcpp::wrap(likelihoodGammaC(tab, mu));
     return rcpp_result_gen;
 END_RCPP
 }
 // likelihoodRelaxedgammaC
-double likelihoodRelaxedgammaC(NumericMatrix tab, double rate, double ratestd);
-RcppExport SEXP _BactDating_likelihoodRelaxedgammaC(SEXP tabSEXP, SEXP rateSEXP, SEXP ratestdSEXP) {
+double likelihoodRelaxedgammaC(NumericMatrix tab, double mu, double sigma);
+RcppExport SEXP _BactDating_likelihoodRelaxedgammaC(SEXP tabSEXP, SEXP muSEXP, SEXP sigmaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericMatrix >::type tab(tabSEXP);
-    Rcpp::traits::input_parameter< double >::type rate(rateSEXP);
-    Rcpp::traits::input_parameter< double >::type ratestd(ratestdSEXP);
-    rcpp_result_gen = Rcpp::wrap(likelihoodRelaxedgammaC(tab, rate, ratestd));
+    Rcpp::traits::input_parameter< double >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< double >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(likelihoodRelaxedgammaC(tab, mu, sigma));
     return rcpp_result_gen;
 END_RCPP
 }
 // likelihoodPoissonC
-double likelihoodPoissonC(NumericMatrix tab, double rate);
-RcppExport SEXP _BactDating_likelihoodPoissonC(SEXP tabSEXP, SEXP rateSEXP) {
+double likelihoodPoissonC(NumericMatrix tab, double mu);
+RcppExport SEXP _BactDating_likelihoodPoissonC(SEXP tabSEXP, SEXP muSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericMatrix >::type tab(tabSEXP);
-    Rcpp::traits::input_parameter< double >::type rate(rateSEXP);
-    rcpp_result_gen = Rcpp::wrap(likelihoodPoissonC(tab, rate));
+    Rcpp::traits::input_parameter< double >::type mu(muSEXP);
+    rcpp_result_gen = Rcpp::wrap(likelihoodPoissonC(tab, mu));
     return rcpp_result_gen;
 END_RCPP
 }

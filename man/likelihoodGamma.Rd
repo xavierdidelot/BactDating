@@ -4,12 +4,12 @@
 \alias{likelihoodGamma}
 \title{Gamma likelihood function}
 \usage{
-likelihoodGamma(tab, rate)
+likelihoodGamma(tab, mu)
 }
 \arguments{
 \item{tab}{Table of nodes}
 
-\item{rate}{rate parameter}
+\item{mu}{Clock rate parameter}
 }
 \value{
 log-likelihood

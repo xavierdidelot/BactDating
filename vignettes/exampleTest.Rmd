@@ -35,7 +35,7 @@ $r=10$ per year is the substitution rate. We can simulate an observed phylogenet
 and perform a root-to-tip analysis as follows:
 
 ```{r}
-obsphy=simobsphy(phy,rate=10)
+obsphy=simobsphy(phy,mu=10)
 res=roottotip(obsphy,dates)
 ```
 

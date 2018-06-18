@@ -4,14 +4,14 @@
 \alias{likelihoodRelaxedgamma}
 \title{Relaxed gamma likelihood function}
 \usage{
-likelihoodRelaxedgamma(tab, rate, ratestd)
+likelihoodRelaxedgamma(tab, mu, sigma)
 }
 \arguments{
 \item{tab}{Table of nodes}
 
-\item{rate}{rate parameter}
+\item{mu}{Clock rate parameter}
 
-\item{ratestd}{std of per branch rate}
+\item{sigma}{Std of per branch clock rate}
 }
 \value{
 log-likelihood

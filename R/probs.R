@@ -1,18 +1,18 @@
 #' Poisson likelihood function
 #' @param tab Table of nodes
-#' @param rate Substitution rate
+#' @param mu Substitution clock rate
 #' @return log-likelihood
-likelihoodPoisson = function(tab, rate) {
+likelihoodPoisson = function(tab, mu) {
   n = ceiling(nrow(tab)/2)
-  if (rate < 0) stop('error1')
+  if (mu < 0) stop('error1')
   t2 = tab[-(n + 1), ,drop=F]
   lengths = t2[, 3] - tab[t2[, 4], 3]
   if (min(lengths) < 0) stop('error2')
   muts = t2[, 2]
   if (min(muts)<0) stop('error3')
   if (ncol(tab)==5) {lengths=lengths*t2[,5];muts=muts*t2[,5]}
-  #return(sum(-lengths * rate + round(muts) * log(lengths * rate)))
-  return(sum(dpois(round(muts),lengths*rate,log=T)))
+  #return(sum(-lengths * mu + round(muts) * log(lengths * mu)))
+  return(sum(dpois(round(muts),lengths*mu,log=T)))
 }
 
 #' Negative-binomial likelihood function
@@ -34,36 +34,36 @@ likelihoodNegbin = function(tab, r, phi) {
 
 #' Gamma likelihood function
 #' @param tab Table of nodes
-#' @param rate rate parameter
+#' @param mu Clock rate parameter
 #' @return log-likelihood
-likelihoodGamma = function(tab, rate) {
+likelihoodGamma = function(tab, mu) {
   n = ceiling(nrow(tab)/2)
-  if (rate < 0) stop('error1')
+  if (mu < 0) stop('error1')
   t2 = tab[-(n + 1), ,drop=F]
   lengths = t2[, 3] - tab[t2[, 4], 3]
   if (min(lengths) < 0) stop('error2')
   muts = t2[, 2]
   if (min(muts)<0) stop('error3')
   if (ncol(tab)==5) {lengths=lengths*t2[,5];muts=muts*t2[,5]}
-  return(sum(dgamma(muts,shape=rate*lengths,scale=1,log=T)))
+  return(sum(dgamma(muts,shape=mu*lengths,scale=1,log=T)))
 }
 
 #' Relaxed gamma likelihood function
 #' @param tab Table of nodes
-#' @param rate rate parameter
-#' @param ratestd std of per branch rate
+#' @param mu Clock rate parameter
+#' @param sigma Std of per branch clock rate
 #' @return log-likelihood
-likelihoodRelaxedgamma = function(tab, rate, ratestd) {
+likelihoodRelaxedgamma = function(tab, mu, sigma) {
   n = ceiling(nrow(tab)/2)
-  if (rate < 0) stop('error1')
+  if (mu < 0) stop('error1')
   t2 = tab[-(n + 1), ,drop=F]
   lengths = t2[, 3] - tab[t2[, 4], 3]
   if (min(lengths) < 0) stop('error2')
   muts = t2[, 2]
   if (min(muts)<0) stop('error3')
   if (ncol(tab)==5) {lengths=lengths*t2[,5];muts=muts*t2[,5]}
-  ratevar=ratestd^2
-  return(sum(dgamma(muts,shape=rate*rate*lengths/(rate+ratevar*lengths),scale=1+lengths*ratevar/rate,log=T)))
+  ratevar=sigma^2
+  return(sum(dgamma(muts,shape=mu*mu*lengths/(mu+ratevar*lengths),scale=1+lengths*ratevar/mu,log=T)))
 }
 
 #' Coalescent prior function

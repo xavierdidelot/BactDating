@@ -5,16 +5,16 @@ coalpriorC <- function(leaves, nodes, alpha) {
     .Call('_BactDating_coalpriorC', PACKAGE = 'BactDating', leaves, nodes, alpha)
 }
 
-likelihoodGammaC <- function(tab, rate) {
-    .Call('_BactDating_likelihoodGammaC', PACKAGE = 'BactDating', tab, rate)
+likelihoodGammaC <- function(tab, mu) {
+    .Call('_BactDating_likelihoodGammaC', PACKAGE = 'BactDating', tab, mu)
 }
 
-likelihoodRelaxedgammaC <- function(tab, rate, ratestd) {
-    .Call('_BactDating_likelihoodRelaxedgammaC', PACKAGE = 'BactDating', tab, rate, ratestd)
+likelihoodRelaxedgammaC <- function(tab, mu, sigma) {
+    .Call('_BactDating_likelihoodRelaxedgammaC', PACKAGE = 'BactDating', tab, mu, sigma)
 }
 
-likelihoodPoissonC <- function(tab, rate) {
-    .Call('_BactDating_likelihoodPoissonC', PACKAGE = 'BactDating', tab, rate)
+likelihoodPoissonC <- function(tab, mu) {
+    .Call('_BactDating_likelihoodPoissonC', PACKAGE = 'BactDating', tab, mu)
 }
 
 changeinorderedvec <- function(vec, old, n) {
