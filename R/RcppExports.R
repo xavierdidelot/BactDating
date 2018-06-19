@@ -17,6 +17,10 @@ likelihoodPoissonC <- function(tab, mu) {
     .Call('_BactDating_likelihoodPoissonC', PACKAGE = 'BactDating', tab, mu)
 }
 
+likelihoodNegbinC <- function(tab, mu, sigma) {
+    .Call('_BactDating_likelihoodNegbinC', PACKAGE = 'BactDating', tab, mu, sigma)
+}
+
 changeinorderedvec <- function(vec, old, n) {
     invisible(.Call('_BactDating_changeinorderedvec', PACKAGE = 'BactDating', vec, old, n))
 }

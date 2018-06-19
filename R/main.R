@@ -52,6 +52,7 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
   if (model == 'mixedgamma') sigma=0
   if (model == 'poisson') likelihood=function(tab,mu,sigma) return(likelihoodPoissonC(tab,mu))
   if (model == 'poissonR') likelihood=function(tab,mu,sigma) return(likelihoodPoisson(tab,mu))
+  if (model == 'negbin') likelihood=function(tab,mu,sigma) return(likelihoodNegbinC(tab,mu,sigma))
   if (model == 'negbinR') likelihood=function(tab,mu,sigma) return(likelihoodNegbin(tab,mu,sigma))
   if (model == 'strictgamma') likelihood=function(tab,mu,sigma) return(likelihoodGammaC(tab,mu))
   if (model == 'strictgammaR') likelihood=function(tab,mu,sigma) return(likelihoodGamma(tab,mu))

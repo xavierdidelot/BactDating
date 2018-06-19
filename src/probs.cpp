@@ -66,6 +66,23 @@ double likelihoodPoissonC(NumericMatrix tab, double mu) {
 }
 
 // [[Rcpp::export]]
+double likelihoodNegbinC(NumericMatrix tab, double mu, double sigma) {
+  double k=mu*mu/sigma/sigma;
+  double theta=sigma*sigma/mu;
+  int n = (tab.nrow()+1)/2;
+  double p=0;
+  double unrec=1;
+  double lengths;
+  for (int i=0;i<tab.nrow();i++) {
+    if (i==n) continue;
+    if (tab.ncol()==5) unrec=tab(i,4);
+    lengths=unrec*(tab(i,2)-tab(tab(i,3)-1,2));
+    p+=R::dnbinom(round(unrec*tab(i,1)),k,1-theta*lengths/(1.0+theta*lengths),1);
+  }
+  return(p);
+}
+
+// [[Rcpp::export]]
 void changeinorderedvec(NumericVector vec,double old,double n) {
   //NumericVector res = clone(vec);
   int i=0;
