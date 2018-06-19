@@ -81,7 +81,7 @@ plot.resBactDating = function(x, type='tree', show.axis=T, ...) {
       lines(xss,qpois(1-plim/2,(xss-ori)*rate),lty='dashed')
       ll=dpois(round(ys),xs*rate,log=T)
     }
-    else if (x$model=='gamma') {
+    else if (x$model=='strictgamma') {
       lines(xss,qgamma(  plim/2,shape=(xss-ori)*rate,scale=1),lty='dashed')
       lines(xss,qgamma(1-plim/2,shape=(xss-ori)*rate,scale=1),lty='dashed')
       ll=dgamma(ys,shape=xs*rate,scale=1,log=T)

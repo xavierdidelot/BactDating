@@ -92,10 +92,10 @@ simcoaltree = function(dates=NA,alpha=10) {
 #' @param tree Dated tree
 #' @param mu Substitution clock rate
 #' @param sigma Per-branch std on the clock rate (used only by relaxed gamma model)
-#' @param model Which model to use (poisson or gamma or relaxedgamma)
+#' @param model Which model to use (poisson or strictgamma or relaxedgamma)
 #' @return An observed phylogenetic tree
 #' @export
-simobsphy = function(tree, mu = 10, sigma = 0, model = 'gamma') {
+simobsphy = function(tree, mu = 10, sigma = 0, model = 'strictgamma') {
   if (sigma>0) model='relaxedgamma'
   obsphy=tree
   obsphy$prob=0
@@ -105,7 +105,7 @@ simobsphy = function(tree, mu = 10, sigma = 0, model = 'gamma') {
     obsphy$prob=sum(mapply(dpois,e,mu*obsphy$edge.length,rep(T,length(obsphy$edge.length))))
     obsphy$edge.length=e
   }
-  if (model=='gamma') {
+  if (model=='strictgamma') {
     e=unlist(lapply(obsphy$edge.length*mu,function (x) rgamma(1,shape=x,scale=1)))
     obsphy$prob=sum(log(mapply(dgamma,e,mu*obsphy$edge.length,rep(1,length(obsphy$edge.length)))))
     obsphy$edge.length=e

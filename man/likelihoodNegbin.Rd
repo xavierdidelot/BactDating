@@ -4,14 +4,14 @@
 \alias{likelihoodNegbin}
 \title{Negative-binomial likelihood function}
 \usage{
-likelihoodNegbin(tab, r, phi)
+likelihoodNegbin(tab, mu, sigma)
 }
 \arguments{
 \item{tab}{Table of nodes}
 
-\item{r}{r parameter}
+\item{mu}{Clock rate parameter}
 
-\item{phi}{phi parameter}
+\item{sigma}{Std of per branch clock rate}
 }
 \value{
 log-likelihood

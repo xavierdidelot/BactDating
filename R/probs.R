@@ -17,19 +17,22 @@ likelihoodPoisson = function(tab, mu) {
 
 #' Negative-binomial likelihood function
 #' @param tab Table of nodes
-#' @param r r parameter
-#' @param phi phi parameter
+#' @param mu Clock rate parameter
+#' @param sigma Std of per branch clock rate
 #' @return log-likelihood
-likelihoodNegbin = function(tab, r, phi) {
+likelihoodNegbin = function(tab, mu, sigma) {
+  #each branch has a rate from Gamma(shape=k,scale=theta)
+  k=mu*mu/sigma/sigma
+  theta=sigma*sigma/mu
   n = ceiling(nrow(tab)/2)
-  if (r < 0 || phi < 0) stop('error1')
+  if (k < 0 || theta < 0) stop('error1')
   t2 = tab[-(n + 1), ,drop=F]
   lengths = t2[, 3] - tab[t2[, 4], 3]
   if (min(lengths) < 0) stop('error2')
   muts = t2[, 2]
   if (min(muts)<0) stop('error3')
   if (ncol(tab)==5) {lengths=lengths*t2[,5];muts=muts*t2[,5]}
-  return(sum(dnbinom(round(muts),r,1-phi*lengths/(1+phi*lengths),log=T)))
+  return(sum(dnbinom(round(muts),k,1-theta*lengths/(1+theta*lengths),log=T)))
 }
 
 #' Gamma likelihood function

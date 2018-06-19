@@ -11,7 +11,7 @@
 #' @param nbIts Number of MCMC iterations to perform
 #' @param thin Thining interval between recorded MCMC samples
 #' @param useCoalPrior Whether or not to use a coalescent prior on the tree
-#' @param model Which model to use (poisson or gamma or relaxedgamma or mixedgamma)
+#' @param model Which model to use (poisson or negbin or strictgamma or relaxedgamma or mixedgamma)
 #' @param useRec Whether or not to use results from previous recombination analysis
 #' @param showProgress Whether or not to show a progress bar
 #' @return Dating results
@@ -40,22 +40,23 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
   }
   mu=initMu
   if (is.na(initSigma)) initSigma=mu
-  sigma=0
+  sigma=initSigma
 
   #Select prior function
   prior=function(...) return(0)
   if (useCoalPrior) prior=coalpriorC else updateAlpha=F
 
   #Selection likelihood function
-  if (!is.element(model,c('poisson','poissonR'))) tree$edge.length=pmax(tree$edge.length,1e-7)
+  if (!is.element(model,c('poisson','poissonR','negbin','negbinR'))) tree$edge.length=pmax(tree$edge.length,1e-7)
+  if (!is.element(model,c('relaxedgamma','relaxedgammaR','mixedgamma','negbin','negbinR'))) {updateSigma=F;sigma=0}
+  if (model == 'mixedgamma') sigma=0
   if (model == 'poisson') likelihood=function(tab,mu,sigma) return(likelihoodPoissonC(tab,mu))
   if (model == 'poissonR') likelihood=function(tab,mu,sigma) return(likelihoodPoisson(tab,mu))
-  #if (model == 'negbin') likelihood=function(tab,rate,sigma) return(likelihoodNegbin(tab,r=rate,phi=1))
-  if (model == 'gamma') likelihood=function(tab,mu,sigma) return(likelihoodGammaC(tab,mu))
-  if (model == 'gammaR') likelihood=function(tab,mu,sigma) return(likelihoodGamma(tab,mu))
+  if (model == 'negbinR') likelihood=function(tab,mu,sigma) return(likelihoodNegbin(tab,mu,sigma))
+  if (model == 'strictgamma') likelihood=function(tab,mu,sigma) return(likelihoodGammaC(tab,mu))
+  if (model == 'strictgammaR') likelihood=function(tab,mu,sigma) return(likelihoodGamma(tab,mu))
   if (model == 'relaxedgamma'||model == 'mixedgamma') likelihood=function(tab,mu,sigma) return(likelihoodRelaxedgammaC(tab,mu,sigma))
   if (model == 'relaxedgammaR') likelihood=function(tab,mu,sigma) return(likelihoodRelaxedgamma(tab,mu,sigma))
-  if (model != 'relaxedgamma'&&model!='relaxedgammaR'&&model!='mixedgamma') {updateSigma=F;sigma=0}
   if (model == 'null') {updateMu=0;likelihood=function(tab,mu,sigma) return(0)}
   if (!exists('likelihood')) stop('Unknown model.')
 
@@ -138,9 +139,9 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
 
     if (updateMu == T) {
       #MH move using Gamma(1e-3,1e3) prior
-      rate2=abs(rnorm(1,mu,0.1*ifelse(initMu==0,1e-3,initMu)))
-      l2=likelihood(tab,rate2,sigma)
-      if (log(runif(1))<l2-l+dgamma(rate2,shape=1e-3,scale=1e3,log=T)-dgamma(mu,shape=1e-3,scale=1e3,log=T)) {l=l2;mu=rate2}
+      mu2=abs(rnorm(1,mu,0.1*ifelse(initMu==0,1e-3,initMu)))
+      l2=likelihood(tab,mu2,sigma)
+      if (log(runif(1))<l2-l+dgamma(mu2,shape=1e-3,scale=1e3,log=T)-dgamma(mu,shape=1e-3,scale=1e3,log=T)) {l=l2;mu=mu2}
     }
 
     if (updateSigma == T && sigma>0) {
@@ -188,7 +189,7 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
       l2=l-likelihood(mintab,mu,sigma)
       mintab[nrow(mintab),3]=new
       l2=l2+likelihood(mintab,mu,sigma)
-      #tab2=tab;tab2[j,3]=new;l2full=likelihood(tab2,rate,sigma);if (abs(l2-l2full)>1e-10) print(sprintf('error %f %f',l2,l2full))
+      #tab2=tab;tab2[j,3]=new;l2full=likelihood(tab2,mu,sigma);if (abs(l2-l2full)>1e-10) print(sprintf('error %f %f',l2,l2full))
       changeinorderedvec(orderednodedates,old,new)
       p2 = prior(orderedleafdates, orderednodedates, alpha)
       if (log(runif(1)) < l2 - l + p2 - p)
@@ -208,7 +209,7 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
       l2=l-likelihood(mintab,mu,sigma)
       mintab[1,3]=new
       l2=l2+likelihood(mintab,mu,sigma)
-      #tab2=tab;tab2[j,3]=new;l2full=likelihood(tab2,rate,sigma);if (abs(l2-l2full)>1e-10) print(sprintf('error %f %f',l2,l2full))
+      #tab2=tab;tab2[j,3]=new;l2full=likelihood(tab2,mu,sigma);if (abs(l2-l2full)>1e-10) print(sprintf('error %f %f',l2,l2full))
       changeinorderedvec(orderedleafdates,old,new)
       p2 = prior(orderedleafdates, orderednodedates, alpha)
       if (log(runif(1)) < l2 - l + p2 - p)
