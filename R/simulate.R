@@ -91,12 +91,11 @@ simcoaltree = function(dates=NA,alpha=10) {
 #' Simulation of observed phylogeny given a dated tree
 #' @param tree Dated tree
 #' @param mu Substitution clock rate
-#' @param sigma Per-branch std on the clock rate (used only by relaxed gamma model)
-#' @param model Which model to use (poisson or strictgamma or relaxedgamma)
+#' @param sigma Per-branch std on the clock rate (used only by relaxed gamma model and negbin model)
+#' @param model Which model to use (poisson or negbin or strictgamma or relaxedgamma)
 #' @return An observed phylogenetic tree
 #' @export
-simobsphy = function(tree, mu = 10, sigma = 0, model = 'strictgamma') {
-  if (sigma>0) model='relaxedgamma'
+simobsphy = function(tree, mu = 10, sigma = 10, model = 'strictgamma') {
   obsphy=tree
   obsphy$prob=0
   obsphy$root.time=NULL
@@ -110,11 +109,24 @@ simobsphy = function(tree, mu = 10, sigma = 0, model = 'strictgamma') {
     obsphy$prob=sum(log(mapply(dgamma,e,mu*obsphy$edge.length,rep(1,length(obsphy$edge.length)))))
     obsphy$edge.length=e
   }
-  if (model=='relaxedgamma')  for (i in 1:length(obsphy$edge.length)) {
-    l=obsphy$edge.length[i]
+  if (model=='relaxedgamma') {
     ratevar=sigma^2
-    obsphy$edge.length[i]=rgamma(1,shape=l*mu*mu/(mu+l*ratevar),scale=1+l*ratevar/mu)
-    obsphy$prob=obsphy$prob+dgamma(obsphy$edge.length[i],shape=l*mu*mu/(mu+l*ratevar),scale=1+l*ratevar/mu,log=T)
+    for (i in 1:length(obsphy$edge.length)) {
+      l=obsphy$edge.length[i]
+      obsphy$edge.length[i]=rgamma(1,shape=l*mu*mu/(mu+l*ratevar),scale=1+l*ratevar/mu)
+      obsphy$prob=obsphy$prob+dgamma(obsphy$edge.length[i],shape=l*mu*mu/(mu+l*ratevar),scale=1+l*ratevar/mu,log=T)
+    }
   }
+  if (model=='negbin') {
+    k=mu*mu/sigma/sigma
+    theta=sigma*sigma/mu
+    for (i in 1:length(obsphy$edge.length)) {
+      l=obsphy$edge.length[i]
+      obsphy$edge.length[i]=rnbinom(1,size=k,prob=1/(1+theta*l))
+      obsphy$prob=obsphy$prob+dnbinom(obsphy$edge.length[i],size=k,prob=1/(1+theta*l),log=T)
+    }
+  }
+
+
   return(obsphy)
 }

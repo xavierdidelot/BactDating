@@ -32,7 +32,7 @@ likelihoodNegbin = function(tab, mu, sigma) {
   muts = t2[, 2]
   if (min(muts)<0) stop('error3')
   if (ncol(tab)==5) {lengths=lengths*t2[,5];muts=muts*t2[,5]}
-  return(sum(dnbinom(round(muts),k,1-theta*lengths/(1+theta*lengths),log=T)))
+  return(sum(dnbinom(round(muts),size=k,prob=1/(1+theta*lengths),log=T)))
 }
 
 #' Gamma likelihood function

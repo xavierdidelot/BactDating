@@ -77,7 +77,7 @@ double likelihoodNegbinC(NumericMatrix tab, double mu, double sigma) {
     if (i==n) continue;
     if (tab.ncol()==5) unrec=tab(i,4);
     lengths=unrec*(tab(i,2)-tab(tab(i,3)-1,2));
-    p+=R::dnbinom(round(unrec*tab(i,1)),k,1-theta*lengths/(1.0+theta*lengths),1);
+    p+=R::dnbinom(round(unrec*tab(i,1)),k,1/(1.0+theta*lengths),1);
   }
   return(p);
 }

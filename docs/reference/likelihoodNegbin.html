@@ -21,9 +21,11 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 
@@ -32,6 +34,7 @@
 
 <meta property="og:description" content="Negative-binomial likelihood function" />
 <meta name="twitter:card" content="summary" />
+
 
 
 <!-- mathjax -->
@@ -126,7 +129,7 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>likelihoodNegbin</span>(<span class='no'>tab</span>, <span class='no'>r</span>, <span class='no'>phi</span>)</pre>
+    <pre class="usage"><span class='fu'>likelihoodNegbin</span>(<span class='no'>tab</span>, <span class='no'>mu</span>, <span class='no'>sigma</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -136,12 +139,12 @@
       <td><p>Table of nodes</p></td>
     </tr>
     <tr>
-      <th>r</th>
-      <td><p>r parameter</p></td>
+      <th>mu</th>
+      <td><p>Clock rate parameter</p></td>
     </tr>
     <tr>
-      <th>phi</th>
-      <td><p>phi parameter</p></td>
+      <th>sigma</th>
+      <td><p>Std of per branch clock rate</p></td>
     </tr>
     </table>
     

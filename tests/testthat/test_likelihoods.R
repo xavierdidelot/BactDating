@@ -25,6 +25,8 @@ test_that("Likelihood is equal to probability of simulation.", {
   expect_equal(likelihoodGammaC(makeTab(tree,phy),5.5),phy$prob)
   phy=simobsphy(tree,model='relaxedgamma',mu=5.5,sigma=4.1)
   expect_equal(likelihoodRelaxedgammaC(makeTab(tree,phy),5.5,4.1),phy$prob)
+  phy=simobsphy(tree,model='negbin',mu=5.5,sigma=4.1)
+  expect_equal(likelihoodNegbinC(makeTab(tree,phy),5.5,4.1),phy$prob)
 })
 
 test_that("Likelihood in C++ and R give identical results.", {

@@ -4,16 +4,16 @@
 \alias{simobsphy}
 \title{Simulation of observed phylogeny given a dated tree}
 \usage{
-simobsphy(tree, mu = 10, sigma = 0, model = "strictgamma")
+simobsphy(tree, mu = 10, sigma = 10, model = "strictgamma")
 }
 \arguments{
 \item{tree}{Dated tree}
 
 \item{mu}{Substitution clock rate}
 
-\item{sigma}{Per-branch std on the clock rate (used only by relaxed gamma model)}
+\item{sigma}{Per-branch std on the clock rate (used only by relaxed gamma model and negbin model)}
 
-\item{model}{Which model to use (poisson or strictgamma or relaxedgamma)}
+\item{model}{Which model to use (poisson or negbin or strictgamma or relaxedgamma)}
 }
 \value{
 An observed phylogenetic tree
