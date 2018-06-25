@@ -5,7 +5,7 @@
 #' @export
 simdatedtree = function(nsam = 20, dateroot = 2000) {
   phy <- rtree(nsam, br = rexp)
-  phy$root.time <- 2000
+  phy$root.time <- dateroot
   return(phy)
 }
 
