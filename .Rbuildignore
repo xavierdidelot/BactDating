@@ -5,3 +5,4 @@
 ^figures\/.*\.png$
 ^\.travis\.yml$
 ^codecov\.yml$
+^docs$
