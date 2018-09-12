@@ -5,11 +5,11 @@
 loadGubbins = function(prefix)
 {
   tree=read.tree(sprintf('%s.final_tree.tre',prefix))
-  tree2=read.tree(sprintf('%s.node_labelled.final_tree.tre',prefix))
+  tree2=read.tree(sprintf('%s.node_labelled.tre',prefix))
   tree$node.label=tree2$node.label
   tree=unroot(tree)
   n=length(tree$tip.label)
-  t=read.table(sprintf('%s.per_branch_statistics.csv',prefix),sep='\t',as.is=T,header=T)
+  t=read.table(sprintf('%s.per_branch_statistics.csv',prefix),sep='\t',as.is=T,header=T,comment.char="")
   tree$unrec=rep(NA,length(tree$edge.length))
   for (i in 1:length(tree$edge.length)) {
     j=tree$edge[i,2]
