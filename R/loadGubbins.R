@@ -5,7 +5,9 @@
 loadGubbins = function(prefix)
 {
   tree=read.tree(sprintf('%s.final_tree.tre',prefix))
-  tree2=read.tree(sprintf('%s.node_labelled.tre',prefix))
+  nametree2=sprintf('%s.node_labelled.tre',prefix)
+  if (!file.exists(nametree2)) nametree2=sprintf('%s.node_labelled.final_tree.tre',prefix)
+  tree2=read.tree(nametree2)
   tree$node.label=tree2$node.label
   tree=unroot(tree)
   n=length(tree$tip.label)
