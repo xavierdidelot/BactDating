@@ -20,7 +20,7 @@ roottotip(tree, date, rate = NA, permTest = 10000, showFig = T,
 
 \item{colored}{Whether or not to use colors illustrating dates}
 
-\item{showPredInt}{To show 95percent confidence intervals, can be 'poisson' or 'gamma'}
+\item{showPredInt}{To show 95percent confidence intervals of a strict clock model, can be 'poisson' or 'gamma'}
 
 \item{showText}{Whether to show the title and axis labels}
 

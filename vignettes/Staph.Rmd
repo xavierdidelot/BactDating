@@ -13,7 +13,7 @@ vignette: >
 In this vignette we demonstrate the usage of BactDating on a dataset of
 Staphylococcus aureus ST239 published by Harris et al (2010).
 
-##Initialisation
+## Initialisation
 
 ```{r}
 library(BactDating)
@@ -24,7 +24,7 @@ plot(staph$tree, show.tip.label = F)
 axisPhylo(backward = F)
 ```
 
-##Root-to-tip analysis
+## Root-to-tip analysis
 
 Let's do a root-to-tip regression analysis:
 
@@ -32,7 +32,7 @@ Let's do a root-to-tip regression analysis:
 res=roottotip(staph$tree,staph$dates)
 ```
 
-##Analysis
+## Analysis
 
 We run BactDating as follows:
 

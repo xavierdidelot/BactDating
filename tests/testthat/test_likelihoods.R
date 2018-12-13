@@ -117,8 +117,9 @@ test_that("MCMC likelihood remains correct after many partial updates.", {
   leaves=2010:2000
   tree=simcoaltree(leaves,5.1)
   phy=simobsphy(tree)
+  phy$edge.length=pmax(phy$edge.length,1e-1)
   set.seed(0)
-  res=bactdate(phy,leaves,nbIts=10,thin=10,model='strictgamma',initMu=5.2,updateMu=F,updateSigma=F,updateRoot=F)
+  res=bactdate(phy,leaves,nbIts=100,thin=100,model='strictgamma',initMu=5.2,updateMu=F,updateSigma=F,updateRoot=F)
   tab=makeTab(res$tree,phy)
   expect_equal(unname(res$record[1,'likelihood']),likelihoodGammaC(tab,5.2))
 })

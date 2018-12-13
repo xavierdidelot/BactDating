@@ -5,7 +5,7 @@
 #' @param permTest Number of permutations to perform to compute the p-value using a permutation test
 #' @param showFig Whether or not to show the root-to-tip regression figure
 #' @param colored Whether or not to use colors illustrating dates
-#' @param showPredInt To show 95percent confidence intervals, can be 'poisson' or 'gamma'
+#' @param showPredInt To show 95percent confidence intervals of a strict clock model, can be 'poisson' or 'gamma'
 #' @param showText Whether to show the title and axis labels
 #' @param showTree Whether to show the tree or not
 #' @return List containing estimated clock rate, date of origin and p-value
@@ -162,14 +162,14 @@ allDates = function (phy) {
   rootdate=phy$root.time
   if (is.null(rootdate)) rootdate=0
   return(rootdate+unname(dist.nodes(phy)[Ntip(phy)+1,]))
-  o=rev(postorder(phy))#preorder
-  n=Ntip(phy)+Nnode(phy)
-  dates=rep(NA,n)
-  dates[Ntip(phy)+1]=rootdate
-  for (i in o) {
-    dates[phy$edge[i,2]]=dates[phy$edge[i,1]]+phy$edge.length[i]
-  }
-  return(dates)
+  #o=rev(postorder(phy))#preorder
+  #n=Ntip(phy)+Nnode(phy)
+  #dates=rep(NA,n)
+  #dates[Ntip(phy)+1]=rootdate
+  #for (i in o) {
+  #  dates[phy$edge[i,2]]=dates[phy$edge[i,1]]+phy$edge.length[i]
+  #}
+  #return(dates)
 }
 
 #' Compute dates of internal nodes for a given tree

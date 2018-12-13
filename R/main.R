@@ -13,10 +13,11 @@
 #' @param useCoalPrior Whether or not to use a coalescent prior on the tree
 #' @param model Which model to use (poisson or negbin or strictgamma or relaxedgamma or mixedgamma)
 #' @param useRec Whether or not to use results from previous recombination analysis
+#' @param minbralen Minimum branch length of the phylogenetic tree (in number of substitutions)
 #' @param showProgress Whether or not to show a progress bar
 #' @return Dating results
 #' @export
-bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, updateMu = T, updateAlpha = T, updateSigma = T, updateRoot = T, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T,  model = 'mixedgamma', useRec = F, showProgress = F)
+bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, updateMu = T, updateAlpha = T, updateSigma = T, updateRoot = T, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T,  model = 'mixedgamma', useRec = F, minbralen = 0.1, showProgress = F)
 {
   #Rerranging of dates, if needed
   if (is.matrix(date)) {
@@ -47,7 +48,7 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
   if (useCoalPrior) prior=coalpriorC else updateAlpha=F
 
   #Selection likelihood function
-  if (!is.element(model,c('poisson','poissonR','negbin','negbinR'))) tree$edge.length=pmax(tree$edge.length,1e-7)
+  if (!is.element(model,c('poisson','poissonR','negbin','negbinR'))) tree$edge.length=pmax(tree$edge.length,minbralen)
   if (!is.element(model,c('relaxedgamma','relaxedgammaR','mixedgamma','negbin','negbinR'))) {updateSigma=F;sigma=0}
   if (model == 'mixedgamma') sigma=0
   if (model == 'poisson') likelihood=function(tab,mu,sigma) return(likelihoodPoissonC(tab,mu))

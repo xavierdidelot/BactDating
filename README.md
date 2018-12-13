@@ -1,14 +1,19 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-BactDating
-==========
 
-[![Travis-CI Build Status](https://travis-ci.com/xavierdidelot/BactDating.svg?branch=master)](https://travis-ci.com/xavierdidelot/BactDating) [![codecov](https://codecov.io/gh/xavierdidelot/BactDating/branch/master/graph/badge.svg)](https://codecov.io/gh/xavierdidelot/BactDating)
+# BactDating
 
-The goal of BactDating is to perform Bayesian dating of the nodes of a bacterial phylogenetic tree. This typically involves simultaneous Bayesian estimation of the molecular clock rate and coalescent rate. Additional features include inference of root location, lost sampling dates and different evolutionary models.
+[![Travis-CI Build
+Status](https://travis-ci.com/xavierdidelot/BactDating.svg?branch=master)](https://travis-ci.com/xavierdidelot/BactDating)
+[![codecov](https://codecov.io/gh/xavierdidelot/BactDating/branch/master/graph/badge.svg)](https://codecov.io/gh/xavierdidelot/BactDating)
 
-Installation
-------------
+The goal of BactDating is to perform Bayesian dating of the nodes of a
+bacterial phylogenetic tree. This typically involves simultaneous
+Bayesian estimation of the molecular clock rate and coalescent rate.
+Additional features include inference of root location, lost sampling
+dates and different evolutionary models.
+
+## Installation
 
 You can install BactDating from github with:
 
@@ -22,10 +27,10 @@ The package can then be loaded using:
 library(BactDating)
 ```
 
-Example
--------
+## Example
 
-This is a basic example of usage. First we generate a coalescent tree with a single leaf per year between 1990 and 2010:
+This is a basic example of usage. First we generate a coalescent tree
+with a single leaf per year between 1990 and 2010:
 
 ``` r
 tree=simcoaltree(1990:2010)
@@ -33,16 +38,17 @@ plot(tree)
 ape::axisPhylo(backward=F)
 ```
 
-![](man/figures/unnamed-chunk-3-1.png)
+![](man/figures/unnamed-chunk-3-1.png)<!-- -->
 
-Next we generate an observed phylogeny based on this timed tree, and perform a root-to-tip analysis:
+Next we generate an observed phylogeny based on this timed tree, and
+perform a root-to-tip analysis:
 
 ``` r
 obsphy=simobsphy(tree)
 r=roottotip(obsphy,1990:2010)
 ```
 
-![](man/figures/unnamed-chunk-4-1.png)
+![](man/figures/unnamed-chunk-4-1.png)<!-- -->
 
 We can run the dating analysis on this phylogeny as follows:
 
@@ -51,11 +57,15 @@ res=bactdate(obsphy,1990:2010)
 plot(res,'treeCI')
 ```
 
-![](man/figures/unnamed-chunk-5-1.png)
+![](man/figures/unnamed-chunk-5-1.png)<!-- -->
 
-More information and getting help
----------------------------------
+## More information and getting help
 
-For more detailed examples of how to use BactDating, see the vignettes [here](https://github.com/xavierdidelot/BactDating/tree/master/vignettes). See also the help included in the package using the R command `help(package='BactDating')`.
+For more detailed examples of how to use BactDating, see the vignettes
+[here](https://github.com/xavierdidelot/BactDating/tree/master/vignettes).
+See also the help included in the package using the R command
+`help(package='BactDating')`.
 
-If you have any problem or question please create an issue [here](https://github.com/xavierdidelot/BactDating/issues) or get in touch by emailing `xavier.didelot@gmail.com`
+If you have any problem or question please create an issue
+[here](https://github.com/xavierdidelot/BactDating/issues) or get in
+touch by emailing `xavier.didelot@gmail.com`

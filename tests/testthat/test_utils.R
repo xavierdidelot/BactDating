@@ -7,4 +7,3 @@ test_that("The function changeinorderedvec behaves as expected.", {
   for (i in 1:100) BactDating:::changeinorderedvec(v,v[sample.int(100,1)],runif(1)*100)
   expect_false(is.unsorted(rev(v)))
 })
-

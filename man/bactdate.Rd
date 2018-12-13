@@ -7,7 +7,8 @@
 bactdate(tree, date, initMu = NA, initAlpha = NA, initSigma = NA,
   updateMu = T, updateAlpha = T, updateSigma = T, updateRoot = T,
   nbIts = 10000, thin = ceiling(nbIts/1000), useCoalPrior = T,
-  model = "mixedgamma", useRec = F, showProgress = F)
+  model = "mixedgamma", useRec = F, minbralen = 0.1,
+  showProgress = F)
 }
 \arguments{
 \item{tree}{Tree wih branches measured in unit of substitutions}
@@ -37,6 +38,8 @@ bactdate(tree, date, initMu = NA, initAlpha = NA, initSigma = NA,
 \item{model}{Which model to use (poisson or negbin or strictgamma or relaxedgamma or mixedgamma)}
 
 \item{useRec}{Whether or not to use results from previous recombination analysis}
+
+\item{minbralen}{Minimum branch length of the phylogenetic tree (in number of substitutions)}
 
 \item{showProgress}{Whether or not to show a progress bar}
 }

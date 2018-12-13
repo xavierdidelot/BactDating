@@ -10,7 +10,7 @@ vignette: >
   %\usepackage[utf8]{inputenc}
 ---
 
-##Initialisation
+## Initialisation
 
 ```{r}
 library(BactDating)
@@ -18,7 +18,7 @@ library(ape)
 set.seed(0)
 ```
 
-##Data
+## Data
 
 We start by generating a coalescent tree with 10 leaves sampled in 2000, 10 leaves sampled in 2010, and a coalescent time unit of 10 years:
 
@@ -47,7 +47,7 @@ dates[length(dates)]=NA
 ```
 
 
-##First analysis
+## First analysis
 
 We run the dating analysis as follows:
 
@@ -66,7 +66,7 @@ Let's see where the root was inferred:
 plot(res,'treeRoot')
 ```
 
-##Testing significance of clock signal
+## Testing significance of clock signal
 We run the algorithm again, with all sampling dates forced equal, and compare the fit of the two runs in order to assess the statistical significance of the temporal signal:
 ```{r}
 res2=bactdate(obsphy,rep(2015,length(dates)))

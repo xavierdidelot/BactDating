@@ -10,7 +10,7 @@ vignette: >
   %\usepackage[utf8]{inputenc}
 ---
 
-##Initialisation
+## Initialisation
 
 ```{r}
 library(BactDating)
@@ -18,7 +18,7 @@ library(ape)
 set.seed(0)
 ```
 
-##Data
+## Data
 
 A ClonalFrameML output can be read using:
 
@@ -46,7 +46,7 @@ axisPhylo(backward = F)
 edgelabels(round(100*t$unrec))
 ```
 
-##Analysis
+## Analysis
 
 We run BactDating as follows:
 

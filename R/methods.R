@@ -72,22 +72,28 @@ plot.resBactDating = function(x, type='tree', show.axis=T, ...) {
     par(mfrow=c(1,2))
     plot(c(0,ma),c(0,rate*ma),type='l',xlab='Branch duration',ylab='Substitutions',xaxs='i',yaxs='i',xlim=c(0,max(xs)*1.05),ylim=c(0,max(ys)*1.05))
     par(xpd=F)
-    ori=0
-    xss=seq(ori,ma,0.1)
+    xss=seq(0,ma,0.1)
     plim=0.05
 #    lines(xs,xs*rate)
     if (x$model=='poisson') {
-      lines(xss,qpois(  plim/2,(xss-ori)*rate),lty='dashed')
-      lines(xss,qpois(1-plim/2,(xss-ori)*rate),lty='dashed')
+      lines(xss,qpois(  plim/2,xss*rate),lty='dashed')
+      lines(xss,qpois(1-plim/2,xss*rate),lty='dashed')
       ll=dpois(round(ys),xs*rate,log=T)
     }
+    else if (x$model=='negbin') {
+      k=rate*rate/sigma/sigma
+      theta=sigma*sigma/rate
+      lines(xss,qnbinom(  plim/2,size=k,prob=1/(1+theta*xss)),lty='dashed')
+      lines(xss,qnbinom(1-plim/2,size=k,prob=1/(1+theta*xss)),lty='dashed')
+      ll=dnbinom(round(ys),size=k,prob=1/(1+theta*xs),log=T)
+    }
     else if (x$model=='strictgamma') {
-      lines(xss,qgamma(  plim/2,shape=(xss-ori)*rate,scale=1),lty='dashed')
-      lines(xss,qgamma(1-plim/2,shape=(xss-ori)*rate,scale=1),lty='dashed')
+      lines(xss,qgamma(  plim/2,shape=xss*rate,scale=1),lty='dashed')
+      lines(xss,qgamma(1-plim/2,shape=xss*rate,scale=1),lty='dashed')
       ll=dgamma(ys,shape=xs*rate,scale=1,log=T)
     } else {
-      lines(xss,qgamma(  plim/2,shape=(xss-ori)*rate^2/(rate+(xss-ori)*sigma^2),scale=1+(xss-ori)*sigma^2/rate),lty='dashed')
-      lines(xss,qgamma(1-plim/2,shape=(xss-ori)*rate^2/(rate+(xss-ori)*sigma^2),scale=1+(xss-ori)*sigma^2/rate),lty='dashed')
+      lines(xss,qgamma(  plim/2,shape=xss*rate^2/(rate+xss*sigma^2),scale=1+xss*sigma^2/rate),lty='dashed')
+      lines(xss,qgamma(1-plim/2,shape=xss*rate^2/(rate+xss*sigma^2),scale=1+xss*sigma^2/rate),lty='dashed')
       ll=dgamma(ys,shape=xs*rate^2/(rate+xs*sigma^2),scale=1+xs*sigma^2/rate,log=T)
     }
     normed=(ll-min(ll))/(max(ll)-min(ll))

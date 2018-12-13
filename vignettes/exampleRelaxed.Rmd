@@ -10,7 +10,7 @@ vignette: >
   %\usepackage[utf8]{inputenc}
 ---
 
-##Initialisation
+## Initialisation
 
 ```{r}
 library(BactDating)
@@ -18,7 +18,7 @@ library(ape)
 set.seed(0)
 ```
 
-##Data generated from strict clock model
+## Data generated from strict clock model
 
 We start by generating a coalescent tree with 10 leaves sampled at regular intervals between 1990 and 2010, and a coalescent time unit of 5 years:
 
@@ -38,9 +38,10 @@ and perform a root-to-tip analysis as follows:
 obsphy=simobsphy(phy,mu=10)
 res=roottotip(obsphy,dates)
 ```
-##Analysis of data from strict clock model
 
-We run the mixture-model dating analysis as follows:
+## Analysis of data from strict clock model
+
+We run the dating analysis as follows:
 
 ```{r}
 res=bactdate(obsphy,dates,updateRoot=F)
@@ -48,16 +49,21 @@ plot(res,'trace')
 print(res$pstrict)
 ```
 
-##Data generated from relaxed clock model
+Let's see how each branch contributes to the overall likelihood:
+```{r}
+plot(res,'scatter')
+```
 
-Let's start again with a new dataset using the relaxed model:
+## Data generated from relaxed clock model
+
+Let's start again with a new dataset generated using the relaxed clock model:
 ```{r}
 set.seed(0)
 obsphy=simobsphy(phy,mu=10,model='relaxedgamma',sigma = 5)
 res=roottotip(obsphy,dates)
 ```
 
-#Analysis of data from relaxed clock model
+## Analysis of data from relaxed clock model
 
 We run the analysis as previously:
 
@@ -65,4 +71,9 @@ We run the analysis as previously:
 res=bactdate(obsphy,dates,updateRoot=F)
 plot(res,'trace')
 print(res$pstrict)
+```
+
+Let's see how each branch contributes to the overall likelihood:
+```{r}
+plot(res,'scatter')
 ```
