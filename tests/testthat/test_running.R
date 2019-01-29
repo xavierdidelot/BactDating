@@ -20,5 +20,6 @@ test_that("Basic functions are running without error.", {
   expect_silent(plot(res,type='treeRoot'))
   expect_silent(plot(res,type='scatter'))
   expect_silent(plotDualScale(res$tree))
+  expect_is(as.mcmc.resBactDating(res),'mcmc')
 })
 

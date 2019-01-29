@@ -13,7 +13,7 @@
 #'
 #' @author Xavier Didelot \email{xavier.didelot@gmail.com}
 #'
-#' @references Didelot et al (submitted). Bayesian inference of ancestral dates on bacterial phylogenetic trees.
+#' @references Didelot et al (2018). Bayesian inference of ancestral dates on bacterial phylogenetic trees. Nucleic Acids Research, 46:e134.
 #' @seealso https://github.com/xavierdidelot/BactDating
 
 #' @importFrom Rcpp evalCpp

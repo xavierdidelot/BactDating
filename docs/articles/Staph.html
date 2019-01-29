@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">BactDating</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.1</span>
       </span>
     </div>
 
@@ -64,6 +64,9 @@
     <li>
       <a href="../articles/exampleTest.html">Using BactDating to test significance of the temporal signal</a>
     </li>
+    <li>
+      <a href="../articles/yourData.html">Using BactDating on your own data</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -89,7 +92,7 @@
       <h1>Using BactDating on a real dataset</h1>
                         <h4 class="author">Xavier Didelot</h4>
             
-            <h4 class="date">2018-12-13</h4>
+            <h4 class="date">2019-01-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/xavierdidelot/BactDating/blob/master/vignettes/Staph.Rmd"><code>vignettes/Staph.Rmd</code></a></small>
       <div class="hidden name"><code>Staph.Rmd</code></div>
@@ -98,7 +101,7 @@
 
     
     
-<p>In this vignette we demonstrate the usage of BactDating on a dataset of Staphylococcus aureus ST239 published by Harris et al (2010).</p>
+<p>In this vignette we demonstrate the usage of BactDating on a dataset of Staphylococcus aureus ST239 published by Harris et al (2010). The data for this example can be loaded using the command <code><a href="https://www.rdocumentation.org/packages/utils/topics/data">data(staph)</a></code>. This will load in your environment the object <code>staph</code> which is made of two parts. The first part, <code>staph$tree</code>, is a phylogenetic tree class <code>phylo</code> from the <code>ape</code> package. The second part, <code>staph$dates</code>, is a vector containing the dates of isolations of the genomes. Note that this vector is in the same order as the tips of the tree listed in <code>staph$tree$tip.label</code>.</p>
 <div id="initialisation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#initialisation" class="anchor"></a>Initialisation</h2>

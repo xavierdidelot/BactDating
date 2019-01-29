@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>License • BactDating</title>
+<title>Convert to coda mcmc format — as.mcmc.resBactDating • BactDating</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -25,12 +25,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
-<link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script>
+<link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script>
 
 
 
-<meta property="og:title" content="License" />
+<meta property="og:title" content="Convert to coda mcmc format — as.mcmc.resBactDating" />
+
+<meta property="og:description" content="Convert to coda mcmc format" />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -47,7 +50,7 @@
   </head>
 
   <body>
-    <div class="container template-title-body">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -59,7 +62,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">BactDating</a>
+        <a class="navbar-link" href="../index.html">BactDating</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.1</span>
       </span>
     </div>
@@ -67,13 +70,13 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">
+  <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="reference/index.html">Reference</a>
+  <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -83,19 +86,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="articles/Staph.html">Using BactDating on a real dataset</a>
+      <a href="../articles/Staph.html">Using BactDating on a real dataset</a>
     </li>
     <li>
-      <a href="articles/exampleRec.html">Using BactDating after recombination analysis</a>
+      <a href="../articles/exampleRec.html">Using BactDating after recombination analysis</a>
     </li>
     <li>
-      <a href="articles/exampleRelaxed.html">Using BactDating to test the clock model</a>
+      <a href="../articles/exampleRelaxed.html">Using BactDating to test the clock model</a>
     </li>
     <li>
-      <a href="articles/exampleTest.html">Using BactDating to test significance of the temporal signal</a>
+      <a href="../articles/exampleTest.html">Using BactDating to test significance of the temporal signal</a>
     </li>
     <li>
-      <a href="articles/yourData.html">Using BactDating on your own data</a>
+      <a href="../articles/yourData.html">Using BactDating on your own data</a>
     </li>
   </ul>
 </li>
@@ -118,38 +121,44 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>License</h1>
+    <h1>Convert to coda mcmc format</h1>
+    <small class="dont-index">Source: <a href='https://github.com/xavierdidelot/BactDating/blob/master/R/methods.R'><code>R/methods.R</code></a></small>
+    <div class="hidden name"><code>as.mcmc.resBactDating.Rd</code></div>
     </div>
 
-<pre>MIT License
+    <div class="ref-description">
+    
+    <p>Convert to coda mcmc format</p>
+    
+    </div>
 
-Copyright (c) 2017 Xavier Didelot
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-</pre>
+    <pre class="usage"><span class='fu'>as.mcmc.resBactDating</span>(<span class='no'>x</span>, <span class='kw'>burnin</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>Output from bactdate</p></td>
+    </tr>
+    <tr>
+      <th>burnin</th>
+      <td><p>Proportion of the MCMC output to be discarded as burnin</p></td>
+    </tr>
+    </table>
+    
 
   </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+                </ul>
 
+  </div>
 </div>
-
 
       <footer>
       <div class="copyright">

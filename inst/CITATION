@@ -3,11 +3,11 @@ citHeader("To cite BactDating:")
 citEntry(
 entry="Article",
 title = "Bayesian inference of ancestral dates on bacterial phylogenetic trees",
-journal= "bioRxiv",
+journal= "Nucleic Acids Research",
 year = "2018",
 author = "Xavier Didelot and Nicholas J Croucher and Steven D Bentley and Simon R Harris and Daniel J Wilson",
-volume = "",
-pages = "347385",
-doi = "10.1101/347385",
-textVersion = "Didelot et al (submitted). Bayesian inference of ancestral dates on bacterial phylogenetic trees."
+volume = "46",
+pages = "e134",
+doi = "10.1093/nar/gky783",
+textVersion = "Didelot et al (2018). Bayesian inference of ancestral dates on bacterial phylogenetic trees. Nucleic Acids Research, 46:e134."
 )

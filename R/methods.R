@@ -1,5 +1,5 @@
 #' Plotting methods
-#' @param x Output from running function credating
+#' @param x Output from bactdate
 #' @param type Type of plot to do. Currently either 'tree' or 'treeCI' or 'trace' or 'treeRoot' or 'scatter'
 #' @param show.axis Whether or not to show the tree axis in mode tree, treeCI or treeRoot
 #' @param ... Additional parameters are passed on
@@ -146,4 +146,19 @@ summary.resBactDating <- function(object, ...){
   cat( 'Phylogenetic tree dated using BactDating\n')
   print(object$tree,...)
   invisible(object)
+}
+
+#' Convert to coda mcmc format
+#' @param x Output from bactdate
+#' @param burnin Proportion of the MCMC output to be discarded as burnin
+#' @export
+as.mcmc.resBactDating <- function(x,burnin=0.5) {
+  record=x$record
+  record=record[max(1,round(nrow(record)*burnin)):nrow(record),]
+  mat=cbind(
+    record[,'mu'],
+    record[,'sigma'],
+    record[,'alpha'])
+  colnames(mat)<-c('mu','sigma','alpha')
+  return(coda::as.mcmc(mat))
 }

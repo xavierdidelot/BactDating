@@ -14,6 +14,8 @@
 #' @export
 roottotip = function(tree,date,rate=NA,permTest=10000,showFig=T,colored=T,showPredInt='gamma',showText=T,showTree=T)
 {
+  if (!is.rooted(tree)) warning('Warning: roottotip was called on an unrooted input tree. Consider using initRoot first.\n')
+  if (sum(tree$edge.length)<5) warning('Warning: input tree has small branch lengths. Make sure branch lengths are in number of substitutions (NOT per site).\n')
   #Rerranging of dates, if needed
   if (!is.null(names(date))) date=findDates(tree,date)
 

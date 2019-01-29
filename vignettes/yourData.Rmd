@@ -1,0 +1,103 @@
+---
+title: "Using BactDating on your own data"
+author: "Xavier Didelot"
+date: '`r Sys.Date()`'
+output:
+  pdf_document: default
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Application of BactDating on your own data}
+  %\usepackage[utf8]{inputenc}
+---
+
+In this vignette we describe how you can use BactDating on your own data.
+
+## First input: phylogenetic tree
+
+The first required input (let's call it `t`) is a phylogenetic tree
+of the class `phylo` from the `ape` package,
+which can be loaded from a Newick or Nexus file using respectively the following commands
+from the `ape` package: 
+
+```{r eval=FALSE}
+t=read.tree('filename.nwk')
+t=read.nexus('filename.nex')
+```
+
+This tree should have branch lengths measured in units of substitutions.
+In other words, the branch lengths should not be measured in substitutions per site. 
+If you are not sure whether the branch lengths are measured correctly or not, try
+to compute `sum(t$edge.length)`. This should be the total number of substitutions throughout the tree,
+so if you get a value below one or even only a bit above one, your branch lengths are probably
+not in the correct unit.
+
+If the branch lengths are measured per site, you will need to rescale them using the command:
+```{r eval=F}
+t$edge.length=t$edge.length*L
+```
+where `L` is the number of sites which were used to build this tree. 
+
+Alternatively, you can load directly from the output of ClonalFrameML or Gubbins using
+the following commands respectively:
+```{r eval=F}
+t=loadCFML(prefix)
+t=loadGubbins(prefix)
+```
+This will have the advantage to account for the recombination events detected by ClonalFrameML
+or Gubbins when performing the dating.
+
+## Second input: isolation dates
+
+The second required input (let's call it `d`) is the dates at which the isolates were sampled. 
+Dates need to be expressed decimally, for example `2015.5` means 1st July 2015.
+This input can be simply a vector of decimal dates, in which case the order needs to be the same
+as the order of the tree tips in `t$tip.label`. For example, if `t$tip.label` is `(A,B,C)` 
+then `d=c(2010,2011,2012)` indicates that `A` was isolated in 2010, B in 2011 and C in 2012.
+
+Alternatively, the vector `d` does not have to be ordered if `names(d)` corresponds to the tip names.
+For example, d=c(2011,2010,2012)` with names(d)=c('B','A','C')` would have the same meaning
+as in the previous example.
+
+If some isolation dates are unknown, this can be indicated using `NA` in the vector, in 
+which case the date is considered unknown but within the range of known dates,
+ie with the range return by the command `range(d,na.rm=T)`.
+
+Finally, the isolation dates can be specified as an interval rather than a set value. This is useful
+for example if the isolation year is 2015 but with unknown month or day. To do so, `d` needs
+to be a matrix with two columns, with the first column indicating the lower bound and the second 
+column indicating the upper bound of the interval. 
+
+## Running commands
+
+Once the two inputs `t` and `d` described above are in the correct format, 
+you are ready to run BactDating using the main command:
+```{r,eval=F}
+res=bactdate(t,d)
+```
+See other vignettes for further functionality. 
+
+## Checking for MCMC convergence
+
+BactDating is a MCMC algorithm which needs to be run for long enough to ensure that the 
+results are meaningful. The length of the algorithm can be controlled using the `nbIts` argument
+of the `bactdate` function, which by default is 10e4 but may need increasing for example ten folds:
+```{r,eval=F}
+res=bactdate(t,d,nbIts=1e5)
+```
+
+To test the MCMC convergence, a good start is to check that the traces of the parameters look stable 
+using the command:
+```{r,eval=F}
+plot(res,'trace')
+```
+
+For further testing of convergence, you can export the BactDating result to the format required
+by the `coda` package using the command:
+```{r,eval=F}
+mcmc=as.mcmc(res)
+```
+
+You can then compute for example the effective sample size of the parameters which should be at least 100 for each paramater, using:
+```{r,eval=F}
+effectiveSize(mcmc)
+```

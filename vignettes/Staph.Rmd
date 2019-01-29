@@ -12,6 +12,11 @@ vignette: >
 
 In this vignette we demonstrate the usage of BactDating on a dataset of
 Staphylococcus aureus ST239 published by Harris et al (2010).
+The data for this example can be loaded using the command `data(staph)`.
+This will load in your environment the object `staph` which is made of two parts. 
+The first part, `staph$tree`, is a phylogenetic tree class `phylo` from the `ape` package.
+The second part, `staph$dates`, is a vector containing the dates of isolations of the genomes.
+Note that this vector is in the same order as the tips of the tree listed in `staph$tree$tip.label`.
 
 ## Initialisation
 

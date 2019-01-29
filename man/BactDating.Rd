@@ -15,7 +15,7 @@ The main functions of the package are:
 }
 }
 \references{
-Didelot et al (submitted). Bayesian inference of ancestral dates on bacterial phylogenetic trees.
+Didelot et al (2018). Bayesian inference of ancestral dates on bacterial phylogenetic trees. Nucleic Acids Research, 46:e134.
 }
 \seealso{
 https://github.com/xavierdidelot/BactDating
