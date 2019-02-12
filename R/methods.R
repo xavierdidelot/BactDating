@@ -98,12 +98,12 @@ plot.resBactDating = function(x, type='tree', show.axis=T, ...) {
     }
     normed=(ll-min(ll))/(max(ll)-min(ll))
     cols=rgb(normed,0,1-normed)
+    base=seq(0,1,0.25)
+    legend("topleft",cex=0.5,legend=sprintf('%.2e',base*(max(ll)-min(ll))+min(ll)),pch=19,col=rgb(base,0,1-base))
     points(xs,ys,pch=19,col=cols)
     #w=which(ll<sort(ll)[round(0.01*length(ll))])
     #print(cbind(x$tree$edge[w,2],ll[w]))
     #text(xs[w],ys[w]+0.5,x$tree$edge[w,2],cex=0.5)
-    base=seq(0,1,0.25)
-    legend("topleft",cex=0.5,legend=sprintf('%.2e',base*(max(ll)-min(ll))+min(ll)),pch=19,col=rgb(base,0,1-base))
 
     plot(x$tree,show.tip.label = F,edge.color=cols)
     axisPhylo(1,backward = F)
