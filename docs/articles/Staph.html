@@ -92,7 +92,7 @@
       <h1>Using BactDating on a real dataset</h1>
                         <h4 class="author">Xavier Didelot</h4>
             
-            <h4 class="date">2019-01-29</h4>
+            <h4 class="date">2019-04-25</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/xavierdidelot/BactDating/blob/master/vignettes/Staph.Rmd"><code>vignettes/Staph.Rmd</code></a></small>
       <div class="hidden name"><code>Staph.Rmd</code></div>
@@ -123,8 +123,8 @@
 <div id="analysis" class="section level2">
 <h2 class="hasAnchor">
 <a href="#analysis" class="anchor"></a>Analysis</h2>
-<p>We run BactDating as follows:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">res=<span class="kw"><a href="../reference/bactdate.html">bactdate</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/ape/topics/root">unroot</a></span>(staph<span class="op">$</span>tree),staph<span class="op">$</span>dates,<span class="dt">nbIts=</span><span class="fl">1e4</span>)</a>
+<p>We can run BactDating as follows:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">res=<span class="kw"><a href="../reference/bactdate.html">bactdate</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/ape/topics/root">unroot</a></span>(staph<span class="op">$</span>tree),staph<span class="op">$</span>dates)</a>
 <a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(res,<span class="st">'treeCI'</span>,<span class="dt">show.tip.label =</span> F)</a></code></pre></div>
 <p><img src="Staph_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 <p>We can see what the MCMC traces look like:</p>
