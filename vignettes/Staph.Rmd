@@ -39,10 +39,10 @@ res=roottotip(staph$tree,staph$dates)
 
 ## Analysis
 
-We run BactDating as follows:
+We can run BactDating as follows:
 
 ```{r}
-res=bactdate(unroot(staph$tree),staph$dates,nbIts=1e4)
+res=bactdate(unroot(staph$tree),staph$dates)
 plot(res,'treeCI',show.tip.label = F)
 ```
 
