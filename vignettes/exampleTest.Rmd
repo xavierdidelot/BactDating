@@ -67,6 +67,7 @@ plot(res,'treeRoot')
 ```
 
 ## Testing significance of clock signal
+
 We run the algorithm again, with all sampling dates forced equal, and compare the fit of the two runs in order to assess the statistical significance of the temporal signal:
 ```{r}
 res2=bactdate(obsphy,rep(2015,length(dates)))
