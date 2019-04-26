@@ -151,6 +151,7 @@ summary.resBactDating <- function(object, ...){
 #' Convert to coda mcmc format
 #' @param x Output from bactdate
 #' @param burnin Proportion of the MCMC output to be discarded as burnin
+#' @return mcmc object from coda package
 #' @export
 as.mcmc.resBactDating <- function(x,burnin=0.5) {
   record=x$record
@@ -161,4 +162,27 @@ as.mcmc.resBactDating <- function(x,burnin=0.5) {
     record[,'alpha'])
   colnames(mat)<-c('mu','sigma','alpha')
   return(coda::as.mcmc(mat))
+}
+
+#' Convert to treedata format from ggtree package
+#' @param x Output from bactdate
+#' @return treedata object from ggtree package
+#' @importFrom methods new
+#' @importFrom dplyr tbl_df
+#' @export
+as.treedata.resBactDating <- function(x) {
+  t=x$tree
+  h=node.depth.edgelength(t)
+  meta=data.frame(node=sprintf('%5d',1:(Ntip(t)+Nnode(t))))
+  meta$length_0.95_HPD=list(c(-1,1))
+  for (i in 1:nrow(meta)) {
+    w=which(t$edge[,2]==i)
+    if (length(w)==0) len=0 else len=t$edge.length[w]
+    interval=x$CI[i,]-t$root.time-h[i]+len
+    meta$length_0.95_HPD[i]=list(interval)
+  }
+  obj=new("treedata",treetext='',phylo=t,data=tbl_df(as.data.frame(meta)),file='')
+  return(obj)
+  #can then plot with:
+  #ggtree(obj) + geom_range(range='length_0.95_HPD', color='red', alpha=.6, size=2)
 }

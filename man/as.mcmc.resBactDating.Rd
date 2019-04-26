@@ -11,6 +11,9 @@ as.mcmc.resBactDating(x, burnin = 0.5)
 
 \item{burnin}{Proportion of the MCMC output to be discarded as burnin}
 }
+\value{
+mcmc object from coda package
+}
 \description{
 Convert to coda mcmc format
 }
