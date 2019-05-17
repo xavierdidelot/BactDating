@@ -31,6 +31,7 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
 
   #Initial rooting of tree, if needed
   if (useRec==T && is.null(tree$unrec)) stop("To use recombination, the proportion of unrecombined needs to be input.")
+  if (length(which(tree$edge[,1]==Ntip(tree)+1))==3) tree=unroot(tree)
   if (is.rooted(tree)==F) tree=initRoot(tree,date,useRec=useRec)
   testSignal=F
 
