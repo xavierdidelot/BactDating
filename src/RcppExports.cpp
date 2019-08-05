@@ -81,6 +81,8 @@ BEGIN_RCPP
 END_RCPP
 }
 
+RcppExport void node_depth(void *, void *, void *, void *, void *, void *);
+
 static const R_CallMethodDef CallEntries[] = {
     {"_BactDating_coalpriorC", (DL_FUNC) &_BactDating_coalpriorC, 3},
     {"_BactDating_likelihoodGammaC", (DL_FUNC) &_BactDating_likelihoodGammaC, 2},
@@ -88,6 +90,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BactDating_likelihoodPoissonC", (DL_FUNC) &_BactDating_likelihoodPoissonC, 2},
     {"_BactDating_likelihoodNegbinC", (DL_FUNC) &_BactDating_likelihoodNegbinC, 3},
     {"_BactDating_changeinorderedvec", (DL_FUNC) &_BactDating_changeinorderedvec, 3},
+    {"node_depth", (DL_FUNC) &node_depth, 6},
     {NULL, NULL, 0}
 };
 
