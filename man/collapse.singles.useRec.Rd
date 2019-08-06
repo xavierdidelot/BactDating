@@ -9,6 +9,8 @@ collapse.singles.useRec(tree, root.edge = FALSE)
 }
 \arguments{
 \item{tree}{an object of class \code{"phylo"}.}
+
+\item{root.edge}{whether to get the singleton edges from the root until the first bifurcating node and put them as \code{root.edge} of the returned tree. By default, this is ignored or if the tree has no edge lengths.}
 }
 \value{
 tree with rec data

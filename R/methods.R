@@ -193,18 +193,17 @@ as.treedata.resBactDating <- function(x) {
 #' @param tip a vector of mode numeric or character specifying the tips to delete.
 #' @param trim.internal a logical specifying whether to delete the corresponding internal branches.
 #' @param subtree a logical specifying whether to output in the tree how many tips have been deleted and where.
-#' @param root.edge an integer giving the number of internal branches to be used to build the new root edge. This has no effect if \code{trim.internal FALSE}.}
-#' @param rooted a logical indicating whether the tree must be treated as rooted or not. This allows to force the tree to be considered as unrooted (see examples).}
+#' @param root.edge an integer giving the number of internal branches to be used to build the new root edge. This has no effect if \code{trim.internal FALSE}.
+#' @param rooted a logical indicating whether the tree must be treated as rooted or not. This allows to force the tree to be considered as unrooted.
 #' @param collapse.singles a logical specifying whether to delete the internal nodes of degree 2.
-#' @param node a node number or label.
-#' @param interactive if \code{TRUE} the user is asked to select the tips or the node by clicking on the tree which must be plotted.}
+#' @param interactive if \code{TRUE} the user is asked to select the tips or the node by clicking on the tree which must be plotted.
 #' @return tree with rec data
-#' @importFrom methods new ape
+#' @importFrom methods new
 #' @export
-drop.tip.useRec = function (phy, tip, trim.internal = TRUE, subtree = FALSE, root.edge = 0, 
-          rooted = is.rooted(phy), collapse.singles = TRUE, interactive = FALSE) 
+drop.tip.useRec = function (phy, tip, trim.internal = TRUE, subtree = FALSE, root.edge = 0,
+          rooted = is.rooted(phy), collapse.singles = TRUE, interactive = FALSE)
 {
-  if (!inherits(phy, "phylo")) 
+  if (!inherits(phy, "phylo"))
     stop("object \"phy\" is not of class \"phylo\"")
   Ntip <- length(phy$tip.label)
   if (interactive) {
@@ -219,7 +218,7 @@ drop.tip.useRec = function (phy, tip, trim.internal = TRUE, subtree = FALSE, roo
     }
   }
   else {
-    if (is.character(tip)) 
+    if (is.character(tip))
       tip <- which(phy$tip.label %in% tip)
   }
   out.of.range <- tip > Ntip
@@ -227,7 +226,7 @@ drop.tip.useRec = function (phy, tip, trim.internal = TRUE, subtree = FALSE, roo
     warning("some tip numbers were larger than the number of tips: they were ignored")
     tip <- tip[!out.of.range]
   }
-  if (!length(tip)) 
+  if (!length(tip))
     return(phy)
   if (length(tip) == Ntip) {
     if (Nnode(phy) < 3 || trim.internal) {
@@ -239,15 +238,15 @@ drop.tip.useRec = function (phy, tip, trim.internal = TRUE, subtree = FALSE, roo
   wbl.unrec <- !is.null(phy$unrec)
   if (length(tip) == Ntip - 1 && trim.internal) {
     i <- which(phy$edge[, 2] == (1:Ntip)[-tip])
-    res <- list(edge = matrix(2:1, 1, 2), tip.label = phy$tip.label[phy$edge[i, 
+    res <- list(edge = matrix(2:1, 1, 2), tip.label = phy$tip.label[phy$edge[i,
                                                                              2]], Nnode = 1L)
     class(res) <- "phylo"
-    if (wbl) 
+    if (wbl)
       res$edge.length <- phy$edge.length[i]
     if (wbl.unrec)
       res$unrec <- phy$unrec[i]
-    if (!is.null(phy$node.label)) 
-      res$node.label <- phy$node.label[phy$edge[i, 1] - 
+    if (!is.null(phy$node.label))
+      res$node.label <- phy$node.label[phy$edge[i, 1] -
                                          Ntip]
     return(res)
   }
@@ -262,9 +261,7 @@ drop.tip.useRec = function (phy, tip, trim.internal = TRUE, subtree = FALSE, roo
   if (subtree) {
     trim.internal <- TRUE
     tr <- reorder(phy, "postorder")
-    N <- .C(ape::node_depth, as.integer(Ntip), as.integer(tr$edge[, 
-                                                             1]), as.integer(tr$edge[, 2]), as.integer(Nedge), 
-            double(Ntip + Nnode), 1L)[[5]]
+    N <- ape::node_depth(as.integer(Ntip), as.integer(tr$edge[,1]), as.integer(tr$edge[, 2]), as.integer(Nedge),double(Ntip + Nnode), 1L)[[5]]
   }
   edge1 <- phy$edge[, 1]
   edge2 <- phy$edge[, 2]
@@ -274,7 +271,7 @@ drop.tip.useRec = function (phy, tip, trim.internal = TRUE, subtree = FALSE, roo
     ints <- edge2 > Ntip
     repeat {
       sel <- !(edge2 %in% edge1[keep]) & ints & keep
-      if (!sum(sel)) 
+      if (!sum(sel))
         break
       keep[sel] <- FALSE
     }
@@ -291,23 +288,23 @@ drop.tip.useRec = function (phy, tip, trim.internal = TRUE, subtree = FALSE, roo
           j <- c(i, j)
           NEWROOT <- edge2[i]
           degree <- tabulate(edge1[keep])
-          if (degree[NEWROOT] > 1) 
+          if (degree[NEWROOT] > 1)
             break
         }
         keep[j] <- FALSE
-        if (length(j) > root.edge) 
+        if (length(j) > root.edge)
           j <- 1:root.edge
         NewRootEdge <- sum(phy$edge.length[j])
-        if (length(j) < root.edge && !is.null(phy$root.edge)) 
+        if (length(j) < root.edge && !is.null(phy$root.edge))
           NewRootEdge <- NewRootEdge + phy$root.edge
         phy$root.edge <- NewRootEdge
       }
     }
   }
-  if (!root.edge) 
+  if (!root.edge)
     phy$root.edge <- NULL
   phy$edge <- phy$edge[keep, ]
-  if (wbl) 
+  if (wbl)
     phy$edge.length <- phy$edge.length[keep]
   if (wbl.unrec)
     phy$unrec <- phy$unrec[keep]
@@ -322,7 +319,7 @@ drop.tip.useRec = function (phy, tip, trim.internal = TRUE, subtree = FALSE, roo
   }
   n <- length(oldNo.ofNewTips)
   phy$edge[TERMS, 2] <- rank(phy$edge[TERMS, 2])
-  if (length(tip)) 
+  if (length(tip))
     phy$tip.label <- phy$tip.label[-tip]
   if (subtree || !trim.internal) {
     node2tip <- oldNo.ofNewTips[oldNo.ofNewTips > Ntip]
@@ -333,7 +330,7 @@ drop.tip.useRec = function (phy, tip, trim.internal = TRUE, subtree = FALSE, roo
       paste("[", N[node2tip], "_tips]", sep = "")
     }
     else {
-      if (is.null(phy$node.label)) 
+      if (is.null(phy$node.label))
         rep("NA", length(node2tip))
       else phy$node.label[node2tip - Ntip]
     }
@@ -347,9 +344,9 @@ drop.tip.useRec = function (phy, tip, trim.internal = TRUE, subtree = FALSE, roo
   phy$edge[sndcol, 2] <- newNb[phy$edge[sndcol, 2]]
   phy$edge[, 1] <- newNb[phy$edge[, 1]]
   storage.mode(phy$edge) <- "integer"
-  if (!is.null(phy$node.label)) 
+  if (!is.null(phy$node.label))
     phy$node.label <- phy$node.label[which(newNb > 0) - Ntip]
-  if (collapse.singles) 
+  if (collapse.singles)
     phy <- collapse.singles.useRec(phy)
   phy
 }
@@ -357,17 +354,17 @@ drop.tip.useRec = function (phy, tip, trim.internal = TRUE, subtree = FALSE, roo
 #' Modified collapse.singles() from package ape which deletes the single nodes (i.e., with a single
 #' descendant) in a tree, respecting the rec function. Internal, used by drop.tip.rec
 #' @param tree an object of class \code{"phylo"}.
-#' @param root.edge whether to get the singleton edges from the root until the first bifurcating node and put them as \code{root.edge} of the returned tree. By default, this is ignored or if the tree has no edge lengths (see examples).}
+#' @param root.edge whether to get the singleton edges from the root until the first bifurcating node and put them as \code{root.edge} of the returned tree. By default, this is ignored or if the tree has no edge lengths.
 #' @return tree with rec data
-#' @importFrom methods new ape
-collapse.singles.useRec <- function (tree, root.edge = FALSE) 
+#' @importFrom methods new
+collapse.singles.useRec <- function (tree, root.edge = FALSE)
 {
   n <- length(tree$tip.label)
   tree <- reorder(tree)
   e1 <- tree$edge[, 1]
   e2 <- tree$edge[, 2]
   tab <- tabulate(e1)
-  if (all(tab[-c(1:n)] > 1)) 
+  if (all(tab[-c(1:n)] > 1))
     return(tree)
   if (is.null(tree$edge.length)) {
     root.edge <- FALSE
@@ -384,14 +381,14 @@ collapse.singles.useRec <- function (tree, root.edge = FALSE)
     wbl.unrec <- TRUE
     unrec <- tree$unrec
   }
-  if (root.edge) 
+  if (root.edge)
     ROOTEDGE <- 0
   ROOT <- n + 1L
   while (tab[ROOT] == 1) {
     i <- which(e1 == ROOT)
     ROOT <- e2[i]
     if (wbl) {
-      if (root.edge) 
+      if (root.edge)
         ROOTEDGE <- ROOTEDGE + el[i]
       el <- el[-i]
       unrec <- unrec[-i]
@@ -407,19 +404,19 @@ collapse.singles.useRec <- function (tree, root.edge = FALSE)
       e2[jj[i]] <- e2[ii[i]]
       if (wbl.unrec)
         unrec[jj[i]] <- (el[jj[i]]*unrec[jj[i]] + el[ii[i]]*unrec[ii[i]])/(el[jj[i]] + el[ii[i]]) # correct?
-      if (wbl) 
+      if (wbl)
         el[jj[i]] <- el[jj[i]] + el[ii[i]]
     }
     e1 <- e1[-ii]
     e2 <- e2[-ii]
-    if (wbl) 
+    if (wbl)
       el <- el[-ii]
-    if (wbl.unrec) 
+    if (wbl.unrec)
       unrec <- unrec[-ii]
   }
   Nnode <- length(e1) - n + 1L
   oldnodes <- unique(e1)
-  if (!is.null(tree$node.label)) 
+  if (!is.null(tree$node.label))
     tree$node.label <- tree$node.label[oldnodes - n]
   newNb <- integer(max(oldnodes))
   newNb[ROOT] <- n + 1L
@@ -429,7 +426,7 @@ collapse.singles.useRec <- function (tree, root.edge = FALSE)
   tree$edge <- cbind(e1, e2, deparse.level = 0)
   tree$Nnode <- Nnode
   if (wbl) {
-    if (root.edge) 
+    if (root.edge)
       tree$root.edge <- ROOTEDGE
     tree$edge.length <- el
     tree$unrec <- unrec

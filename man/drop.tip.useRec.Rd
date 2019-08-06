@@ -18,9 +18,13 @@ drop.tip.useRec(phy, tip, trim.internal = TRUE, subtree = FALSE,
 
 \item{subtree}{a logical specifying whether to output in the tree how many tips have been deleted and where.}
 
+\item{root.edge}{an integer giving the number of internal branches to be used to build the new root edge. This has no effect if \code{trim.internal FALSE}.}
+
+\item{rooted}{a logical indicating whether the tree must be treated as rooted or not. This allows to force the tree to be considered as unrooted.}
+
 \item{collapse.singles}{a logical specifying whether to delete the internal nodes of degree 2.}
 
-\item{node}{a node number or label.}
+\item{interactive}{if \code{TRUE} the user is asked to select the tips or the node by clicking on the tree which must be plotted.}
 }
 \value{
 tree with rec data
