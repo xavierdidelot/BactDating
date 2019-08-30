@@ -90,6 +90,16 @@ test_that("Short MCMC runs give same results for C++ and R likelihoods.", {
   set.seed(0)
   res2=bactdate(phy,leaves,nbIts=10,model='negbinR')
   expect_equal(res$record[10,'likelihood'],res2$record[10,'likelihood'])
+  set.seed(0)
+  res=bactdate(phy,leaves,nbIts=10,model='arc')
+  set.seed(0)
+  res2=bactdate(phy,leaves,nbIts=10,model='arcR')
+  expect_equal(res$record[10,'likelihood'],res2$record[10,'likelihood'])
+  set.seed(0)
+  res=bactdate(phy,leaves,nbIts=10,model='acrc')
+  set.seed(0)
+  res2=bactdate(phy,leaves,nbIts=10,model='acrcR')
+  expect_equal(res$record[10,'likelihood'],res2$record[10,'likelihood'])
 })
 
 test_that("Likelihood in C++ and R give identical results on recombinant tree.", {
@@ -110,8 +120,13 @@ test_that("Likelihood in C++ and R give identical results on recombinant tree.",
   res=bactdate(phy,leaves,nbIts=2,model='negbin',useRec=T)
   res2=bactdate(phy,leaves,nbIts=2,model='negbinR',useRec=T)
   expect_equal(res$record[1,'likelihood'],res2$record[1,'likelihood'])
+  res=bactdate(phy,leaves,nbIts=2,model='arc',useRec=T)
+  res2=bactdate(phy,leaves,nbIts=2,model='arcR',useRec=T)
+  expect_equal(res$record[1,'likelihood'],res2$record[1,'likelihood'])
+  res=bactdate(phy,leaves,nbIts=2,model='acrc',useRec=T)
+  res2=bactdate(phy,leaves,nbIts=2,model='acrcR',useRec=T)
+  expect_equal(res$record[1,'likelihood'],res2$record[1,'likelihood'])
 })
-
 
 test_that("Likelihood is consistent when increasing rate and reducing branch lengths.", {
   set.seed(0)
@@ -125,6 +140,8 @@ test_that("Likelihood is consistent when increasing rate and reducing branch len
   expect_equal(likelihoodGammaC(tab,5.5),likelihoodGammaC(tab2,5.5/10))
   expect_equal(likelihoodRelaxedgammaC(tab,5.5,2.1),likelihoodRelaxedgammaC(tab2,5.5/10,2.1/10))
   expect_equal(likelihoodNegbinC(tab,5.5,2.1),likelihoodNegbinC(tab2,5.5/10,2.1/10))
+  expect_equal(likelihoodArcC(tab,5.5,2.1),likelihoodArcC(tab2,5.5/10,2.1))
+  expect_equal(likelihoodAcrcC(tab,5.5,2.1),likelihoodAcrcC(tab2,5.5/10,2.1))
 })
 
 test_that("MCMC likelihood remains correct after many partial updates.", {

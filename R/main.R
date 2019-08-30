@@ -61,6 +61,10 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
   if (model == 'strictgammaR') likelihood=function(tab,mu,sigma) return(likelihoodGamma(tab,mu))
   if (model == 'relaxedgamma'||model == 'mixedgamma') likelihood=function(tab,mu,sigma) return(likelihoodRelaxedgammaC(tab,mu,sigma))
   if (model == 'relaxedgammaR') likelihood=function(tab,mu,sigma) return(likelihoodRelaxedgamma(tab,mu,sigma))
+  if (model == 'arc') likelihood=function(tab,mu,sigma) return(likelihoodArcC(tab,mu,sigma))
+  if (model == 'arcR') likelihood=function(tab,mu,sigma) return(likelihoodArc(tab,mu,sigma))
+  if (model == 'acrc') likelihood=function(tab,mu,sigma) return(likelihoodAcrcC(tab,mu,sigma))
+  if (model == 'acrcR') likelihood=function(tab,mu,sigma) return(likelihoodAcrc(tab,mu,sigma))
   if (model == 'null') {updateMu=0;likelihood=function(tab,mu,sigma) return(0)}
   if (!exists('likelihood')) stop('Unknown model.')
 
