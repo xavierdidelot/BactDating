@@ -25,3 +25,11 @@ changeinorderedvec <- function(vec, old, n) {
     invisible(.Call('_BactDating_changeinorderedvec', PACKAGE = 'BactDating', vec, old, n))
 }
 
+likelihoodArcC <- function(tab, mu, sigma) {
+    .Call('_BactDating_likelihoodArcC', PACKAGE = 'BactDating', tab, mu, sigma)
+}
+
+likelihoodAcrcC <- function(tab, mu, sigma) {
+    .Call('_BactDating_likelihoodAcrcC', PACKAGE = 'BactDating', tab, mu, sigma)
+}
+

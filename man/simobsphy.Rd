@@ -13,7 +13,7 @@ simobsphy(tree, mu = 10, sigma = 10, model = "strictgamma")
 
 \item{sigma}{Per-branch std on the clock rate (used only by relaxed gamma model and negbin model)}
 
-\item{model}{Which model to use (poisson or negbin or strictgamma or relaxedgamma)}
+\item{model}{Which model to use (poisson or negbin or strictgamma or relaxedgamma or arc or acrc)}
 }
 \value{
 An observed phylogenetic tree

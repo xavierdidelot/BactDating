@@ -72,12 +72,12 @@ double likelihoodNegbinC(NumericMatrix tab, double mu, double sigma) {
   int n = (tab.nrow()+1)/2;
   double p=0;
   double unrec=1;
-  double lengths;
+  double l;
   for (int i=0;i<tab.nrow();i++) {
     if (i==n) continue;
     if (tab.ncol()==5) unrec=tab(i,4);
-    lengths=unrec*(tab(i,2)-tab(tab(i,3)-1,2));
-    p+=R::dnbinom(round(unrec*tab(i,1)),k,1/(1.0+theta*lengths),1);
+    l=unrec*(tab(i,2)-tab(tab(i,3)-1,2));
+    p+=R::dnbinom(round(unrec*tab(i,1)),k,1/(1.0+theta*l),1);
   }
   return(p);
 }
@@ -94,4 +94,34 @@ void changeinorderedvec(NumericVector vec,double old,double n) {
     break;
   }
   //  return(res);
+}
+
+// [[Rcpp::export]]
+double likelihoodArcC(NumericMatrix tab, double mu, double sigma) {
+  int n = (tab.nrow()+1)/2;
+  double p=0;
+  double l=0;
+  double unrec=1;
+  for (int i=0;i<tab.nrow();i++) {
+    if (i==n) continue;
+    l=tab(i,2)-tab(tab(i,3)-1,2);
+    if (tab.ncol()==5) {unrec=tab(i,4);l=l*unrec;}
+    p+=R::dnbinom(round(unrec*tab(i,1)),mu*l/sigma,1.0-sigma/(1.0+sigma),1);
+  }
+  return(p);
+}
+
+// [[Rcpp::export]]
+double likelihoodAcrcC(NumericMatrix tab, double mu, double sigma) {
+  int n = (tab.nrow()+1)/2;
+  double p=0;
+  double unrec=1;
+  double l;
+  for (int i=0;i<tab.nrow();i++) {
+    if (i==n) continue;
+    if (tab.ncol()==5) unrec=tab(i,4);
+    l=unrec*(tab(i,2)-tab(tab(i,3)-1,2));
+    p+=R::dgamma(unrec*tab(i,1),mu*l/(1.0+sigma),1.0+sigma,1);
+  }
+  return(p);
 }

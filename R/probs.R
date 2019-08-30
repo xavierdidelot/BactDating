@@ -69,6 +69,41 @@ likelihoodRelaxedgamma = function(tab, mu, sigma) {
   return(sum(dgamma(muts,shape=mu*mu*lengths/(mu+ratevar*lengths),scale=1+lengths*ratevar/mu,log=T)))
 }
 
+#' arc likelihood function
+#' @param tab Table of nodes
+#' @param mu Clock rate parameter
+#' @param sigma Std of per branch clock rate
+#' @return log-likelihood
+likelihoodArc = function(tab, mu, sigma) {
+  n = ceiling(nrow(tab)/2)
+  if (mu < 0 || sigma <0) stop('error1')
+  t2 = tab[-(n + 1), ,drop=F]
+  lengths = t2[, 3] - tab[t2[, 4], 3]
+  if (min(lengths) < 0) stop('error2')
+  muts = t2[, 2]
+  if (min(muts)<0) stop('error3')
+  if (ncol(tab)==5) {lengths=lengths*t2[,5];muts=muts*t2[,5]}
+  return(sum(dnbinom(round(muts),size=mu*lengths/sigma,prob=1-sigma/(1+sigma),log=T)))
+}
+
+#' acrc likelihood function
+#' @param tab Table of nodes
+#' @param mu Clock rate parameter
+#' @param sigma Std of per branch clock rate
+#' @return log-likelihood
+likelihoodAcrc = function(tab, mu, sigma) {
+  n = ceiling(nrow(tab)/2)
+  if (mu < 0) stop('error1')
+  t2 = tab[-(n + 1), ,drop=F]
+  lengths = t2[, 3] - tab[t2[, 4], 3]
+  if (min(lengths) < 0) stop('error2')
+  muts = t2[, 2]
+  if (min(muts)<0) stop('error3')
+  if (ncol(tab)==5) {lengths=lengths*t2[,5];muts=muts*t2[,5]}
+  return(sum(dgamma(muts,shape=mu*lengths/(1+sigma),scale=1+sigma,log=T)))
+}
+
+
 #' Coalescent prior function
 #' @param tab Table of nodes
 #' @param alpha Coalescent time unit

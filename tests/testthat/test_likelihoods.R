@@ -27,6 +27,10 @@ test_that("Likelihood is equal to probability of simulation.", {
   expect_equal(likelihoodRelaxedgammaC(makeTab(tree,phy),5.5,4.1),phy$prob)
   phy=simobsphy(tree,model='negbin',mu=5.5,sigma=4.1)
   expect_equal(likelihoodNegbinC(makeTab(tree,phy),5.5,4.1),phy$prob)
+  phy=simobsphy(tree,model='arc',mu=5.5,sigma=4.1)
+  expect_equal(likelihoodArcC(makeTab(tree,phy),5.5,4.1),phy$prob)
+  phy=simobsphy(tree,model='acrc',mu=5.5,sigma=4.1)
+  expect_equal(likelihoodAcrcC(makeTab(tree,phy),5.5,4.1),phy$prob)
 })
 
 test_that("Likelihood in C++ and R give identical results.", {
@@ -39,6 +43,8 @@ test_that("Likelihood in C++ and R give identical results.", {
   expect_equal(likelihoodGamma(tab,5.5),likelihoodGammaC(tab,5.5))
   expect_equal(likelihoodRelaxedgamma(tab,5.5,4.1),likelihoodRelaxedgammaC(tab,5.5,4.1))
   expect_equal(likelihoodNegbin(tab,5.5,4.1),likelihoodNegbinC(tab,5.5,4.1))
+  expect_equal(likelihoodArc(tab,5.5,4.1),likelihoodArcC(tab,5.5,4.1))
+  expect_equal(likelihoodAcrc(tab,5.5,4.1),likelihoodAcrcC(tab,5.5,4.1))
 })
 
 test_that("Likelihood of strict gamma is equal to relaxed gamma with no variance.", {
@@ -48,6 +54,15 @@ test_that("Likelihood of strict gamma is equal to relaxed gamma with no variance
   phy=simobsphy(tree)
   tab=makeTab(tree,phy)
   expect_equal(likelihoodRelaxedgammaC(tab,5.5,0),likelihoodGammaC(tab,5.5))
+})
+
+test_that("Likelihood of strict gamma is equal to acrc with no variance.", {
+  set.seed(0)
+  leaves=2010:2000
+  tree=simcoaltree(leaves,5.1)
+  phy=simobsphy(tree)
+  tab=makeTab(tree,phy)
+  expect_equal(likelihoodAcrcC(tab,5.5,0),likelihoodGammaC(tab,5.5))
 })
 
 test_that("Short MCMC runs give same results for C++ and R likelihoods.", {
