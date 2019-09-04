@@ -92,7 +92,7 @@ simcoaltree = function(dates=NA,alpha=10) {
 #' @param tree Dated tree
 #' @param mu Substitution clock rate
 #' @param sigma Per-branch std on the clock rate (used only by relaxed gamma model and negbin model)
-#' @param model Which model to use (poisson or negbin or strictgamma or relaxedgamma or arc or acrc)
+#' @param model Which model to use (poisson or negbin or strictgamma or relaxedgamma or arc or carc)
 #' @return An observed phylogenetic tree
 #' @export
 simobsphy = function(tree, mu = 10, sigma = 10, model = 'strictgamma') {
@@ -135,7 +135,7 @@ simobsphy = function(tree, mu = 10, sigma = 10, model = 'strictgamma') {
       obsphy$prob=obsphy$prob+dnbinom(obsphy$edge.length[i],size=r,prob=1-p,log=T)
     }
   }
-  if (model=='acrc') {
+  if (model=='carc') {
     for (i in 1:length(obsphy$edge.length)) {
       l=obsphy$edge.length[i]
       shape=mu*l/(1+sigma)

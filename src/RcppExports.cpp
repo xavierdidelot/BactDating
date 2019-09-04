@@ -93,16 +93,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// likelihoodAcrcC
-double likelihoodAcrcC(NumericMatrix tab, double mu, double sigma);
-RcppExport SEXP _BactDating_likelihoodAcrcC(SEXP tabSEXP, SEXP muSEXP, SEXP sigmaSEXP) {
+// likelihoodCarcC
+double likelihoodCarcC(NumericMatrix tab, double mu, double sigma);
+RcppExport SEXP _BactDating_likelihoodCarcC(SEXP tabSEXP, SEXP muSEXP, SEXP sigmaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericMatrix >::type tab(tabSEXP);
     Rcpp::traits::input_parameter< double >::type mu(muSEXP);
     Rcpp::traits::input_parameter< double >::type sigma(sigmaSEXP);
-    rcpp_result_gen = Rcpp::wrap(likelihoodAcrcC(tab, mu, sigma));
+    rcpp_result_gen = Rcpp::wrap(likelihoodCarcC(tab, mu, sigma));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -115,7 +115,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BactDating_likelihoodNegbinC", (DL_FUNC) &_BactDating_likelihoodNegbinC, 3},
     {"_BactDating_changeinorderedvec", (DL_FUNC) &_BactDating_changeinorderedvec, 3},
     {"_BactDating_likelihoodArcC", (DL_FUNC) &_BactDating_likelihoodArcC, 3},
-    {"_BactDating_likelihoodAcrcC", (DL_FUNC) &_BactDating_likelihoodAcrcC, 3},
+    {"_BactDating_likelihoodCarcC", (DL_FUNC) &_BactDating_likelihoodCarcC, 3},
     {NULL, NULL, 0}
 };
 

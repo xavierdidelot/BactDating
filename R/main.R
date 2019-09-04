@@ -51,7 +51,7 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
 
   #Selection likelihood function
   if (!is.element(model,c('poisson','poissonR','negbin','negbinR'))) tree$edge.length=pmax(tree$edge.length,minbralen)
-  if (!is.element(model,c('relaxedgamma','relaxedgammaR','mixedgamma','negbin','negbinR'))) {updateSigma=F;sigma=0}
+  if (!is.element(model,c('relaxedgamma','relaxedgammaR','mixedgamma','negbin','negbinR','arc','arcR','carc','carcR'))) {updateSigma=F;sigma=0}
   if (model == 'mixedgamma') sigma=0
   if (model == 'poisson') likelihood=function(tab,mu,sigma) return(likelihoodPoissonC(tab,mu))
   if (model == 'poissonR') likelihood=function(tab,mu,sigma) return(likelihoodPoisson(tab,mu))
@@ -63,8 +63,8 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
   if (model == 'relaxedgammaR') likelihood=function(tab,mu,sigma) return(likelihoodRelaxedgamma(tab,mu,sigma))
   if (model == 'arc') likelihood=function(tab,mu,sigma) return(likelihoodArcC(tab,mu,sigma))
   if (model == 'arcR') likelihood=function(tab,mu,sigma) return(likelihoodArc(tab,mu,sigma))
-  if (model == 'acrc') likelihood=function(tab,mu,sigma) return(likelihoodAcrcC(tab,mu,sigma))
-  if (model == 'acrcR') likelihood=function(tab,mu,sigma) return(likelihoodAcrc(tab,mu,sigma))
+  if (model == 'carc') likelihood=function(tab,mu,sigma) return(likelihoodCarcC(tab,mu,sigma))
+  if (model == 'carcR') likelihood=function(tab,mu,sigma) return(likelihoodCarc(tab,mu,sigma))
   if (model == 'null') {updateMu=0;likelihood=function(tab,mu,sigma) return(0)}
   if (!exists('likelihood')) stop('Unknown model.')
 

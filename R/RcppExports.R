@@ -29,7 +29,7 @@ likelihoodArcC <- function(tab, mu, sigma) {
     .Call('_BactDating_likelihoodArcC', PACKAGE = 'BactDating', tab, mu, sigma)
 }
 
-likelihoodAcrcC <- function(tab, mu, sigma) {
-    .Call('_BactDating_likelihoodAcrcC', PACKAGE = 'BactDating', tab, mu, sigma)
+likelihoodCarcC <- function(tab, mu, sigma) {
+    .Call('_BactDating_likelihoodCarcC', PACKAGE = 'BactDating', tab, mu, sigma)
 }
 

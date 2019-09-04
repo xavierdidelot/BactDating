@@ -112,7 +112,7 @@ double likelihoodArcC(NumericMatrix tab, double mu, double sigma) {
 }
 
 // [[Rcpp::export]]
-double likelihoodAcrcC(NumericMatrix tab, double mu, double sigma) {
+double likelihoodCarcC(NumericMatrix tab, double mu, double sigma) {
   int n = (tab.nrow()+1)/2;
   double p=0;
   double unrec=1;

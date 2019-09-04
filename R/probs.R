@@ -86,12 +86,12 @@ likelihoodArc = function(tab, mu, sigma) {
   return(sum(dnbinom(round(muts),size=mu*lengths/sigma,prob=1-sigma/(1+sigma),log=T)))
 }
 
-#' acrc likelihood function
+#' carc likelihood function
 #' @param tab Table of nodes
 #' @param mu Clock rate parameter
 #' @param sigma Std of per branch clock rate
 #' @return log-likelihood
-likelihoodAcrc = function(tab, mu, sigma) {
+likelihoodCarc = function(tab, mu, sigma) {
   n = ceiling(nrow(tab)/2)
   if (mu < 0) stop('error1')
   t2 = tab[-(n + 1), ,drop=F]

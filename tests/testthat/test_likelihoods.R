@@ -29,8 +29,8 @@ test_that("Likelihood is equal to probability of simulation.", {
   expect_equal(likelihoodNegbinC(makeTab(tree,phy),5.5,4.1),phy$prob)
   phy=simobsphy(tree,model='arc',mu=5.5,sigma=4.1)
   expect_equal(likelihoodArcC(makeTab(tree,phy),5.5,4.1),phy$prob)
-  phy=simobsphy(tree,model='acrc',mu=5.5,sigma=4.1)
-  expect_equal(likelihoodAcrcC(makeTab(tree,phy),5.5,4.1),phy$prob)
+  phy=simobsphy(tree,model='carc',mu=5.5,sigma=4.1)
+  expect_equal(likelihoodCarcC(makeTab(tree,phy),5.5,4.1),phy$prob)
 })
 
 test_that("Likelihood in C++ and R give identical results.", {
@@ -44,7 +44,7 @@ test_that("Likelihood in C++ and R give identical results.", {
   expect_equal(likelihoodRelaxedgamma(tab,5.5,4.1),likelihoodRelaxedgammaC(tab,5.5,4.1))
   expect_equal(likelihoodNegbin(tab,5.5,4.1),likelihoodNegbinC(tab,5.5,4.1))
   expect_equal(likelihoodArc(tab,5.5,4.1),likelihoodArcC(tab,5.5,4.1))
-  expect_equal(likelihoodAcrc(tab,5.5,4.1),likelihoodAcrcC(tab,5.5,4.1))
+  expect_equal(likelihoodCarc(tab,5.5,4.1),likelihoodCarcC(tab,5.5,4.1))
 })
 
 test_that("Likelihood of strict gamma is equal to relaxed gamma with no variance.", {
@@ -56,13 +56,13 @@ test_that("Likelihood of strict gamma is equal to relaxed gamma with no variance
   expect_equal(likelihoodRelaxedgammaC(tab,5.5,0),likelihoodGammaC(tab,5.5))
 })
 
-test_that("Likelihood of strict gamma is equal to acrc with no variance.", {
+test_that("Likelihood of strict gamma is equal to carc with no variance.", {
   set.seed(0)
   leaves=2010:2000
   tree=simcoaltree(leaves,5.1)
   phy=simobsphy(tree)
   tab=makeTab(tree,phy)
-  expect_equal(likelihoodAcrcC(tab,5.5,0),likelihoodGammaC(tab,5.5))
+  expect_equal(likelihoodCarcC(tab,5.5,0),likelihoodGammaC(tab,5.5))
 })
 
 test_that("Short MCMC runs give same results for C++ and R likelihoods.", {
@@ -96,9 +96,9 @@ test_that("Short MCMC runs give same results for C++ and R likelihoods.", {
   res2=bactdate(phy,leaves,nbIts=10,model='arcR')
   expect_equal(res$record[10,'likelihood'],res2$record[10,'likelihood'])
   set.seed(0)
-  res=bactdate(phy,leaves,nbIts=10,model='acrc')
+  res=bactdate(phy,leaves,nbIts=10,model='carc')
   set.seed(0)
-  res2=bactdate(phy,leaves,nbIts=10,model='acrcR')
+  res2=bactdate(phy,leaves,nbIts=10,model='carcR')
   expect_equal(res$record[10,'likelihood'],res2$record[10,'likelihood'])
 })
 
@@ -123,8 +123,8 @@ test_that("Likelihood in C++ and R give identical results on recombinant tree.",
   res=bactdate(phy,leaves,nbIts=2,model='arc',useRec=T)
   res2=bactdate(phy,leaves,nbIts=2,model='arcR',useRec=T)
   expect_equal(res$record[1,'likelihood'],res2$record[1,'likelihood'])
-  res=bactdate(phy,leaves,nbIts=2,model='acrc',useRec=T)
-  res2=bactdate(phy,leaves,nbIts=2,model='acrcR',useRec=T)
+  res=bactdate(phy,leaves,nbIts=2,model='carc',useRec=T)
+  res2=bactdate(phy,leaves,nbIts=2,model='carcR',useRec=T)
   expect_equal(res$record[1,'likelihood'],res2$record[1,'likelihood'])
 })
 
@@ -141,7 +141,7 @@ test_that("Likelihood is consistent when increasing rate and reducing branch len
   expect_equal(likelihoodRelaxedgammaC(tab,5.5,2.1),likelihoodRelaxedgammaC(tab2,5.5/10,2.1/10))
   expect_equal(likelihoodNegbinC(tab,5.5,2.1),likelihoodNegbinC(tab2,5.5/10,2.1/10))
   expect_equal(likelihoodArcC(tab,5.5,2.1),likelihoodArcC(tab2,5.5/10,2.1))
-  expect_equal(likelihoodAcrcC(tab,5.5,2.1),likelihoodAcrcC(tab2,5.5/10,2.1))
+  expect_equal(likelihoodCarcC(tab,5.5,2.1),likelihoodCarcC(tab2,5.5/10,2.1))
 })
 
 test_that("MCMC likelihood remains correct after many partial updates.", {
