@@ -33,7 +33,6 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
   if (useRec==T && is.null(tree$unrec)) stop("To use recombination, the proportion of unrecombined needs to be input.")
   if (length(which(tree$edge[,1]==Ntip(tree)+1))==3) tree=unroot(tree)
   if (is.rooted(tree)==F) tree=initRoot(tree,date,useRec=useRec)
-  testSignal=F
 
   #If the initial rate was not specified, start with the rate implied by root-to-tip analysis
   if (is.na(initMu)) {
@@ -142,7 +141,6 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
       record[i / thin, 'alpha'] = alpha
       record[i / thin, 'prior'] = p
       record[i / thin, 'root'] = curroot
-      if (testSignal) record[i / thin, 'signal'] = all(tab[1:n,3]==date)
     }
 
     if (updateMu == T) {
@@ -266,24 +264,9 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
       }
     }
 
-    if (testSignal) {
-      #Model jump to test strength of temporal signal
-      maxdates=max(date)
-      if (all(tab[1:n,3]==maxdates)) {
-        tab[1:n,3]=date
-        l2=likelihood(tab,mu,sigma)
-        if (log(runif(1))<l2-l) l=l2 else tab[1:n,3]=maxdates
-      } else {
-        tab[1:n,3]=maxdates
-        l2=likelihood(tab,mu,sigma)
-        if (log(runif(1))<l2-l) l=l2 else tab[1:n,3]=date
-      }
-    }
-
   }#End of MCMC loop
 
   #Output
-  if (testSignal) tab[1:n,3]=date
   inputtree = tree
   bestroot = as.numeric(names(sort(table(record[floor(nrow(record) / 2):nrow(record),'root']),decreasing=T)[1]))
   bestrows = intersect(floor(nrow(record) / 2):nrow(record),which(record[,'root']==bestroot))
@@ -319,7 +302,6 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
   )
   class(out) <- 'resBactDating'
   if (model=='mixedgamma') out$pstrict=length(which(record[,'sigma']==0))/nrow(record)
-  if (testSignal) out$psignal=length(which(record[,'signal']==1))/nrow(record)
   return(out)
 }
 
