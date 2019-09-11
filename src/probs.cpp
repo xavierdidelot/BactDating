@@ -28,10 +28,15 @@ double likelihoodGammaC(NumericMatrix tab, double mu) {
   int n = (tab.nrow()+1)/2;
   double p=0;
   double unrec=1;
+  double minbralen=tab(n,1);
+  //if (NumericVector::is_na(minbralen)) minbralen=0.1;
   for (int i=0;i<tab.nrow();i++) {
     if (i==n) continue;
     if (tab.ncol()==5) unrec=tab(i,4);
-    p+=R::dgamma(unrec*tab(i,1),unrec*mu*(tab(i,2)-tab(tab(i,3)-1,2)),1,1);
+    if (unrec*tab(i,1)<=minbralen)
+      p+=R::pgamma(minbralen,unrec*mu*(tab(i,2)-tab(tab(i,3)-1,2)),1,1,1);
+    else
+      p+=R::dgamma(unrec*tab(i,1),unrec*mu*(tab(i,2)-tab(tab(i,3)-1,2)),1,1);
   }
   return(p);
 }
@@ -42,12 +47,17 @@ double likelihoodRelaxedgammaC(NumericMatrix tab, double mu, double sigma) {
   double p=0;
   double l=0;
   double unrec=1;
+  double minbralen=tab(n,1);
+  //if (NumericVector::is_na(minbralen)) minbralen=0.1;
+  double ratevar=sigma*sigma;
   for (int i=0;i<tab.nrow();i++) {
     if (i==n) continue;
     l=tab(i,2)-tab(tab(i,3)-1,2);
     if (tab.ncol()==5) {unrec=tab(i,4);l=l*unrec;}
-    double ratevar=sigma*sigma;
-    p+=R::dgamma(unrec*tab(i,1),l*mu*mu/(mu+l*ratevar),1.0+l*ratevar/mu,1);
+    if (unrec*tab(i,1)<=minbralen)
+      p+=R::pgamma(minbralen,l*mu*mu/(mu+l*ratevar),1.0+l*ratevar/mu,1,1);
+    else
+      p+=R::dgamma(unrec*tab(i,1),l*mu*mu/(mu+l*ratevar),1.0+l*ratevar/mu,1);
   }
   return(p);
 }
@@ -117,11 +127,16 @@ double likelihoodCarcC(NumericMatrix tab, double mu, double sigma) {
   double p=0;
   double unrec=1;
   double l;
+  double minbralen=tab(n,1);
+  //if (NumericVector::is_na(minbralen)) minbralen=0.1;
   for (int i=0;i<tab.nrow();i++) {
     if (i==n) continue;
     if (tab.ncol()==5) unrec=tab(i,4);
     l=unrec*(tab(i,2)-tab(tab(i,3)-1,2));
-    p+=R::dgamma(unrec*tab(i,1),mu*l/(1.0+sigma),1.0+sigma,1);
+    if (unrec*tab(i,1)<=minbralen)
+      p+=R::pgamma(minbralen,mu*l/(1.0+sigma),1.0+sigma,1,1);
+    else
+      p+=R::dgamma(unrec*tab(i,1),mu*l/(1.0+sigma),1.0+sigma,1);
   }
   return(p);
 }

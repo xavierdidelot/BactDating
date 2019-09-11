@@ -86,7 +86,7 @@ roottotip = function(tree,date,rate=NA,permTest=10000,showFig=T,colored=T,showPr
 #' @export
 initRoot = function(phy,date,mtry=10,useRec=F) {
   #Rerranging of dates, if needed
-  if (!is.null(names(date))) date=findDates(tree,date)
+  if (!is.null(names(date))) date=findDates(phy,date)
 
   n=length(date)
   bestcorrel=-Inf

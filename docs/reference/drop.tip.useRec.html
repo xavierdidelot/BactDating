@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Coalescent prior function — coalpriorR • BactDating</title>
+<title>Modified drop.tip() from 'ape' package that also updates the recombination
+proportions added when loaded from CFML or Gubbins — drop.tip.useRec • BactDating</title>
 
 
 <!-- jquery -->
@@ -35,8 +36,10 @@
 
 
 
-<meta property="og:title" content="Coalescent prior function — coalpriorR" />
-<meta property="og:description" content="Coalescent prior function" />
+<meta property="og:title" content="Modified drop.tip() from 'ape' package that also updates the recombination
+proportions added when loaded from CFML or Gubbins — drop.tip.useRec" />
+<meta property="og:description" content="Modified drop.tip() from 'ape' package that also updates the recombination
+proportions added when loaded from CFML or Gubbins" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -129,33 +132,61 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Coalescent prior function</h1>
-    <small class="dont-index">Source: <a href='https://github.com/xavierdidelot/BactDating/blob/master/R/probs.R'><code>R/probs.R</code></a></small>
-    <div class="hidden name"><code>coalpriorR.Rd</code></div>
+    <h1>Modified drop.tip() from 'ape' package that also updates the recombination
+proportions added when loaded from CFML or Gubbins</h1>
+    <small class="dont-index">Source: <a href='https://github.com/xavierdidelot/BactDating/blob/master/R/methods.R'><code>R/methods.R</code></a></small>
+    <div class="hidden name"><code>drop.tip.useRec.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Coalescent prior function</p>
+    <p>Modified drop.tip() from 'ape' package that also updates the recombination
+proportions added when loaded from CFML or Gubbins</p>
     </div>
 
-    <pre class="usage"><span class='fu'>coalpriorR</span>(<span class='no'>tab</span>, <span class='no'>alpha</span>)</pre>
+    <pre class="usage"><span class='fu'>drop.tip.useRec</span>(<span class='no'>phy</span>, <span class='no'>tip</span>, <span class='kw'>trim.internal</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>subtree</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>root.edge</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>rooted</span> <span class='kw'>=</span> <span class='fu'>is.rooted</span>(<span class='no'>phy</span>), <span class='kw'>collapse.singles</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>interactive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>tab</th>
-      <td><p>Table of nodes</p></td>
+      <th>phy</th>
+      <td><p>Tree from loadCFML() or loadGubbins()</p></td>
     </tr>
     <tr>
-      <th>alpha</th>
-      <td><p>Coalescent time unit</p></td>
+      <th>tip</th>
+      <td><p>a vector of mode numeric or character specifying the tips to delete.</p></td>
+    </tr>
+    <tr>
+      <th>trim.internal</th>
+      <td><p>a logical specifying whether to delete the corresponding internal branches.</p></td>
+    </tr>
+    <tr>
+      <th>subtree</th>
+      <td><p>a logical specifying whether to output in the tree how many tips have been deleted and where.</p></td>
+    </tr>
+    <tr>
+      <th>root.edge</th>
+      <td><p>an integer giving the number of internal branches to be used to build the new root edge. This has no effect if <code>trim.internal FALSE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>rooted</th>
+      <td><p>a logical indicating whether the tree must be treated as rooted or not. This allows to force the tree to be considered as unrooted.</p></td>
+    </tr>
+    <tr>
+      <th>collapse.singles</th>
+      <td><p>a logical specifying whether to delete the internal nodes of degree 2.</p></td>
+    </tr>
+    <tr>
+      <th>interactive</th>
+      <td><p>if <code>TRUE</code> the user is asked to select the tips or the node by clicking on the tree which must be plotted.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The log-prior in Eq (1) of Drummond et al (2002) Genetics</p>
+    <p>tree with rec data</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

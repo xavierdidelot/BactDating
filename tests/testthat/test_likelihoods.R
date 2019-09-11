@@ -1,7 +1,7 @@
 #Test likelihood functions
 context("Test likelihood functions")
 
-makeTab=function(timedTree,phyTree) {
+makeTab=function(timedTree,phyTree,minbralen=0.1) {
   n=length(timedTree$tip.label)
   d1=leafDates(timedTree)
   d2=nodeDates(timedTree)
@@ -12,6 +12,7 @@ makeTab=function(timedTree,phyTree) {
     tab[i,4]=timedTree$edge[e,1]
     e=which(phyTree$edge[,2]==i)
     tab[i,2]=phyTree$edge.length[e]}
+  tab[n+1,2]=minbralen
   return(tab)
 }
 
@@ -22,15 +23,15 @@ test_that("Likelihood is equal to probability of simulation.", {
   phy=simobsphy(tree,model='poisson',mu=5.5)
   expect_equal(likelihoodPoissonC(makeTab(tree,phy),5.5),phy$prob)
   phy=simobsphy(tree,model='strictgamma',mu=5.5)
-  expect_equal(likelihoodGammaC(makeTab(tree,phy),5.5),phy$prob)
+  expect_equal(likelihoodGammaC(makeTab(tree,phy,0),5.5),phy$prob)
   phy=simobsphy(tree,model='relaxedgamma',mu=5.5,sigma=4.1)
-  expect_equal(likelihoodRelaxedgammaC(makeTab(tree,phy),5.5,4.1),phy$prob)
+  expect_equal(likelihoodRelaxedgammaC(makeTab(tree,phy,0),5.5,4.1),phy$prob)
   phy=simobsphy(tree,model='negbin',mu=5.5,sigma=4.1)
   expect_equal(likelihoodNegbinC(makeTab(tree,phy),5.5,4.1),phy$prob)
   phy=simobsphy(tree,model='arc',mu=5.5,sigma=4.1)
   expect_equal(likelihoodArcC(makeTab(tree,phy),5.5,4.1),phy$prob)
   phy=simobsphy(tree,model='carc',mu=5.5,sigma=4.1)
-  expect_equal(likelihoodCarcC(makeTab(tree,phy),5.5,4.1),phy$prob)
+  expect_equal(likelihoodCarcC(makeTab(tree,phy,0),5.5,4.1),phy$prob)
 })
 
 test_that("Likelihood in C++ and R give identical results.", {

@@ -39,10 +39,10 @@ res=roottotip(staph$tree,staph$dates)
 
 ## Analysis
 
-We can run BactDating as follows:
+We can run BactDating as follows. Note that here we only perform 1000 iterations of the MCMC to keep to building time of this vignette low, but in practice you should run the MCMC for as long as possible.
 
 ```{r}
-res=bactdate(unroot(staph$tree),staph$dates)
+res=bactdate(unroot(staph$tree),staph$dates,nbIts=1000)
 plot(res,'treeCI',show.tip.label = F)
 ```
 

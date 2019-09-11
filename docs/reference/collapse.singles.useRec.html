@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Coalescent prior function — coalpriorR • BactDating</title>
+<title>Modified collapse.singles() from package ape which deletes the single nodes (i.e., with a single
+descendant) in a tree, respecting the rec function. Internal, used by drop.tip.rec — collapse.singles.useRec • BactDating</title>
 
 
 <!-- jquery -->
@@ -35,8 +36,10 @@
 
 
 
-<meta property="og:title" content="Coalescent prior function — coalpriorR" />
-<meta property="og:description" content="Coalescent prior function" />
+<meta property="og:title" content="Modified collapse.singles() from package ape which deletes the single nodes (i.e., with a single
+descendant) in a tree, respecting the rec function. Internal, used by drop.tip.rec — collapse.singles.useRec" />
+<meta property="og:description" content="Modified collapse.singles() from package ape which deletes the single nodes (i.e., with a single
+descendant) in a tree, respecting the rec function. Internal, used by drop.tip.rec" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -129,33 +132,35 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Coalescent prior function</h1>
-    <small class="dont-index">Source: <a href='https://github.com/xavierdidelot/BactDating/blob/master/R/probs.R'><code>R/probs.R</code></a></small>
-    <div class="hidden name"><code>coalpriorR.Rd</code></div>
+    <h1>Modified collapse.singles() from package ape which deletes the single nodes (i.e., with a single
+descendant) in a tree, respecting the rec function. Internal, used by drop.tip.rec</h1>
+    <small class="dont-index">Source: <a href='https://github.com/xavierdidelot/BactDating/blob/master/R/methods.R'><code>R/methods.R</code></a></small>
+    <div class="hidden name"><code>collapse.singles.useRec.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Coalescent prior function</p>
+    <p>Modified collapse.singles() from package ape which deletes the single nodes (i.e., with a single
+descendant) in a tree, respecting the rec function. Internal, used by drop.tip.rec</p>
     </div>
 
-    <pre class="usage"><span class='fu'>coalpriorR</span>(<span class='no'>tab</span>, <span class='no'>alpha</span>)</pre>
+    <pre class="usage"><span class='fu'>collapse.singles.useRec</span>(<span class='no'>tree</span>, <span class='kw'>root.edge</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>tab</th>
-      <td><p>Table of nodes</p></td>
+      <th>tree</th>
+      <td><p>an object of class <code>"phylo"</code>.</p></td>
     </tr>
     <tr>
-      <th>alpha</th>
-      <td><p>Coalescent time unit</p></td>
+      <th>root.edge</th>
+      <td><p>whether to get the singleton edges from the root until the first bifurcating node and put them as <code>root.edge</code> of the returned tree. By default, this is ignored or if the tree has no edge lengths.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The log-prior in Eq (1) of Drummond et al (2002) Genetics</p>
+    <p>tree with rec data</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

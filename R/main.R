@@ -49,7 +49,7 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
   if (useCoalPrior) prior=coalpriorC else updateAlpha=F
 
   #Selection likelihood function
-  if (!is.element(model,c('poisson','poissonR','negbin','negbinR'))) tree$edge.length=pmax(tree$edge.length,minbralen)
+  if (!is.element(model,c('poisson','poissonR','negbin','negbinR','arc','arcR'))) tree$edge.length=pmax(tree$edge.length,minbralen)
   if (!is.element(model,c('relaxedgamma','relaxedgammaR','mixedgamma','negbin','negbinR','arc','arcR','carc','carcR'))) {updateSigma=F;sigma=0}
   if (model == 'mixedgamma') sigma=0
   if (model == 'poisson') likelihood=function(tab,mu,sigma) return(likelihoodPoissonC(tab,mu))
@@ -87,6 +87,7 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
     if (i <= n)
       tab[i, 3] = date[i]
   }
+  tab[n+1,2]=minbralen#store minbralength above root
 
   #Create initial tree
   tree = reorder.phylo(tree, 'postorder')
@@ -192,6 +193,7 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
       if (r>0&&new>min(tab[children[[j]],3])) next#can't be younger than sons
       if (j>(n+1)) {mintab=rbind(tab[children[[j]],],tab[tab[j,4],],tab[j,]);mintab[,4]=c(4,4,NA,3)}
       else {mintab=rbind(tab[children[[j]],],tab[j,]);mintab[,4]=c(3,3,NA)}
+      mintab[3,2]=minbralen
       l2=l-likelihood(mintab,mu,sigma)
       mintab[nrow(mintab),3]=new
       l2=l2+likelihood(mintab,mu,sigma)
@@ -212,6 +214,7 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
       if (new>rangedate[j,2]||new<rangedate[j,1]) next#stay within prior range
       mintab=rbind(tab[j,],tab[tab[j,4],])
       mintab[,4]=c(2,NA)
+      mintab[2,2]=minbralen
       l2=l-likelihood(mintab,mu,sigma)
       mintab[1,3]=new
       l2=l2+likelihood(mintab,mu,sigma)
