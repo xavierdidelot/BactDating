@@ -1,0 +1,49 @@
+---
+title: "Using BactDating with the clustered permutation test"
+author: "Xavier Didelot"
+date: '`r Sys.Date()`'
+output:
+  pdf_document: default
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Using BactDating with the clustered permutation test}
+  %\usepackage[utf8]{inputenc}
+---
+
+In this vignette we demonstrate the usage of the clustered permutation test. In this test, samples with similar dates are being clustered until a Mantel test between their dates and genetic distances becomes non-significant. A standard root-to-tip analysis is then performed on the clusters. 
+
+## Initialisation
+
+```{r}
+library(BactDating)
+library(ape)
+set.seed(0)
+```
+
+## Data
+
+We start by generating a simultated dataset:
+
+```{r}
+dates=seq(2000,2020,0.5)
+phy=simcoaltree(dates,alpha=10)
+tree=simobsphy(phy,mu=10)
+plot(phy,show.tip.label = F)
+axisPhylo(backward = F)
+```
+
+## Root-to-tip analysis
+
+Let's do a root-to-tip regression analysis:
+
+```{r}
+res=roottotip(tree,dates)
+```
+
+## Clustered permutation test
+
+Let's try the clustered permutation test analysis:
+```{r}
+res=clusteredTest(tree,dates)
+```
+

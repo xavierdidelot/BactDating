@@ -40,7 +40,7 @@ roottotip = function(tree,date,rate=NA,permTest=10000,showFig=T,colored=T,showPr
   for (i in 1:permTest) {
     date2=sample(date,n,replace=F)
     correl2=cor(date2,ys,use='complete.obs')
-    if (correl2>correl) pvalue=pvalue+1/permTest
+    if (correl2>=correl) pvalue=pvalue+1/permTest
   }
 
   if (rate<0) {warning('The linear regression suggests a negative rate.');return(list(rate=rate,ori=ori,pvalue=pvalue))}

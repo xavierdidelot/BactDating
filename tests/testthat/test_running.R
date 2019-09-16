@@ -12,6 +12,7 @@ test_that("Basic functions are running without error.", {
   expect_silent(phy<-simobsphy(tree))
   expect_silent(phy<-initRoot(phy,d))
   expect_silent(res<-roottotip(phy,d))
+  expect_silent(res<-clusteredTest(phy,d))
   set.seed(0)
   res<-bactdate(phy,d,nbIts=10)
   expect_silent(res<-bactdate(phy,d,nbIts=10))

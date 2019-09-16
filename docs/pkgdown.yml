@@ -3,6 +3,7 @@ pkgdown: 1.4.0
 pkgdown_sha: ~
 articles:
   Staph: Staph.html
+  clustered: clustered.html
   exampleRec: exampleRec.html
   exampleRelaxed: exampleRelaxed.html
   exampleTest: exampleTest.html
