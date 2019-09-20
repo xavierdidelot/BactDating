@@ -27,16 +27,5 @@ test_that("Basic functions are running without error.", {
   expect_silent(plotDualScale(res$tree))
   expect_is(as.mcmc.resBactDating(res),'mcmc')
   expect_silent(capture_output(modelcompare(res,res)))
-
-  set.seed(0)
-  leaves=2010:2000
-  tree=simcoaltree(leaves,5.1)
-  phy=simobsphy(tree)
-  phy$unrec=runif(length(phy$edge.length))
-  expect_silent(initRoot(phy,2010:2020,useRec = T))
-  expect_is(drop.tip.useRec(phy,'1'),'phylo')
-
-  expect_error(expect_warning(loadCFML('nothing')))
-  expect_error(expect_warning(loadGubbins('nothing')))
 })
 

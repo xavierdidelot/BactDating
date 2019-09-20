@@ -6,6 +6,7 @@
 [![Travis-CI Build
 Status](https://travis-ci.com/xavierdidelot/BactDating.svg?branch=master)](https://travis-ci.com/xavierdidelot/BactDating)
 [![codecov](https://codecov.io/gh/xavierdidelot/BactDating/branch/master/graph/badge.svg)](https://codecov.io/gh/xavierdidelot/BactDating)
+![GitHub](https://img.shields.io/github/license/xavierdidelot/BactDating)
 
 The goal of BactDating is to perform Bayesian dating of the nodes of a
 bacterial phylogenetic tree. This typically involves simultaneous

@@ -8,6 +8,7 @@
 #' @export
 plot.resBactDating = function(x, type='tree', show.axis=T, ...) {
 
+  old.par=par(no.readonly = T)
   if (type=='tree') {
     plot.phylo(x$tree, ...)
     if (show.axis) axisPhylo(backward = F)
@@ -40,7 +41,7 @@ plot.resBactDating = function(x, type='tree', show.axis=T, ...) {
     plot(x$record[,Ntip(x$tree)+1],main='Date of root',type='l',xlab='Sampled iterations',ylab='')
     plot(x$record[,'mu'],main='Clock rate',type='l',xlab='Sampled iterations',ylab='')
     plot(x$record[,'alpha'],main='Coalescent time unit',type='l',xlab='Sampled iterations',ylab='')
-    plot(x$record[,'sigma'],main='Clock rate std',type='l',xlab='Sampled iterations',ylab='')
+    plot(x$record[,'sigma'],main='Relaxation parameter',type='l',xlab='Sampled iterations',ylab='')
     v=x$record[,'root']
     u=sort(unique(v))
     for (i in 1:length(u)) v[which(x$record[,'root']==u[i])]=i
@@ -109,6 +110,7 @@ plot.resBactDating = function(x, type='tree', show.axis=T, ...) {
     axisPhylo(1,backward = F)
 
   }
+  par(old.par)
 }
 
 #' Print function for resBactDating objects

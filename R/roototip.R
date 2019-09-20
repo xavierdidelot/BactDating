@@ -43,8 +43,9 @@ roottotip = function(tree,date,rate=NA,permTest=10000,showFig=T,colored=T,showPr
     if (correl2>=correl) pvalue=pvalue+1/permTest
   }
 
-  if (rate<0) {warning('The linear regression suggests a negative rate.');return(list(rate=rate,ori=ori,pvalue=pvalue))}
+  if (rate<0) {warning('The linear regression suggests a negative rate.')}
   if (showFig==F) return(list(rate=rate,ori=ori,pvalue=pvalue))
+  old.par=par(no.readonly = T)
   par(xpd=NA,oma = c(0, 0, 2, 0))
   if (colored) {
     normed=(date-min(date,na.rm=T))/(max(date,na.rm=T)-min(date,na.rm=T))
@@ -56,10 +57,11 @@ roottotip = function(tree,date,rate=NA,permTest=10000,showFig=T,colored=T,showPr
     if (colored) tiplabels(col=cols,pch=19)
     axisPhylo(1,backward = F)
   }
-  plot(date,ys,col=cols,xlab=ifelse(showText,'Sampling date',''),ylab=ifelse(showText,'Root-to-tip distance',''),xaxs='i',yaxs='i',pch=19,ylim=c(0,max(ys)),xlim=c(ori,max(date,na.rm = T)))
+  plot(date,ys,col=cols,xlab=ifelse(showText,'Sampling date',''),ylab=ifelse(showText,'Root-to-tip distance',''),xaxs='i',yaxs='i',pch=19,ylim=c(0,max(ys)),xlim=c(ifelse(rate>0,ori,min(date,na.rm = T)),max(date,na.rm = T)))
   #text(date,ys,labels=1:length(date))
   par(xpd=F)
   abline(res,lwd=2)
+  if (rate<0) {par(old.par);return(list(rate=rate,ori=ori,pvalue=pvalue))}
   xs=seq(ori,max(date,na.rm = T),0.1)
   plim=0.05
   if (showPredInt=='poisson') {
@@ -74,6 +76,7 @@ roottotip = function(tree,date,rate=NA,permTest=10000,showFig=T,colored=T,showPr
   if (pvalue==0) mtext(sprintf('Rate=%.2e,MRCA=%.2f,R2=%.2f,p<%.2e',rate,ori,r2,1/permTest), outer = TRUE, cex = 1.5)
   else           mtext(sprintf('Rate=%.2e,MRCA=%.2f,R2=%.2f,p=%.2e',rate,ori,r2,pvalue), outer = TRUE, cex = 1.5)
   }
+  par(old.par)
   return(list(rate=rate,ori=ori,pvalue=pvalue))
 }
 
