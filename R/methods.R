@@ -167,7 +167,7 @@ as.mcmc.resBactDating <- function(x,burnin=0.5) {
 
 #' Convert to treedata format from ggtree package
 #' @param x Output from bactdate
-#' @return treedata object from ggtree package
+#' @return list ready to create a treedata object from ggtree package
 #' @export
 as.treedata.resBactDating <- function(x) {
   t=x$tree
@@ -180,9 +180,10 @@ as.treedata.resBactDating <- function(x) {
     interval=x$CI[i,]-t$root.time-h[i]+len
     meta$length_0.95_HPD[i]=list(interval)
   }
-  obj=methods::new("treedata",treetext='',phylo=t,data=dplyr::tbl_df(as.data.frame(meta)),file='')
-  return(obj)
-  #can then plot with:
+  l=list(t,dplyr::tbl_df(as.data.frame(meta)))
+  return(l)
+  #can then create treedata object and plot ggtree using:
+  #obj=methods::new('treedata',phylo=l[[1]],data=l[[2]])
   #ggtree(obj) + geom_range(range='length_0.95_HPD', color='red', alpha=.6, size=2)
 }
 

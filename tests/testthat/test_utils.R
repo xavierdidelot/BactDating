@@ -8,12 +8,11 @@ test_that("The function changeinorderedvec behaves as expected.", {
   expect_false(is.unsorted(rev(v)))
 })
 
-test_that("The function as.treedata works.", {
+test_that("The function as.treedata.resBactDating works.", {
   set.seed(0)
   res=bactdate(ape::rtree(10),rep(2000,10),nbIts=100)
-  library(ggtree)
-  t=as.treedata.resBactDating(res)
-  expect_is(t,'treedata')
+  l=as.treedata.resBactDating(res)
+  expect_is(l,'list')
 })
 
 test_that("The function drop.tip.useRec works.", {
