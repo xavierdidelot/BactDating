@@ -11,7 +11,7 @@ loadGubbins = function(prefix)
   tree$node.label=tree2$node.label
   tree=unroot(tree)
   n=length(tree$tip.label)
-  t=read.table(sprintf('%s.per_branch_statistics.csv',prefix),sep='\t',as.is=T,header=T,comment.char="")
+  t=utils::read.table(sprintf('%s.per_branch_statistics.csv',prefix),sep='\t',as.is=T,header=T,comment.char="")
   tree$unrec=rep(NA,length(tree$edge.length))
   for (i in 1:length(tree$edge.length)) {
     j=tree$edge[i,2]

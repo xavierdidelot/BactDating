@@ -9,8 +9,6 @@
 #' @param showText Whether to show the title and axis labels
 #' @param showTree Whether to show the tree or not
 #' @return List containing estimated clock rate, date of origin and p-value
-#' @importFrom graphics abline
-#' @importFrom grDevices rgb
 #' @export
 roottotip = function(tree,date,rate=NA,permTest=10000,showFig=T,colored=T,showPredInt='gamma',showText=T,showTree=T)
 {
@@ -49,7 +47,7 @@ roottotip = function(tree,date,rate=NA,permTest=10000,showFig=T,colored=T,showPr
   par(xpd=NA,oma = c(0, 0, 2, 0))
   if (colored) {
     normed=(date-min(date,na.rm=T))/(max(date,na.rm=T)-min(date,na.rm=T))
-    cols=rgb(ifelse(is.na(normed),0,normed),ifelse(is.na(normed),0.5,0),1-ifelse(is.na(normed),1,normed),0.5)
+    cols=grDevices::rgb(ifelse(is.na(normed),0,normed),ifelse(is.na(normed),0.5,0),1-ifelse(is.na(normed),1,normed),0.5)
   } else cols='black'
   if (showTree) {
     par(mfrow=c(1,2))

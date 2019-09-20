@@ -121,7 +121,7 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
   p = prior(orderedleafdates,orderednodedates,alpha)
   record = matrix(NA, floor(nbIts / thin), nrow(tab)*3 + 6)
   colnames(record)<-c(rep(NA,nrow(tab)*3),'likelihood','mu','sigma','alpha','prior','root')
-  if (showProgress) pb <- txtProgressBar(min=0,max=nbIts,style = 3)
+  if (showProgress) pb <- utils::txtProgressBar(min=0,max=nbIts,style = 3)
   children=vector("list", max(tab[,4],na.rm = T))
   for (i in 1:nrow(tab)) if (!is.na(tab[i,4])) children[[tab[i,4]]]=c(children[[tab[i,4]]],i)
   curroot=NA
@@ -132,7 +132,7 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
   for (i in 1:nbIts) {
     #Record
     if (i %% thin == 0) {
-      if (showProgress) setTxtProgressBar(pb, i)
+      if (showProgress) utils::setTxtProgressBar(pb, i)
       record[i / thin, 1:nrow(tab)] = tab[, 3]
       record[i / thin, (1:nrow(tab))+nrow(tab)]=tab[, 4]
       record[i / thin, (1:nrow(tab))+2*nrow(tab)]=tab[, 2]

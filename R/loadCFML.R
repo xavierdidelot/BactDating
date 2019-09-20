@@ -2,7 +2,6 @@
 #' @param prefix Prefix of the ClonalFrameML output files
 #' @param priorMeanM Mean of prior on M used when running ClonalFrameML
 #' @param priorSdM Sd of prior on M used when running ClonalFrameML
-#' @importFrom utils read.table
 #' @return Tree representing the output from ClonalFrameML
 #' @export
 loadCFML = function(prefix,priorMeanM=0.0001,priorSdM=0.0001)
@@ -12,8 +11,8 @@ loadCFML = function(prefix,priorMeanM=0.0001,priorSdM=0.0001)
   tree=read.tree(sprintf('%s.labelled_tree.newick',prefix))
   tree=unroot(tree)
   n=length(tree$tip.label)
-  imports=read.table(sprintf('%s.importation_status.txt',prefix),header=T,as.is=T,sep="\t",comment.char="")
-  params=read.table(sprintf('%s.em.txt',prefix),header=T,as.is=T,sep="\t",comment.char="")
+  imports=utils::read.table(sprintf('%s.importation_status.txt',prefix),header=T,as.is=T,sep="\t",comment.char="")
+  params=utils::read.table(sprintf('%s.em.txt',prefix),header=T,as.is=T,sep="\t",comment.char="")
   L=length(scan(sprintf('%s.position_cross_reference.txt',prefix),sep=',',quiet = T))
   tree$edge.length=tree$edge.length*L
   tree$unrec=rep(NA,length(tree$edge.length))

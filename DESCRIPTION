@@ -6,13 +6,16 @@ Date: 2019-09-20
 Authors@R: person("Xavier","Didelot",email="xavier.didelot@gmail.com",role=c("aut", "cre"))
 Maintainer: Xavier Didelot <xavier.didelot@gmail.com>
 Depends: R (>= 3.0.0)
-Imports: Rcpp (>= 0.12.13), ape, stats, graphics, dplyr, methods
+Imports: Rcpp (>= 0.12.13), ape, stats, graphics
 LinkingTo: Rcpp
 Suggests: knitr,
     testthat,
     covr,
     coda,
-    vegan
+    vegan,
+    ggtree,
+    dplyr,
+    methods
 Description: BactDating is a R package to perform Bayesian inference of ancestral dates on bacterial phylogenetic trees.
 VignetteBuilder: knitr
 License: MIT + file LICENSE

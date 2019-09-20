@@ -16,8 +16,6 @@
 #' @references Didelot et al (2018). Bayesian inference of ancestral dates on bacterial phylogenetic trees. Nucleic Acids Research, 46:e134.
 #' @seealso https://github.com/xavierdidelot/BactDating
 
-#' @importFrom Rcpp evalCpp
-#' @importFrom utils setTxtProgressBar txtProgressBar
 #' @useDynLib BactDating
 #' @import stats
 #' @import graphics

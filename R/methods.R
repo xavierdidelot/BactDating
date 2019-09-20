@@ -4,7 +4,6 @@
 #' @param show.axis Whether or not to show the tree axis in mode tree, treeCI or treeRoot
 #' @param ... Additional parameters are passed on
 #' @return Plot of BactDating results
-#' @importFrom grDevices rgb
 #' @export
 plot.resBactDating = function(x, type='tree', show.axis=T, ...) {
 
@@ -21,8 +20,8 @@ plot.resBactDating = function(x, type='tree', show.axis=T, ...) {
     if (show.axis) axis(1,pre-x$tree$root.time,pre)
 #    axisPhylo(backward = F)
     obj<-get("last_plot.phylo",envir=.PlotPhyloEnv)
-    transblue=rgb(0,0,1,0.4)
-    transred =rgb(1,0,0,0.4)
+    transblue=grDevices::rgb(0,0,1,0.4)
+    transred =grDevices::rgb(1,0,0,0.4)
     for(i in 1:(Nnode(x$tree)+Ntip(x$tree)))
       if (x$CI[i,1]!=x$CI[i,2])
         lines(x=c(x$CI[i,1],x$CI[i,2])-x$tree$root.time,
@@ -98,9 +97,9 @@ plot.resBactDating = function(x, type='tree', show.axis=T, ...) {
       ll=dgamma(ys,shape=xs*rate^2/(rate+xs*sigma^2),scale=1+xs*sigma^2/rate,log=T)
     }
     normed=(ll-min(ll))/(max(ll)-min(ll))
-    cols=rgb(normed,0,1-normed)
+    cols=grDevices::rgb(normed,0,1-normed)
     base=seq(0,1,0.25)
-    legend("topleft",cex=0.5,legend=sprintf('%.2e',base*(max(ll)-min(ll))+min(ll)),pch=19,col=rgb(base,0,1-base))
+    legend("topleft",cex=0.5,legend=sprintf('%.2e',base*(max(ll)-min(ll))+min(ll)),pch=19,col=grDevices::rgb(base,0,1-base))
     points(xs,ys,pch=19,col=cols)
     #w=which(ll<sort(ll)[round(0.01*length(ll))])
     #print(cbind(x$tree$edge[w,2],ll[w]))
@@ -169,8 +168,6 @@ as.mcmc.resBactDating <- function(x,burnin=0.5) {
 #' Convert to treedata format from ggtree package
 #' @param x Output from bactdate
 #' @return treedata object from ggtree package
-#' @importFrom methods new
-#' @importFrom dplyr tbl_df
 #' @export
 as.treedata.resBactDating <- function(x) {
   t=x$tree
@@ -183,7 +180,7 @@ as.treedata.resBactDating <- function(x) {
     interval=x$CI[i,]-t$root.time-h[i]+len
     meta$length_0.95_HPD[i]=list(interval)
   }
-  obj=new("treedata",treetext='',phylo=t,data=tbl_df(as.data.frame(meta)),file='')
+  obj=methods::new("treedata",treetext='',phylo=t,data=dplyr::tbl_df(as.data.frame(meta)),file='')
   return(obj)
   #can then plot with:
   #ggtree(obj) + geom_range(range='length_0.95_HPD', color='red', alpha=.6, size=2)
@@ -200,7 +197,6 @@ as.treedata.resBactDating <- function(x) {
 #' @param collapse.singles a logical specifying whether to delete the internal nodes of degree 2.
 #' @param interactive if \code{TRUE} the user is asked to select the tips or the node by clicking on the tree which must be plotted.
 #' @return tree with rec data
-#' @importFrom methods new
 #' @export
 drop.tip.useRec = function (phy, tip, trim.internal = TRUE, subtree = FALSE, root.edge = 0,
           rooted = is.rooted(phy), collapse.singles = TRUE, interactive = FALSE)
@@ -358,7 +354,6 @@ drop.tip.useRec = function (phy, tip, trim.internal = TRUE, subtree = FALSE, roo
 #' @param tree an object of class \code{"phylo"}.
 #' @param root.edge whether to get the singleton edges from the root until the first bifurcating node and put them as \code{root.edge} of the returned tree. By default, this is ignored or if the tree has no edge lengths.
 #' @return tree with rec data
-#' @importFrom methods new
 collapse.singles.useRec <- function (tree, root.edge = FALSE)
 {
   n <- length(tree$tip.label)
