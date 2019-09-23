@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">BactDating</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.5</span>
       </span>
     </div>
 
@@ -54,19 +54,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/Staph.html">Using BactDating on a real dataset</a>
+      <a href="../articles/Staph.html">Application of BactDating on S. aureus ST239</a>
     </li>
     <li>
-      <a href="../articles/clustered.html">Using BactDating with the clustered permutation test</a>
+      <a href="../articles/clustered.html">The clustered permutation test in BactDating</a>
     </li>
     <li>
       <a href="../articles/exampleRec.html">Using BactDating after recombination analysis</a>
     </li>
     <li>
-      <a href="../articles/exampleRelaxed.html">Using BactDating to test the clock model</a>
+      <a href="../articles/exampleRelaxed.html">Testing the clock model in BactDating</a>
     </li>
     <li>
-      <a href="../articles/exampleTest.html">Using BactDating to test significance of the temporal signal</a>
+      <a href="../articles/exampleTest.html">Testing the temporal signal with BactDating</a>
     </li>
     <li>
       <a href="../articles/yourData.html">Using BactDating on your own data</a>
@@ -97,7 +97,7 @@
       <h1>Using BactDating on your own data</h1>
                         <h4 class="author">Xavier Didelot</h4>
             
-            <h4 class="date">2019-09-20</h4>
+            <h4 class="date">2019-09-23</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/xavierdidelot/BactDating/blob/master/vignettes/yourData.Rmd"><code>vignettes/yourData.Rmd</code></a></small>
       <div class="hidden name"><code>yourData.Rmd</code></div>
@@ -111,8 +111,9 @@
 <h2 class="hasAnchor">
 <a href="#first-input-phylogenetic-tree" class="anchor"></a>First input: phylogenetic tree</h2>
 <p>The first required input (let’s call it <code>t</code>) is a phylogenetic tree of the class <code>phylo</code> from the <code>ape</code> package, which can be loaded from a Newick or Nexus file using respectively the following commands from the <code>ape</code> package:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">t=<span class="kw">read.tree</span>(<span class="st">'filename.nwk'</span>)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2">t=<span class="kw">read.nexus</span>(<span class="st">'filename.nex'</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(ape)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">t=<span class="kw"><a href="https://rdrr.io/pkg/ape/man/read.tree.html">read.tree</a></span>(<span class="st">'filename.nwk'</span>)</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">t=<span class="kw"><a href="https://rdrr.io/pkg/ape/man/read.nexus.html">read.nexus</a></span>(<span class="st">'filename.nex'</span>)</a></code></pre></div>
 <p>This tree should have branch lengths measured in units of substitutions. In other words, the branch lengths should not be measured in substitutions per site. If you are not sure whether the branch lengths are measured correctly or not, try to compute <code><a href="https://rdrr.io/r/base/sum.html">sum(t$edge.length)</a></code>. This should be the total number of substitutions throughout the tree, so if you get a value below one or even only a bit above one, your branch lengths are probably not in the correct unit.</p>
 <p>If the branch lengths are measured per site, you will need to rescale them using the command:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">t<span class="op">$</span>edge.length=t<span class="op">$</span>edge.length<span class="op">*</span>L</a></code></pre></div>
@@ -125,29 +126,33 @@
 <div id="second-input-isolation-dates" class="section level2">
 <h2 class="hasAnchor">
 <a href="#second-input-isolation-dates" class="anchor"></a>Second input: isolation dates</h2>
-<p>The second required input (let’s call it <code>d</code>) is the dates at which the isolates were sampled. Dates need to be expressed decimally, for example <code>2015.5</code> means 1st July 2015. This input can be simply a vector of decimal dates, in which case the order needs to be the same as the order of the tree tips in <code>t$tip.label</code>. For example, if <code>t$tip.label</code> is <code>(A,B,C)</code> then <code>d=c(2010,2011,2012)</code> indicates that <code>A</code> was isolated in 2010, B in 2011 and C in 2012.</p>
+<p>The second required input (let’s call it <code>d</code>) is the dates at which the isolates were sampled. Dates need to be expressed decimally, for example <code>2015.5</code> means 1st July 2015. If needed, you can convert into decimal years from other date formats using the <code>decimal_date</code> function of the <code>lubridate</code> package. This input can be simply a vector of decimal dates, in which case the order needs to be the same as the order of the tree tips in <code>t$tip.label</code>. For example, if <code>t$tip.label</code> is <code>(A,B,C)</code> then <code>d=c(2010,2011,2012)</code> indicates that <code>A</code> was isolated in 2010, B in 2011 and C in 2012.</p>
 <p>Alternatively, the vector <code>d</code> does not have to be ordered if <code><a href="https://rdrr.io/r/base/names.html">names(d)</a></code> corresponds to the tip names. For example, d=c(2011,2010,2012)<code>with names(d)=c('B','A','C')</code> would have the same meaning as in the previous example.</p>
 <p>If some isolation dates are unknown, this can be indicated using <code>NA</code> in the vector, in which case the date is considered unknown but within the range of known dates, ie with the range return by the command <code><a href="https://rdrr.io/r/base/range.html">range(d,na.rm=T)</a></code>.</p>
-<p>Finally, the isolation dates can be specified as an interval rather than a set value. This is useful for example if the isolation year is 2015 but with unknown month or day. To do so, <code>d</code> needs to be a matrix with two columns, with the first column indicating the lower bound and the second column indicating the upper bound of the interval.</p>
+<p>Finally, the isolation dates can be specified as an interval rather than an exact value. This is useful for example if the isolation year is 2015 but with unknown month or day. To do so, <code>d</code> needs to be a matrix with two columns, with the first column indicating the lower bound and the second column indicating the upper bound of the interval. For example, if <code>year</code> is the vector of isolation years, but the exact date in each year is unknown, you can specify this by building the matrix <code>d</code> as follows:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">d=<span class="kw"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(year,year<span class="op">+</span><span class="dv">1</span>)</a></code></pre></div>
 </div>
 <div id="running-commands" class="section level2">
 <h2 class="hasAnchor">
 <a href="#running-commands" class="anchor"></a>Running commands</h2>
 <p>Once the two inputs <code>t</code> and <code>d</code> described above are in the correct format, you are ready to run BactDating using the main command:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">res=<span class="kw"><a href="../reference/bactdate.html">bactdate</a></span>(t,d)</a></code></pre></div>
-<p>See other vignettes for further functionality.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">res=<span class="kw"><a href="../reference/bactdate.html">bactdate</a></span>(t,d)</a></code></pre></div>
+<p>See other vignettes for additional functionality. In particular, if your tree is unrooted you can find an optimal root using:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">rooted=<span class="kw"><a href="../reference/initRoot.html">initRoot</a></span>(t,d)</a></code></pre></div>
+<p>Before running the main <code>bactdate</code> analysis, it is also a good idea to assess the strength of the temporal signal using a root-to-tip linear regression:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">r=<span class="kw"><a href="../reference/roottotip.html">roottotip</a></span>(t,d)</a></code></pre></div>
 </div>
 <div id="checking-for-mcmc-convergence" class="section level2">
 <h2 class="hasAnchor">
 <a href="#checking-for-mcmc-convergence" class="anchor"></a>Checking for MCMC convergence</h2>
 <p>BactDating is a MCMC algorithm which needs to be run for long enough to ensure that the results are meaningful. The length of the algorithm can be controlled using the <code>nbIts</code> argument of the <code>bactdate</code> function, which by default is 10e4 but may need increasing for example ten folds:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">res=<span class="kw"><a href="../reference/bactdate.html">bactdate</a></span>(t,d,<span class="dt">nbIts=</span><span class="fl">1e5</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">res=<span class="kw"><a href="../reference/bactdate.html">bactdate</a></span>(t,d,<span class="dt">nbIts=</span><span class="fl">1e5</span>)</a></code></pre></div>
 <p>To test the MCMC convergence, a good start is to check that the traces of the parameters look stable using the command:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(res,<span class="st">'trace'</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(res,<span class="st">'trace'</span>)</a></code></pre></div>
 <p>For further testing of convergence, you can export the BactDating result to the format required by the <code>coda</code> package using the command:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">mcmc=<span class="kw">as.mcmc</span>(res)</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">mcmc=<span class="kw">as.mcmc</span>(res)</a></code></pre></div>
 <p>You can then compute for example the effective sample size of the parameters which should be at least 100 for each paramater, using:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw">effectiveSize</span>(mcmc)</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw">effectiveSize</span>(mcmc)</a></code></pre></div>
 </div>
   </div>
 

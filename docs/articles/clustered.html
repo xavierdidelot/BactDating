@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Using BactDating with the clustered permutation test • BactDating</title>
+<title>The clustered permutation test in BactDating • BactDating</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Using BactDating with the clustered permutation test">
+<script src="../pkgdown.js"></script><meta property="og:title" content="The clustered permutation test in BactDating">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">BactDating</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.5</span>
       </span>
     </div>
 
@@ -54,19 +54,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/Staph.html">Using BactDating on a real dataset</a>
+      <a href="../articles/Staph.html">Application of BactDating on S. aureus ST239</a>
     </li>
     <li>
-      <a href="../articles/clustered.html">Using BactDating with the clustered permutation test</a>
+      <a href="../articles/clustered.html">The clustered permutation test in BactDating</a>
     </li>
     <li>
       <a href="../articles/exampleRec.html">Using BactDating after recombination analysis</a>
     </li>
     <li>
-      <a href="../articles/exampleRelaxed.html">Using BactDating to test the clock model</a>
+      <a href="../articles/exampleRelaxed.html">Testing the clock model in BactDating</a>
     </li>
     <li>
-      <a href="../articles/exampleTest.html">Using BactDating to test significance of the temporal signal</a>
+      <a href="../articles/exampleTest.html">Testing the temporal signal with BactDating</a>
     </li>
     <li>
       <a href="../articles/yourData.html">Using BactDating on your own data</a>
@@ -94,10 +94,10 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Using BactDating with the clustered permutation test</h1>
+      <h1>The clustered permutation test in BactDating</h1>
                         <h4 class="author">Xavier Didelot</h4>
             
-            <h4 class="date">2019-09-20</h4>
+            <h4 class="date">2019-09-23</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/xavierdidelot/BactDating/blob/master/vignettes/clustered.Rmd"><code>vignettes/clustered.Rmd</code></a></small>
       <div class="hidden name"><code>clustered.Rmd</code></div>
@@ -106,7 +106,17 @@
 
     
     
-<p>In this vignette we demonstrate the usage of the clustered permutation test. In this test, samples with similar dates are being clustered until a Mantel test between their dates and genetic distances becomes non-significant. A standard root-to-tip analysis is then performed on the clusters.</p>
+<div id="warning" class="section level2">
+<h2 class="hasAnchor">
+<a href="#warning" class="anchor"></a>Warning</h2>
+<p>This functionality of BactDating is experimental - use at your own risk!</p>
+</div>
+<div id="background" class="section level2">
+<h2 class="hasAnchor">
+<a href="#background" class="anchor"></a>Background</h2>
+<p>In this vignette we demonstrate the usage of the experimental clustered permutation test implemented in the command <code>clusteredTest</code>. Permutation tests are often used to measure the strength of a temporal signal, and in <code>BactDating</code> this is implemented in the command <code>roottotip</code> to calculate the p-value of the temporal signal. However, this test can be confounded by the presence of genetic structure and/or non-uniform sampling over time or lineages. To account for this effect, Duchene et al (2015) proposed a clustered permutation test, which was later refined by Murray et al (2016). In this test, a Mantel test between pairwise temporal and genetic distances is being used to assess the confounding effect. If this Mantel test is initially significant, but becomes insignificant after merging monophyletic clusters with similar dates (eg within a year), then this clustering is enough to eliminate the confounding signal. A clustered permutation test is then used to assess the strength of the temporal signal, in which dates are permuted between clusters only (ie each cluster always has the same date in the permutations).</p>
+<p>The command <code>clusteredTest</code> is based on some of these same ideas, but does not exactly replicate the procedure described above. More details to follow.</p>
+</div>
 <div id="initialisation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#initialisation" class="anchor"></a>Initialisation</h2>
@@ -117,7 +127,7 @@
 <div id="data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data" class="anchor"></a>Data</h2>
-<p>We start by generating a simultated dataset:</p>
+<p>We start by generating a simulated dataset:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">dates=<span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="dv">2000</span>,<span class="dv">2020</span>,<span class="fl">0.5</span>)</a>
 <a class="sourceLine" id="cb2-2" data-line-number="2">phy=<span class="kw"><a href="../reference/simcoaltree.html">simcoaltree</a></span>(dates,<span class="dt">alpha=</span><span class="dv">10</span>)</a>
 <a class="sourceLine" id="cb2-3" data-line-number="3">tree=<span class="kw"><a href="../reference/simobsphy.html">simobsphy</a></span>(phy,<span class="dt">mu=</span><span class="dv">10</span>)</a>
@@ -147,7 +157,9 @@
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#initialisation">Initialisation</a></li>
+<li><a href="#warning">Warning</a></li>
+      <li><a href="#background">Background</a></li>
+      <li><a href="#initialisation">Initialisation</a></li>
       <li><a href="#data">Data</a></li>
       <li><a href="#root-to-tip-analysis">Root-to-tip analysis</a></li>
       <li><a href="#clustered-permutation-test">Clustered permutation test</a></li>

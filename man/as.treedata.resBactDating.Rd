@@ -10,7 +10,7 @@ as.treedata.resBactDating(x)
 \item{x}{Output from bactdate}
 }
 \value{
-treedata object from ggtree package
+list ready to create a treedata object from ggtree package
 }
 \description{
 Convert to treedata format from ggtree package

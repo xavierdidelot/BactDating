@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Clustered permutation test — clusteredTest • BactDating</title>
+<title>Experimental clustered permutation test — clusteredTest • BactDating</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="Clustered permutation test — clusteredTest" />
-<meta property="og:description" content="Clustered permutation test" />
+<meta property="og:title" content="Experimental clustered permutation test — clusteredTest" />
+<meta property="og:description" content="Experimental clustered permutation test" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">BactDating</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.5</span>
       </span>
     </div>
 
@@ -92,19 +92,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/Staph.html">Using BactDating on a real dataset</a>
+      <a href="../articles/Staph.html">Application of BactDating on S. aureus ST239</a>
     </li>
     <li>
-      <a href="../articles/clustered.html">Using BactDating with the clustered permutation test</a>
+      <a href="../articles/clustered.html">The clustered permutation test in BactDating</a>
     </li>
     <li>
       <a href="../articles/exampleRec.html">Using BactDating after recombination analysis</a>
     </li>
     <li>
-      <a href="../articles/exampleRelaxed.html">Using BactDating to test the clock model</a>
+      <a href="../articles/exampleRelaxed.html">Testing the clock model in BactDating</a>
     </li>
     <li>
-      <a href="../articles/exampleTest.html">Using BactDating to test significance of the temporal signal</a>
+      <a href="../articles/exampleTest.html">Testing the temporal signal with BactDating</a>
     </li>
     <li>
       <a href="../articles/yourData.html">Using BactDating on your own data</a>
@@ -132,16 +132,16 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Clustered permutation test</h1>
+    <h1>Experimental clustered permutation test</h1>
     <small class="dont-index">Source: <a href='https://github.com/xavierdidelot/BactDating/blob/master/R/clustered.R'><code>R/clustered.R</code></a></small>
     <div class="hidden name"><code>clusteredTest.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Clustered permutation test</p>
+    <p>Experimental clustered permutation test</p>
     </div>
 
-    <pre class="usage"><span class='fu'>clusteredTest</span>(<span class='no'>tree</span>, <span class='no'>dates</span>)</pre>
+    <pre class="usage"><span class='fu'>clusteredTest</span>(<span class='no'>tree</span>, <span class='no'>dates</span>, <span class='kw'>windowIncrement</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -153,6 +153,10 @@
     <tr>
       <th>dates</th>
       <td><p>Dates of sampling</p></td>
+    </tr>
+    <tr>
+      <th>windowIncrement</th>
+      <td><p>Timespan by which to increase window size</p></td>
     </tr>
     </table>
 

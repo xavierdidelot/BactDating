@@ -1,12 +1,12 @@
 ---
-title: "Using BactDating to test the clock model"
+title: "Testing the clock model in BactDating"
 author: "Xavier Didelot"
 date: '`r Sys.Date()`'
 output:
   pdf_document: default
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Using BactDating to test the clock model}
+  %\VignetteIndexEntry{Testing the clock model in BactDating}
   %\usepackage[utf8]{inputenc}
 ---
 

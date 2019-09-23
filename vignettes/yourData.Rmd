@@ -20,6 +20,7 @@ which can be loaded from a Newick or Nexus file using respectively the following
 from the `ape` package: 
 
 ```{r eval=FALSE}
+library(ape)
 t=read.tree('filename.nwk')
 t=read.nexus('filename.nex')
 ```
@@ -50,6 +51,8 @@ or Gubbins when performing the dating.
 
 The second required input (let's call it `d`) is the dates at which the isolates were sampled. 
 Dates need to be expressed decimally, for example `2015.5` means 1st July 2015.
+If needed, you can convert into decimal years from other date formats using the `decimal_date`
+function of the `lubridate` package.
 This input can be simply a vector of decimal dates, in which case the order needs to be the same
 as the order of the tree tips in `t$tip.label`. For example, if `t$tip.label` is `(A,B,C)` 
 then `d=c(2010,2011,2012)` indicates that `A` was isolated in 2010, B in 2011 and C in 2012.
@@ -62,10 +65,14 @@ If some isolation dates are unknown, this can be indicated using `NA` in the vec
 which case the date is considered unknown but within the range of known dates,
 ie with the range return by the command `range(d,na.rm=T)`.
 
-Finally, the isolation dates can be specified as an interval rather than a set value. This is useful
+Finally, the isolation dates can be specified as an interval rather than an exact value. This is useful
 for example if the isolation year is 2015 but with unknown month or day. To do so, `d` needs
 to be a matrix with two columns, with the first column indicating the lower bound and the second 
-column indicating the upper bound of the interval. 
+column indicating the upper bound of the interval. For example, if `year` is the vector of isolation years,
+but the exact date in each year is unknown, you can specify this by building the matrix `d` as follows:
+```{r,eval=F}
+d=cbind(year,year+1)
+```
 
 ## Running commands
 
@@ -74,7 +81,16 @@ you are ready to run BactDating using the main command:
 ```{r,eval=F}
 res=bactdate(t,d)
 ```
-See other vignettes for further functionality. 
+See other vignettes for additional functionality. In particular, if your tree is 
+unrooted you can find an optimal root using:
+```{r,eval=F}
+rooted=initRoot(t,d)
+```
+Before running the main `bactdate` analysis, it is also a good idea
+to assess the strength of the temporal signal using a root-to-tip linear regression:
+```{r,eval=F}
+r=roottotip(t,d)
+```
 
 ## Checking for MCMC convergence
 

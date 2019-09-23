@@ -180,10 +180,10 @@ as.treedata.resBactDating <- function(x) {
     interval=x$CI[i,]-t$root.time-h[i]+len
     meta$length_0.95_HPD[i]=list(interval)
   }
-  l=list(t,dplyr::tbl_df(as.data.frame(meta)))
+  l=list(t,meta)
   return(l)
   #can then create treedata object and plot ggtree using:
-  #obj=methods::new('treedata',phylo=l[[1]],data=l[[2]])
+  #obj=methods::new('treedata',phylo=l[[1]],data=dplyr::tbl_df(as.data.frame(l[[2]])))
   #ggtree(obj) + geom_range(range='length_0.95_HPD', color='red', alpha=.6, size=2)
 }
 

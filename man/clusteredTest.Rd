@@ -2,18 +2,20 @@
 % Please edit documentation in R/clustered.R
 \name{clusteredTest}
 \alias{clusteredTest}
-\title{Clustered permutation test}
+\title{Experimental clustered permutation test}
 \usage{
-clusteredTest(tree, dates)
+clusteredTest(tree, dates, windowIncrement = 1)
 }
 \arguments{
 \item{tree}{Phylogenetic tree}
 
 \item{dates}{Dates of sampling}
+
+\item{windowIncrement}{Timespan by which to increase window size}
 }
 \value{
 Results of root-to-tip analysis after clustering
 }
 \description{
-Clustered permutation test
+Experimental clustered permutation test
 }

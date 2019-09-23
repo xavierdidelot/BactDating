@@ -1,12 +1,12 @@
 ---
-title: "Using BactDating to test significance of the temporal signal"
+title: "Testing the temporal signal with BactDating"
 author: "Xavier Didelot"
 date: '`r Sys.Date()`'
 output:
   pdf_document: default
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Using BactDating to test significance of the temporal signal}
+  %\VignetteIndexEntry{Testing the temporal signal with BactDating}
   %\usepackage[utf8]{inputenc}
 ---
 

@@ -1,9 +1,10 @@
-#' Clustered permutation test
+#' Experimental clustered permutation test
 #' @param tree Phylogenetic tree
 #' @param dates Dates of sampling
+#' @param windowIncrement Timespan by which to increase window size
 #' @return Results of root-to-tip analysis after clustering
 #' @export
-clusteredTest = function(tree,dates)
+clusteredTest = function(tree,dates,windowIncrement=1)
 {
   #Rerranging of dates, if needed
   if (!is.null(names(dates))) dates=findDates(tree,dates)
@@ -19,7 +20,7 @@ clusteredTest = function(tree,dates)
     gen=cophenetic.phylo(curtree)
     res=suppressMessages(vegan::mantel(gen,tim))
     if (res$signif>0.01) break
-    window=window+1
+    window=window+windowIncrement
     n=Ntip(curtree)
     drop=rep(0,n)
     order=sample(1:n,n,replace = F)
