@@ -1,8 +1,8 @@
 Package: BactDating
 Type: Package
 Title: BactDating: Bayesian inference of ancestral dates on bacterial phylogenetic trees
-Version: 1.0.5
-Date: 2019-09-23
+Version: 1.0.6
+Date: 2019-09-25
 Authors@R: person("Xavier","Didelot",email="xavier.didelot@gmail.com",role=c("aut", "cre"))
 Maintainer: Xavier Didelot <xavier.didelot@gmail.com>
 Depends: R (>= 3.0.0)

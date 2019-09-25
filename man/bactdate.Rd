@@ -2,7 +2,7 @@
 % Please edit documentation in R/main.R
 \name{bactdate}
 \alias{bactdate}
-\title{Main function}
+\title{Main function of BactDating package to date the nodes of a phylogenetic tree}
 \usage{
 bactdate(tree, date, initMu = NA, initAlpha = NA, initSigma = NA,
   updateMu = T, updateAlpha = T, updateSigma = T, updateRoot = T,
@@ -19,13 +19,13 @@ bactdate(tree, date, initMu = NA, initAlpha = NA, initSigma = NA,
 
 \item{initAlpha}{Initial coalescent time unit}
 
-\item{initSigma}{Initial std on per-branch substitution rate (only used in relaxedgamma and mixedgamma models)}
+\item{initSigma}{Initial std on per-branch substitution rate (only used in relaxed or mixed-relaxed models)}
 
 \item{updateMu}{Whether or not to update the substitution rate}
 
 \item{updateAlpha}{Whether or not to update the coalescent time unit}
 
-\item{updateSigma}{Whether or not to per-branch substitution rate (only used in relaxedgamma and mixedgamma models)}
+\item{updateSigma}{Whether or not to per-branch substitution rate (only used in relaxed or mixed-relaxed models)}
 
 \item{updateRoot}{Whether or not to use the root finding algorithm}
 
@@ -35,7 +35,7 @@ bactdate(tree, date, initMu = NA, initAlpha = NA, initSigma = NA,
 
 \item{useCoalPrior}{Whether or not to use a coalescent prior on the tree}
 
-\item{model}{Which model to use (poisson or negbin or strictgamma or relaxedgamma or mixedgamma)}
+\item{model}{Which model to use (poisson or negbin or strictgamma or relaxedgamma or mixedgamma or arc or carc or mixedcarc)}
 
 \item{useRec}{Whether or not to use results from previous recombination analysis}
 
@@ -47,5 +47,5 @@ bactdate(tree, date, initMu = NA, initAlpha = NA, initSigma = NA,
 Dating results
 }
 \description{
-Main function
+Main function of BactDating package to date the nodes of a phylogenetic tree
 }

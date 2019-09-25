@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Main function — bactdate • BactDating</title>
+<title>Main function of BactDating package to date the nodes of a phylogenetic tree — bactdate • BactDating</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="Main function — bactdate" />
-<meta property="og:description" content="Main function" />
+<meta property="og:title" content="Main function of BactDating package to date the nodes of a phylogenetic tree — bactdate" />
+<meta property="og:description" content="Main function of BactDating package to date the nodes of a phylogenetic tree" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">BactDating</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.6</span>
       </span>
     </div>
 
@@ -132,13 +132,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Main function</h1>
+    <h1>Main function of BactDating package to date the nodes of a phylogenetic tree</h1>
     <small class="dont-index">Source: <a href='https://github.com/xavierdidelot/BactDating/blob/master/R/main.R'><code>R/main.R</code></a></small>
     <div class="hidden name"><code>bactdate.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Main function</p>
+    <p>Main function of BactDating package to date the nodes of a phylogenetic tree</p>
     </div>
 
     <pre class="usage"><span class='fu'>bactdate</span>(<span class='no'>tree</span>, <span class='no'>date</span>, <span class='kw'>initMu</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>initAlpha</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>initSigma</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
@@ -168,7 +168,7 @@
     </tr>
     <tr>
       <th>initSigma</th>
-      <td><p>Initial std on per-branch substitution rate (only used in relaxedgamma and mixedgamma models)</p></td>
+      <td><p>Initial std on per-branch substitution rate (only used in relaxed or mixed-relaxed models)</p></td>
     </tr>
     <tr>
       <th>updateMu</th>
@@ -180,7 +180,7 @@
     </tr>
     <tr>
       <th>updateSigma</th>
-      <td><p>Whether or not to per-branch substitution rate (only used in relaxedgamma and mixedgamma models)</p></td>
+      <td><p>Whether or not to per-branch substitution rate (only used in relaxed or mixed-relaxed models)</p></td>
     </tr>
     <tr>
       <th>updateRoot</th>
@@ -200,7 +200,7 @@
     </tr>
     <tr>
       <th>model</th>
-      <td><p>Which model to use (poisson or negbin or strictgamma or relaxedgamma or mixedgamma)</p></td>
+      <td><p>Which model to use (poisson or negbin or strictgamma or relaxedgamma or mixedgamma or arc or carc or mixedcarc)</p></td>
     </tr>
     <tr>
       <th>useRec</th>

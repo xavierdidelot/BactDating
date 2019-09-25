@@ -1,17 +1,17 @@
-#' Main function
+#' Main function of BactDating package to date the nodes of a phylogenetic tree
 #' @param tree Tree wih branches measured in unit of substitutions
 #' @param date Sampling dates for the leaves of the tree
 #' @param initMu Initial rate of substitutions per genome (not per site), or zero to use root-to-tip estimate
 #' @param initAlpha Initial coalescent time unit
-#' @param initSigma Initial std on per-branch substitution rate (only used in relaxedgamma and mixedgamma models)
+#' @param initSigma Initial std on per-branch substitution rate (only used in relaxed or mixed-relaxed models)
 #' @param updateMu Whether or not to update the substitution rate
 #' @param updateAlpha Whether or not to update the coalescent time unit
-#' @param updateSigma Whether or not to per-branch substitution rate (only used in relaxedgamma and mixedgamma models)
+#' @param updateSigma Whether or not to per-branch substitution rate (only used in relaxed or mixed-relaxed models)
 #' @param updateRoot Whether or not to use the root finding algorithm
 #' @param nbIts Number of MCMC iterations to perform
 #' @param thin Thining interval between recorded MCMC samples
 #' @param useCoalPrior Whether or not to use a coalescent prior on the tree
-#' @param model Which model to use (poisson or negbin or strictgamma or relaxedgamma or mixedgamma)
+#' @param model Which model to use (poisson or negbin or strictgamma or relaxedgamma or mixedgamma or arc or carc or mixedcarc)
 #' @param useRec Whether or not to use results from previous recombination analysis
 #' @param minbralen Minimum branch length of the phylogenetic tree (in number of substitutions)
 #' @param showProgress Whether or not to show a progress bar
@@ -49,9 +49,9 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
   if (useCoalPrior) prior=coalpriorC else updateAlpha=F
 
   #Selection likelihood function
-  if (!is.element(model,c('poisson','poissonR','negbin','negbinR','arc','arcR'))) tree$edge.length=pmax(tree$edge.length,minbralen)
-  if (!is.element(model,c('relaxedgamma','relaxedgammaR','mixedgamma','negbin','negbinR','arc','arcR','carc','carcR'))) {updateSigma=F;sigma=0}
-  if (model == 'mixedgamma') sigma=0
+  #if (!is.element(model,c('poisson','poissonR','negbin','negbinR','arc','arcR'))) tree$edge.length=pmax(tree$edge.length,minbralen)
+  if (is.element(model,c('strictgamma','strictgammaR','poisson','poissonR'))) {updateSigma=F;sigma=0}
+  if (model == 'mixedgamma' || model == 'mixedcarc') sigma=0
   if (model == 'poisson') likelihood=function(tab,mu,sigma) return(likelihoodPoissonC(tab,mu))
   if (model == 'poissonR') likelihood=function(tab,mu,sigma) return(likelihoodPoisson(tab,mu))
   if (model == 'negbin') likelihood=function(tab,mu,sigma) return(likelihoodNegbinC(tab,mu,sigma))
@@ -62,7 +62,7 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
   if (model == 'relaxedgammaR') likelihood=function(tab,mu,sigma) return(likelihoodRelaxedgamma(tab,mu,sigma))
   if (model == 'arc') likelihood=function(tab,mu,sigma) return(likelihoodArcC(tab,mu,sigma))
   if (model == 'arcR') likelihood=function(tab,mu,sigma) return(likelihoodArc(tab,mu,sigma))
-  if (model == 'carc') likelihood=function(tab,mu,sigma) return(likelihoodCarcC(tab,mu,sigma))
+  if (model == 'carc'||model == 'mixedcarc') likelihood=function(tab,mu,sigma) return(likelihoodCarcC(tab,mu,sigma))
   if (model == 'carcR') likelihood=function(tab,mu,sigma) return(likelihoodCarc(tab,mu,sigma))
   if (model == 'null') {updateMu=0;likelihood=function(tab,mu,sigma) return(0)}
   if (!exists('likelihood')) stop('Unknown model.')
@@ -158,7 +158,7 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
       if (log(runif(1))<l2-l+dgamma(sigma2,shape=1e-3,scale=1e3,log=T)-dgamma(sigma,shape=1e-3,scale=1e3,log=T)) {l=l2;sigma=sigma2}
     }
 
-    if (model == 'mixedgamma') {
+    if (model == 'mixedgamma' || model == 'mixedcarc') {
       #Reversible-jump move
       if (sigma==0) {
         sigma2=rexp(1)
@@ -304,7 +304,7 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
     dic = dic
   )
   class(out) <- 'resBactDating'
-  if (model=='mixedgamma') out$pstrict=length(which(record[,'sigma']==0))/nrow(record)
+  if (model=='mixedgamma'||model=='mixedcarc') out$pstrict=length(which(record[,'sigma']==0))/nrow(record)
   return(out)
 }
 
