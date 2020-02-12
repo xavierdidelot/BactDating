@@ -174,17 +174,22 @@ as.treedata.resBactDating <- function(x) {
   h=node.depth.edgelength(t)
   meta=data.frame(node=sprintf('%5d',1:(Ntip(t)+Nnode(t))))
   meta$length_0.95_HPD=list(c(-1,1))
+  meta$height_0.95_HPD=list(c(-1,1))
   for (i in 1:nrow(meta)) {
     w=which(t$edge[,2]==i)
     if (length(w)==0) len=0 else len=t$edge.length[w]
     interval=x$CI[i,]-t$root.time-h[i]+len
     meta$length_0.95_HPD[i]=list(interval)
+    interval=-x$CI[i,]+t$root.time+max(h)#-h[i]+len
+    meta$height_0.95_HPD[i]=list(interval)
   }
   l=list(t,meta)
   return(l)
   #can then create treedata object and plot ggtree using:
   #obj=methods::new('treedata',phylo=l[[1]],data=dplyr::tbl_df(as.data.frame(l[[2]])))
   #ggtree(obj) + geom_range(range='length_0.95_HPD', color='red', alpha=.6, size=2)
+  #can also export to a nexus file for using figtree using:
+  #write.beast(obj,'test.nex')
 }
 
 #' Modified drop.tip() from 'ape' package that also updates the recombination
