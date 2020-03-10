@@ -70,7 +70,7 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
   #Deal with missing dates
   rangedate[which(is.na(rangedate[,1])),1]=min(rangedate[,1],na.rm = T)
   rangedate[which(is.na(rangedate[,2])),2]=max(rangedate[,2],na.rm = T)
-  misDates=which(rangedate[,1]!=rangedate[,2])
+  misDates=which(rangedate[,1]<rangedate[,2])
   date[misDates]=(rangedate[misDates,1]+rangedate[misDates,2])/2
   orderedleafdates=sort(date,decreasing = T)
 
@@ -299,7 +299,7 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
     model = model,
     record = record,
     rootdate = unname(meanRec[n + 1]),
-    rootprob = length(bestrows)*2/nrow(record),
+    rootprob = length(bestrows)/length(floor(nrow(record) / 2):nrow(record)),
     CI = CI,
     dic = dic
   )

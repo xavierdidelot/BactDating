@@ -4,7 +4,7 @@
 \alias{simcoaltree}
 \title{Simulation of coalescent dated tree}
 \usage{
-simcoaltree(dates = NA, alpha = 10)
+simcoaltree(dates = 1990:2010, alpha = 10)
 }
 \arguments{
 \item{dates}{Vector of dates at which samples are taken}
