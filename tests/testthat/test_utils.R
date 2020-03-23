@@ -29,3 +29,13 @@ test_that("loadCFML and loadGubbins return errors if missing files.", {
   expect_error(expect_warning(loadCFML('nothing')))
   expect_error(expect_warning(loadGubbins('nothing')))
 })
+
+test_that("loadCFML can load example files from ClonalFrameML", {
+  expect_silent(a<-loadCFML('test.out'))
+  expect_is(a,'phylo')
+})
+
+test_that("loadGubbins can load example files from Gubbins", {
+  expect_silent(a<-loadGubbins('test2'))
+  expect_is(a,'phylo')
+})
