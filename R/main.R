@@ -255,7 +255,7 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
         tab[right,2]=oldtab[right,2]+oldtab[left,2]
         if (useRec) tab[left,5]=tab[a,5]
         l2=likelihood(tab,mu,sigma)
-        if (log(runif(1))<l2-l+log(oldtab[a,2]/tab[right,2]))
+        if (log(runif(1))<l2-l+log(ifelse(oldtab[a,2]==0,1,oldtab[a,2])/ifelse(tab[right,2]==0,1,tab[right,2])))
           {l=l2
           children=vector("list", max(tab[,4],na.rm = T))
           for (i in 1:nrow(tab)) if (!is.na(tab[i,4])) children[[tab[i,4]]]=c(children[[tab[i,4]]],i)
