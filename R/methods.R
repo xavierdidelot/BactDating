@@ -134,6 +134,7 @@ print.resBactDating <- function(x, ...)
   v=sort(v[(1+length(v)/2):length(v)])
   vals=c(mean(v),v[pmax(1,floor(length(v)*c(0.025,0.975)))])
   cat(sprintf('Root date=%.2f [%.2f;%.2f]\n',vals[1],vals[2],vals[3]))
+  cat(sprintf('Root date for most likely root=%.2f [%.2f;%.2f]\n',x$tree$root.time,x$CI[Ntip(x$tree)+1,1],x$CI[Ntip(x$tree)+1,2]))
   invisible(x)
 }
 
