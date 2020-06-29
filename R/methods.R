@@ -172,12 +172,12 @@ as.mcmc.resBactDating <- function(x,burnin=0.5) {
 #' @export
 as.treedata.resBactDating <- function(x) {
   t=x$tree
-  h=node.depth.edgelength(t)
+  h=allDates(t)-t$root.time#node.depth.edgelength(t)
   meta=data.frame(node=sprintf('%5d',1:(Ntip(t)+Nnode(t))))
   meta$length_0.95_HPD=list(c(-1,1))
   meta$height_0.95_HPD=list(c(-1,1))
   for (i in 1:nrow(meta)) {
-    w=which(t$edge[,2]==i)
+    w=which(t$edge[,2]==i)#find parental branch
     if (length(w)==0) len=0 else len=t$edge.length[w]
     interval=x$CI[i,]-t$root.time-h[i]+len
     meta$length_0.95_HPD[i]=list(interval)
