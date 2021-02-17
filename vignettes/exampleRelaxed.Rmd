@@ -35,7 +35,7 @@ $r=10$ per year is the substitution rate. We can simulate an observed phylogenet
 and perform a root-to-tip analysis as follows:
 
 ```{r}
-obsphy=simobsphy(phy,mu=10)
+obsphy=simobsphy(phy,mu=10,model='strictgamma')
 res=roottotip(obsphy,dates)
 ```
 
@@ -44,7 +44,7 @@ res=roottotip(obsphy,dates)
 We run the dating analysis as follows:
 
 ```{r}
-res=bactdate(obsphy,dates,updateRoot=F)
+res=bactdate(obsphy,dates,updateRoot=F,model='mixedgamma')
 plot(res,'trace')
 print(res$pstrict)
 ```
@@ -68,7 +68,7 @@ res=roottotip(obsphy,dates)
 We run the analysis as previously:
 
 ```{r}
-res=bactdate(obsphy,dates,updateRoot=F)
+res=bactdate(obsphy,dates,updateRoot=F,model='mixedgamma')
 plot(res,'trace')
 print(res$pstrict)
 ```

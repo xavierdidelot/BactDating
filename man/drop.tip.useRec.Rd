@@ -5,9 +5,16 @@
 \title{Modified drop.tip() from 'ape' package that also updates the recombination
 proportions added when loaded from CFML or Gubbins}
 \usage{
-drop.tip.useRec(phy, tip, trim.internal = TRUE, subtree = FALSE,
-  root.edge = 0, rooted = is.rooted(phy), collapse.singles = TRUE,
-  interactive = FALSE)
+drop.tip.useRec(
+  phy,
+  tip,
+  trim.internal = TRUE,
+  subtree = FALSE,
+  root.edge = 0,
+  rooted = is.rooted(phy),
+  collapse.singles = TRUE,
+  interactive = FALSE
+)
 }
 \arguments{
 \item{phy}{Tree from loadCFML() or loadGubbins()}

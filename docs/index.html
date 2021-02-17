@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">BactDating</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.12</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -111,7 +111,7 @@
 <a href="#example" class="anchor"></a>Example</h2>
 <p>This is a basic example of usage. First we generate a coalescent tree with a single leaf per year between 1990 and 2010:</p>
 <div class="sourceCode" id="cb3"><pre class="r"><span class="no">tree</span><span class="kw">=</span><span class="fu"><a href="reference/simcoaltree.html">simcoaltree</a></span>(<span class="fl">1990</span>:<span class="fl">2010</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">tree</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">tree</span>)
 <span class="kw pkg">ape</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/ape/man/axisPhylo.html">axisPhylo</a></span>(<span class="kw">backward</span><span class="kw">=</span><span class="no">F</span>)</pre></div>
 <p><img src="reference/figures/unnamed-chunk-3-1.png"><!-- --></p>
 <p>Next we generate an observed phylogeny based on this timed tree, and perform a root-to-tip analysis:</p>
@@ -120,7 +120,7 @@
 <p><img src="reference/figures/unnamed-chunk-4-1.png"><!-- --></p>
 <p>We can run the dating analysis on this phylogeny as follows:</p>
 <div class="sourceCode" id="cb5"><pre class="r"><span class="no">res</span><span class="kw">=</span><span class="fu"><a href="reference/bactdate.html">bactdate</a></span>(<span class="no">obsphy</span>,<span class="fl">1990</span>:<span class="fl">2010</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'treeCI'</span>)</pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'treeCI'</span>)</pre></div>
 <p><img src="reference/figures/unnamed-chunk-5-1.png"><!-- --></p>
 </div>
 <div id="more-information-and-getting-help" class="section level2">

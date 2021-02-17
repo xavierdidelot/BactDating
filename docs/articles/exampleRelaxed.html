@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">BactDating</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.12</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -91,13 +91,13 @@
 
       
 
-      </header><div class="row">
+      </header><script src="exampleRelaxed_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Testing the clock model in BactDating</h1>
                         <h4 class="author">Xavier Didelot</h4>
             
-            <h4 class="date">2020-06-30</h4>
+            <h4 class="date">2021-02-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/xavierdidelot/BactDating/blob/master/vignettes/exampleRelaxed.Rmd"><code>vignettes/exampleRelaxed.Rmd</code></a></small>
       <div class="hidden name"><code>exampleRelaxed.Rmd</code></div>
@@ -119,11 +119,11 @@
 <p>We start by generating a coalescent tree with 10 leaves sampled at regular intervals between 1990 and 2010, and a coalescent time unit of 5 years:</p>
 <div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">dates</span><span class="kw">=</span><span class="fl">1990</span>:<span class="fl">2010</span>
 <span class="no">phy</span><span class="kw">=</span><span class="fu"><a href="../reference/simcoaltree.html">simcoaltree</a></span>(<span class="no">dates</span>,<span class="kw">alpha</span><span class="kw">=</span><span class="fl">5</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">phy</span>,<span class="kw">show.tip.label</span> <span class="kw">=</span> <span class="no">F</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">phy</span>,<span class="kw">show.tip.label</span> <span class="kw">=</span> <span class="no">F</span>)
 <span class="fu"><a href="https://rdrr.io/pkg/ape/man/axisPhylo.html">axisPhylo</a></span>(<span class="kw">backward</span> <span class="kw">=</span> <span class="no">F</span>)</pre></body></html></div>
 <p><img src="exampleRelaxed_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
 <p>On each branch we observe a number of substitutions which is distributed <span class="math inline">\(\mathrm{Gamma}(rl,1)\)</span> where <span class="math inline">\(l\)</span> is the branch length and <span class="math inline">\(r=10\)</span> per year is the substitution rate. We can simulate an observed phylogenetic tree and perform a root-to-tip analysis as follows:</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">obsphy</span><span class="kw">=</span><span class="fu"><a href="../reference/simobsphy.html">simobsphy</a></span>(<span class="no">phy</span>,<span class="kw">mu</span><span class="kw">=</span><span class="fl">10</span>)
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">obsphy</span><span class="kw">=</span><span class="fu"><a href="../reference/simobsphy.html">simobsphy</a></span>(<span class="no">phy</span>,<span class="kw">mu</span><span class="kw">=</span><span class="fl">10</span>,<span class="kw">model</span><span class="kw">=</span><span class="st">'strictgamma'</span>)
 <span class="no">res</span><span class="kw">=</span><span class="fu"><a href="../reference/roottotip.html">roottotip</a></span>(<span class="no">obsphy</span>,<span class="no">dates</span>)</pre></body></html></div>
 <p><img src="exampleRelaxed_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 </div>
@@ -131,13 +131,13 @@
 <h2 class="hasAnchor">
 <a href="#analysis-of-data-from-strict-clock-model" class="anchor"></a>Analysis of data from strict clock model</h2>
 <p>We run the dating analysis as follows:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">res</span><span class="kw">=</span><span class="fu"><a href="../reference/bactdate.html">bactdate</a></span>(<span class="no">obsphy</span>,<span class="no">dates</span>,<span class="kw">updateRoot</span><span class="kw">=</span><span class="no">F</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'trace'</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">res</span><span class="kw">=</span><span class="fu"><a href="../reference/bactdate.html">bactdate</a></span>(<span class="no">obsphy</span>,<span class="no">dates</span>,<span class="kw">updateRoot</span><span class="kw">=</span><span class="no">F</span>,<span class="kw">model</span><span class="kw">=</span><span class="st">'mixedgamma'</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'trace'</span>)</pre></body></html></div>
 <p><img src="exampleRelaxed_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">res</span>$<span class="no">pstrict</span>)</pre></body></html></div>
-<pre><code>## [1] 0.993</code></pre>
+<pre><code>## [1] 0.986</code></pre>
 <p>Let’s see how each branch contributes to the overall likelihood:</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'scatter'</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'scatter'</span>)</pre></body></html></div>
 <p><img src="exampleRelaxed_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 </div>
 <div id="data-generated-from-relaxed-clock-model" class="section level2">
@@ -153,13 +153,13 @@
 <h2 class="hasAnchor">
 <a href="#analysis-of-data-from-relaxed-clock-model" class="anchor"></a>Analysis of data from relaxed clock model</h2>
 <p>We run the analysis as previously:</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">res</span><span class="kw">=</span><span class="fu"><a href="../reference/bactdate.html">bactdate</a></span>(<span class="no">obsphy</span>,<span class="no">dates</span>,<span class="kw">updateRoot</span><span class="kw">=</span><span class="no">F</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'trace'</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">res</span><span class="kw">=</span><span class="fu"><a href="../reference/bactdate.html">bactdate</a></span>(<span class="no">obsphy</span>,<span class="no">dates</span>,<span class="kw">updateRoot</span><span class="kw">=</span><span class="no">F</span>,<span class="kw">model</span><span class="kw">=</span><span class="st">'mixedgamma'</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'trace'</span>)</pre></body></html></div>
 <p><img src="exampleRelaxed_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
 <div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">res</span>$<span class="no">pstrict</span>)</pre></body></html></div>
 <pre><code>## [1] 0</code></pre>
 <p>Let’s see how each branch contributes to the overall likelihood:</p>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'scatter'</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'scatter'</span>)</pre></body></html></div>
 <p><img src="exampleRelaxed_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
 </div>
   </div>

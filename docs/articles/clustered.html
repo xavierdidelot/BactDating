@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">BactDating</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.12</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -91,13 +91,13 @@
 
       
 
-      </header><div class="row">
+      </header><script src="clustered_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>The clustered permutation test in BactDating</h1>
                         <h4 class="author">Xavier Didelot</h4>
             
-            <h4 class="date">2020-06-30</h4>
+            <h4 class="date">2021-02-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/xavierdidelot/BactDating/blob/master/vignettes/clustered.Rmd"><code>vignettes/clustered.Rmd</code></a></small>
       <div class="hidden name"><code>clustered.Rmd</code></div>
@@ -131,7 +131,7 @@
 <div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">dates</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="fl">2000</span>,<span class="fl">2020</span>,<span class="fl">0.5</span>)
 <span class="no">phy</span><span class="kw">=</span><span class="fu"><a href="../reference/simcoaltree.html">simcoaltree</a></span>(<span class="no">dates</span>,<span class="kw">alpha</span><span class="kw">=</span><span class="fl">10</span>)
 <span class="no">tree</span><span class="kw">=</span><span class="fu"><a href="../reference/simobsphy.html">simobsphy</a></span>(<span class="no">phy</span>,<span class="kw">mu</span><span class="kw">=</span><span class="fl">10</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">phy</span>,<span class="kw">show.tip.label</span> <span class="kw">=</span> <span class="no">F</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">phy</span>,<span class="kw">show.tip.label</span> <span class="kw">=</span> <span class="no">F</span>)
 <span class="fu"><a href="https://rdrr.io/pkg/ape/man/axisPhylo.html">axisPhylo</a></span>(<span class="kw">backward</span> <span class="kw">=</span> <span class="no">F</span>)</pre></body></html></div>
 <p><img src="clustered_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
 </div>

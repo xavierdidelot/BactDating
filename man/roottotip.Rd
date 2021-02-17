@@ -4,8 +4,17 @@
 \alias{roottotip}
 \title{Root to tip correlation}
 \usage{
-roottotip(tree, date, rate = NA, permTest = 10000, showFig = T,
-  colored = T, showPredInt = "gamma", showText = T, showTree = T)
+roottotip(
+  tree,
+  date,
+  rate = NA,
+  permTest = 10000,
+  showFig = T,
+  colored = T,
+  showPredInt = "gamma",
+  showText = T,
+  showTree = T
+)
 }
 \arguments{
 \item{tree}{Phylogenetic tree}

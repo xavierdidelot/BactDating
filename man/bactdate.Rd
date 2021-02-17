@@ -4,11 +4,24 @@
 \alias{bactdate}
 \title{Main function of BactDating package to date the nodes of a phylogenetic tree}
 \usage{
-bactdate(tree, date, initMu = NA, initAlpha = NA, initSigma = NA,
-  updateMu = T, updateAlpha = T, updateSigma = T, updateRoot = T,
-  nbIts = 10000, thin = ceiling(nbIts/1000), useCoalPrior = T,
-  model = "mixedgamma", useRec = F, minbralen = 0.1,
-  showProgress = F)
+bactdate(
+  tree,
+  date,
+  initMu = NA,
+  initAlpha = NA,
+  initSigma = NA,
+  updateMu = T,
+  updateAlpha = T,
+  updateSigma = T,
+  updateRoot = T,
+  nbIts = 10000,
+  thin = ceiling(nbIts/1000),
+  useCoalPrior = T,
+  model = "arc",
+  useRec = F,
+  minbralen = 0.1,
+  showProgress = F
+)
 }
 \arguments{
 \item{tree}{Tree wih branches measured in unit of substitutions}

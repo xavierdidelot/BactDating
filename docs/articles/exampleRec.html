@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">BactDating</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.12</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -91,13 +91,13 @@
 
       
 
-      </header><div class="row">
+      </header><script src="exampleRec_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Using BactDating after recombination analysis</h1>
                         <h4 class="author">Xavier Didelot</h4>
             
-            <h4 class="date">2020-06-30</h4>
+            <h4 class="date">2021-02-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/xavierdidelot/BactDating/blob/master/vignettes/exampleRec.Rmd"><code>vignettes/exampleRec.Rmd</code></a></small>
       <div class="hidden name"><code>exampleRec.Rmd</code></div>
@@ -125,7 +125,7 @@
 <span class="no">truetree</span><span class="kw">=</span><span class="fu"><a href="../reference/simcoaltree.html">simcoaltree</a></span>(<span class="no">dates</span>)
 <span class="no">t</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/pkg/ape/man/root.html">unroot</a></span>(<span class="fu"><a href="../reference/simobsphy.html">simobsphy</a></span>(<span class="no">truetree</span>))
 <span class="no">t</span>$<span class="no">unrec</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="no">t</span>$<span class="no">edge.length</span>))
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">t</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">t</span>)
 <span class="fu"><a href="https://rdrr.io/pkg/ape/man/axisPhylo.html">axisPhylo</a></span>(<span class="kw">backward</span> <span class="kw">=</span> <span class="no">F</span>)
 <span class="fu"><a href="https://rdrr.io/pkg/ape/man/nodelabels.html">edgelabels</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="fl">100</span>*<span class="no">t</span>$<span class="no">unrec</span>))</pre></body></html></div>
 <p><img src="exampleRec_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
@@ -135,14 +135,14 @@
 <a href="#analysis" class="anchor"></a>Analysis</h2>
 <p>We run BactDating as follows:</p>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">res</span><span class="kw">=</span><span class="fu"><a href="../reference/bactdate.html">bactdate</a></span>(<span class="no">t</span>,<span class="no">dates</span>,<span class="kw">useRec</span><span class="kw">=</span><span class="no">T</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'treeCI'</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'treeCI'</span>)</pre></body></html></div>
 <p><img src="exampleRec_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 <p>We can compare with the correct tree:</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">truetree</span>)
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">truetree</span>)
 <span class="fu"><a href="https://rdrr.io/pkg/ape/man/axisPhylo.html">axisPhylo</a></span>(<span class="kw">backward</span> <span class="kw">=</span> <span class="no">F</span>)</pre></body></html></div>
 <p><img src="exampleRec_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 <p>We can see what the MCMC traces look like:</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'trace'</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'trace'</span>)</pre></body></html></div>
 <p><img src="exampleRec_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
 </div>
   </div>

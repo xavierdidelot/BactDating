@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">BactDating</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.12</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -91,13 +91,13 @@
 
       
 
-      </header><div class="row">
+      </header><script src="Staph_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Application of BactDating on S. aureus ST239</h1>
                         <h4 class="author">Xavier Didelot</h4>
             
-            <h4 class="date">2020-06-30</h4>
+            <h4 class="date">2021-02-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/xavierdidelot/BactDating/blob/master/vignettes/Staph.Rmd"><code>vignettes/Staph.Rmd</code></a></small>
       <div class="hidden name"><code>Staph.Rmd</code></div>
@@ -114,7 +114,7 @@
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ape</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">0</span>)
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="no">staph</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">staph</span>$<span class="no">tree</span>, <span class="kw">show.tip.label</span> <span class="kw">=</span> <span class="no">F</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">staph</span>$<span class="no">tree</span>, <span class="kw">show.tip.label</span> <span class="kw">=</span> <span class="no">F</span>)
 <span class="fu"><a href="https://rdrr.io/pkg/ape/man/axisPhylo.html">axisPhylo</a></span>(<span class="kw">backward</span> <span class="kw">=</span> <span class="no">F</span>)</pre></body></html></div>
 <p><img src="Staph_files/figure-html/unnamed-chunk-1-1.png" width="700"></p>
 </div>
@@ -130,13 +130,13 @@
 <a href="#analysis" class="anchor"></a>Analysis</h2>
 <p>We can run BactDating as follows. Note that here we only perform 1000 iterations of the MCMC to keep to building time of this vignette low, but in practice you should run the MCMC for as long as possible.</p>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">res</span><span class="kw">=</span><span class="fu"><a href="../reference/bactdate.html">bactdate</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/ape/man/root.html">unroot</a></span>(<span class="no">staph</span>$<span class="no">tree</span>),<span class="no">staph</span>$<span class="no">dates</span>,<span class="kw">nbIts</span><span class="kw">=</span><span class="fl">1000</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'treeCI'</span>,<span class="kw">show.tip.label</span> <span class="kw">=</span> <span class="no">F</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'treeCI'</span>,<span class="kw">show.tip.label</span> <span class="kw">=</span> <span class="no">F</span>)</pre></body></html></div>
 <p><img src="Staph_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 <p>We can see what the MCMC traces look like:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r">  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'trace'</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb4"><html><body><pre class="r">  <span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'trace'</span>)</pre></body></html></div>
 <p><img src="Staph_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
 <p>Let’s see where the root is likely to be:</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'treeRoot'</span>,<span class="kw">show.tip.label</span><span class="kw">=</span><span class="no">F</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'treeRoot'</span>,<span class="kw">show.tip.label</span><span class="kw">=</span><span class="no">F</span>)</pre></body></html></div>
 <p><img src="Staph_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 </div>
   </div>

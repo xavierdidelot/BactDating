@@ -17,7 +17,7 @@
 #' @param showProgress Whether or not to show a progress bar
 #' @return Dating results
 #' @export
-bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, updateMu = T, updateAlpha = T, updateSigma = T, updateRoot = T, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T,  model = 'mixedgamma', useRec = F, minbralen = 0.1, showProgress = F)
+bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, updateMu = T, updateAlpha = T, updateSigma = T, updateRoot = T, nbIts = 10000, thin=ceiling(nbIts/1000), useCoalPrior = T,  model = 'arc', useRec = F, minbralen = 0.1, showProgress = F)
 {
   if (sum(tree$edge.length)<5) warning('Warning: input tree has small branch lengths. Make sure branch lengths are in number of substitutions (NOT per site).\n')
   #Rerranging of dates, if needed
