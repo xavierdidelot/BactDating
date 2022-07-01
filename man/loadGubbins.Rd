@@ -7,7 +7,7 @@
 loadGubbins(prefix)
 }
 \arguments{
-\item{prefix}{Prefix of the ClonalFrameML output files}
+\item{prefix}{Prefix of the Gubbins output files}
 }
 \value{
 Tree representing the output from Gubbins

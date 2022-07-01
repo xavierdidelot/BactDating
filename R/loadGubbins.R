@@ -1,5 +1,5 @@
 #' Load output from Gubbins
-#' @param prefix Prefix of the ClonalFrameML output files
+#' @param prefix Prefix of the Gubbins output files
 #' @return Tree representing the output from Gubbins
 #' @export
 loadGubbins = function(prefix)
@@ -21,6 +21,7 @@ loadGubbins = function(prefix)
     if (j<=n) nam=tree$tip.label[j] else nam=tree$node.label[j-n]
     w2=which(t[,1]==nam)
     tree$unrec[i]=1-(t[w,6]-t[w2,6])/max(t[,9])
+    if (ncol(t)==11) tree$unrec[i]=1-t[w,6]/t[w,10]#Compatibility with newer versions of Gubbins
   }
   return(tree)
 }
