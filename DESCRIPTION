@@ -12,7 +12,8 @@ Suggests: knitr,
     testthat,
     covr,
     coda,
-    vegan
+    vegan,
+    rmarkdown
 Description: BactDating is a R package to perform Bayesian inference of ancestral dates on bacterial phylogenetic trees.
 VignetteBuilder: knitr
 License: MIT + file LICENSE
