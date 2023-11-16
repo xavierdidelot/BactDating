@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,23 +33,17 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">BactDating</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -76,8 +72,8 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/xavierdidelot/BactDating/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/xavierdidelot/BactDating/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -91,67 +87,75 @@
 
       
 
-      </header><script src="exampleTest_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Testing the temporal signal with BactDating</h1>
-                        <h4 class="author">Xavier Didelot</h4>
+                        <h4 data-toc-skip class="author">Xavier Didelot</h4>
             
-            <h4 class="date">2021-02-17</h4>
+            <h4 data-toc-skip class="date">2023-11-16</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/xavierdidelot/BactDating/blob/master/vignettes/exampleTest.Rmd"><code>vignettes/exampleTest.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/xavierdidelot/BactDating/blob/HEAD/vignettes/exampleTest.Rmd" class="external-link"><code>vignettes/exampleTest.Rmd</code></a></small>
       <div class="hidden name"><code>exampleTest.Rmd</code></div>
 
     </div>
 
     
     
-<div id="initialisation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#initialisation" class="anchor"></a>Initialisation</h2>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">BactDating</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ape</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">0</span>)</pre></body></html></div>
+<div class="section level2">
+<h2 id="initialisation">Initialisation<a class="anchor" aria-label="anchor" href="#initialisation"></a>
+</h2>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/xavierdidelot/BactDating" class="external-link">BactDating</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://ape-package.ird.fr/" class="external-link">ape</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#data" class="anchor"></a>Data</h2>
+<div class="section level2">
+<h2 id="data">Data<a class="anchor" aria-label="anchor" href="#data"></a>
+</h2>
 <p>We start by generating a coalescent tree with 10 leaves sampled in 2000, 10 leaves sampled in 2010, and a coalescent time unit of 10 years:</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">dates</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">2000</span>,<span class="fl">10</span>),<span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">2010</span>,<span class="fl">10</span>))
-<span class="no">phy</span><span class="kw">=</span><span class="fu"><a href="../reference/simcoaltree.html">simcoaltree</a></span>(<span class="no">dates</span>,<span class="kw">alpha</span><span class="kw">=</span><span class="fl">10</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">phy</span>,<span class="kw">show.tip.label</span> <span class="kw">=</span> <span class="no">F</span>)
-<span class="fu"><a href="https://rdrr.io/pkg/ape/man/axisPhylo.html">axisPhylo</a></span>(<span class="kw">backward</span> <span class="kw">=</span> <span class="no">F</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dates</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">2000</span>,<span class="fl">10</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">2010</span>,<span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">phy</span><span class="op">=</span><span class="fu"><a href="../reference/simcoaltree.html">simcoaltree</a></span><span class="op">(</span><span class="va">dates</span>,alpha<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">phy</span>,show.tip.label <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/ape/man/axisPhylo.html" class="external-link">axisPhylo</a></span><span class="op">(</span>backward <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
 <p><img src="exampleTest_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
 <p>On each branch we observe a number of substitutions which is distributed <span class="math inline">\(\mathrm{Gamma}(rl,1)\)</span> where <span class="math inline">\(l\)</span> is the branch length and <span class="math inline">\(r=10\)</span> per year is the substitution rate. We can simulate an observed phylogenetic tree and perform a root-to-tip analysis as follows:</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">obsphy</span><span class="kw">=</span><span class="fu"><a href="../reference/simobsphy.html">simobsphy</a></span>(<span class="no">phy</span>,<span class="kw">mu</span><span class="kw">=</span><span class="fl">10</span>)
-<span class="no">res</span><span class="kw">=</span><span class="fu"><a href="../reference/roottotip.html">roottotip</a></span>(<span class="no">obsphy</span>,<span class="no">dates</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">obsphy</span><span class="op">=</span><span class="fu"><a href="../reference/simobsphy.html">simobsphy</a></span><span class="op">(</span><span class="va">phy</span>,mu<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span>
+<span><span class="va">res</span><span class="op">=</span><span class="fu"><a href="../reference/roottotip.html">roottotip</a></span><span class="op">(</span><span class="va">obsphy</span>,<span class="va">dates</span><span class="op">)</span></span></code></pre></div>
 <p><img src="exampleTest_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 <p>Let’s consider that we do not know where is the root of the observed phylogeny, and that the date of the last sample has been lost:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">obsphy</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/pkg/ape/man/root.html">unroot</a></span>(<span class="no">obsphy</span>)
-<span class="no">dates</span>[<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="no">dates</span>)]<span class="kw">=</span><span class="fl">NA</span></pre></body></html></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">obsphy</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/ape/man/root.html" class="external-link">unroot</a></span><span class="op">(</span><span class="va">obsphy</span><span class="op">)</span></span>
+<span><span class="va">dates</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">dates</span><span class="op">)</span><span class="op">]</span><span class="op">=</span><span class="cn">NA</span></span></code></pre></div>
 </div>
-<div id="first-analysis" class="section level2">
-<h2 class="hasAnchor">
-<a href="#first-analysis" class="anchor"></a>First analysis</h2>
+<div class="section level2">
+<h2 id="first-analysis">First analysis<a class="anchor" aria-label="anchor" href="#first-analysis"></a>
+</h2>
 <p>We run the dating analysis as follows:</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">res</span><span class="kw">=</span><span class="fu"><a href="../reference/bactdate.html">bactdate</a></span>(<span class="no">obsphy</span>,<span class="no">dates</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'trace'</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res</span><span class="op">=</span><span class="fu"><a href="../reference/bactdate.html">bactdate</a></span><span class="op">(</span><span class="va">obsphy</span>,<span class="va">dates</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>,<span class="st">'trace'</span><span class="op">)</span></span></code></pre></div>
 <p><img src="exampleTest_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 <p>Let’s see what the result looks like:</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'treeCI'</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>,<span class="st">'treeCI'</span><span class="op">)</span></span></code></pre></div>
 <p><img src="exampleTest_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 <p>Let’s see where the root was inferred:</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'treeRoot'</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>,<span class="st">'treeRoot'</span><span class="op">)</span></span></code></pre></div>
 <p><img src="exampleTest_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
 </div>
-<div id="testing-significance-of-clock-signal" class="section level2">
-<h2 class="hasAnchor">
-<a href="#testing-significance-of-clock-signal" class="anchor"></a>Testing significance of clock signal</h2>
+<div class="section level2">
+<h2 id="testing-significance-of-clock-signal">Testing significance of clock signal<a class="anchor" aria-label="anchor" href="#testing-significance-of-clock-signal"></a>
+</h2>
 <p>We run the algorithm again, with all sampling dates forced equal, and compare the fit of the two runs in order to assess the statistical significance of the temporal signal:</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">res2</span><span class="kw">=</span><span class="fu"><a href="../reference/bactdate.html">bactdate</a></span>(<span class="no">obsphy</span>,<span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fl">2015</span>,<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="no">dates</span>)))
-<span class="fu"><a href="../reference/modelcompare.html">modelcompare</a></span>(<span class="no">res</span>,<span class="no">res2</span>)</pre></body></html></div>
-<pre><code>## The first model has DIC=226.39 and the second model has DIC=318.14.
-## Model 1 is definitely better.</code></pre>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res2</span><span class="op">=</span><span class="fu"><a href="../reference/bactdate.html">bactdate</a></span><span class="op">(</span><span class="va">obsphy</span>,<span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">2015</span>,<span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">dates</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/modelcompare.html">modelcompare</a></span><span class="op">(</span><span class="va">res</span>,<span class="va">res2</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## The first model has DIC=226.39 and the second model has DIC=318.14.</span></span>
+<span><span class="co">## Model 1 is definitely better.</span></span></code></pre>
 <p>Since the first model is found to be better, we conclude that the temporal signal is significant.</p>
 </div>
   </div>
@@ -167,11 +171,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Xavier Didelot.</p>
+  <p></p>
+<p>Developed by Xavier Didelot.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -179,6 +185,8 @@
 
   
 
+
+  
 
   </body>
 </html>

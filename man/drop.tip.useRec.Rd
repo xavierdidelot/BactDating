@@ -5,7 +5,7 @@
 \title{Modified drop.tip() from 'ape' package that also updates the recombination
 proportions added when loaded from CFML or Gubbins}
 \usage{
-drop.tip.useRec(
+\method{drop.tip}{useRec}(
   phy,
   tip,
   trim.internal = TRUE,

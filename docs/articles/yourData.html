@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,23 +33,17 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">BactDating</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -76,8 +72,8 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/xavierdidelot/BactDating/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/xavierdidelot/BactDating/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -91,15 +87,15 @@
 
       
 
-      </header><script src="yourData_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Using BactDating on your own data</h1>
-                        <h4 class="author">Xavier Didelot</h4>
+                        <h4 data-toc-skip class="author">Xavier Didelot</h4>
             
-            <h4 class="date">2021-02-17</h4>
+            <h4 data-toc-skip class="date">2023-11-16</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/xavierdidelot/BactDating/blob/master/vignettes/yourData.Rmd"><code>vignettes/yourData.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/xavierdidelot/BactDating/blob/HEAD/vignettes/yourData.Rmd" class="external-link"><code>vignettes/yourData.Rmd</code></a></small>
       <div class="hidden name"><code>yourData.Rmd</code></div>
 
     </div>
@@ -107,52 +103,63 @@
     
     
 <p>In this vignette we describe how you can use BactDating on your own data.</p>
-<div id="first-input-phylogenetic-tree" class="section level2">
-<h2 class="hasAnchor">
-<a href="#first-input-phylogenetic-tree" class="anchor"></a>First input: phylogenetic tree</h2>
+<div class="section level2">
+<h2 id="first-input-phylogenetic-tree">First input: phylogenetic tree<a class="anchor" aria-label="anchor" href="#first-input-phylogenetic-tree"></a>
+</h2>
 <p>The first required input (let’s call it <code>t</code>) is a phylogenetic tree of the class <code>phylo</code> from the <code>ape</code> package, which can be loaded from a Newick or Nexus file using respectively the following commands from the <code>ape</code> package:</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ape</span>)
-<span class="no">t</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/pkg/ape/man/read.tree.html">read.tree</a></span>(<span class="st">'filename.nwk'</span>)
-<span class="no">t</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/pkg/ape/man/read.nexus.html">read.nexus</a></span>(<span class="st">'filename.nex'</span>)</pre></body></html></div>
-<p>This tree should have branch lengths measured in units of substitutions. In other words, the branch lengths should not be measured in substitutions per site. If you are not sure whether the branch lengths are measured correctly or not, try to compute <code><a href="https://rdrr.io/r/base/sum.html">sum(t$edge.length)</a></code>. This should be the total number of substitutions throughout the tree, so if you get a value below one or even only a bit above one, your branch lengths are probably not in the correct unit.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://ape-package.ird.fr/" class="external-link">ape</a></span><span class="op">)</span></span>
+<span><span class="va">t</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/ape/man/read.tree.html" class="external-link">read.tree</a></span><span class="op">(</span><span class="st">'filename.nwk'</span><span class="op">)</span></span>
+<span><span class="va">t</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/ape/man/read.nexus.html" class="external-link">read.nexus</a></span><span class="op">(</span><span class="st">'filename.nex'</span><span class="op">)</span></span></code></pre></div>
+<p>This tree should have branch lengths measured in units of substitutions. In other words, the branch lengths should not be measured in substitutions per site. If you are not sure whether the branch lengths are measured correctly or not, try to compute <code>sum(t$edge.length)</code>. This should be the total number of substitutions throughout the tree, so if you get a value below one or even only a bit above one, your branch lengths are probably not in the correct unit.</p>
 <p>If the branch lengths are measured per site, you will need to rescale them using the command:</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">t</span>$<span class="no">edge.length</span><span class="kw">=</span><span class="no">t</span>$<span class="no">edge.length</span>*<span class="no">L</span></pre></body></html></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">t</span><span class="op">$</span><span class="va">edge.length</span><span class="op">=</span><span class="va">t</span><span class="op">$</span><span class="va">edge.length</span><span class="op">*</span><span class="va">L</span></span></code></pre></div>
 <p>where <code>L</code> is the number of sites which were used to build this tree.</p>
 <p>Alternatively, you can load directly from the output of ClonalFrameML or Gubbins using the following commands respectively:</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">t</span><span class="kw">=</span><span class="fu"><a href="../reference/loadCFML.html">loadCFML</a></span>(<span class="no">prefix</span>)
-<span class="no">t</span><span class="kw">=</span><span class="fu"><a href="../reference/loadGubbins.html">loadGubbins</a></span>(<span class="no">prefix</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">t</span><span class="op">=</span><span class="fu"><a href="../reference/loadCFML.html">loadCFML</a></span><span class="op">(</span><span class="va">prefix</span><span class="op">)</span></span>
+<span><span class="va">t</span><span class="op">=</span><span class="fu"><a href="../reference/loadGubbins.html">loadGubbins</a></span><span class="op">(</span><span class="va">prefix</span><span class="op">)</span></span></code></pre></div>
 <p>This will have the advantage to account for the recombination events detected by ClonalFrameML or Gubbins when performing the dating.</p>
 </div>
-<div id="second-input-isolation-dates" class="section level2">
-<h2 class="hasAnchor">
-<a href="#second-input-isolation-dates" class="anchor"></a>Second input: isolation dates</h2>
+<div class="section level2">
+<h2 id="second-input-isolation-dates">Second input: isolation dates<a class="anchor" aria-label="anchor" href="#second-input-isolation-dates"></a>
+</h2>
 <p>The second required input (let’s call it <code>d</code>) is the dates at which the isolates were sampled. Dates need to be expressed decimally, for example <code>2015.5</code> means 1st July 2015. If needed, you can convert into decimal years from other date formats using the <code>decimal_date</code> function of the <code>lubridate</code> package. This input can be simply a vector of decimal dates, in which case the order needs to be the same as the order of the tree tips in <code>t$tip.label</code>. For example, if <code>t$tip.label</code> is <code>(A,B,C)</code> then <code>d=c(2010,2011,2012)</code> indicates that <code>A</code> was isolated in 2010, B in 2011 and C in 2012.</p>
-<p>Alternatively, the vector <code>d</code> does not have to be ordered if <code><a href="https://rdrr.io/r/base/names.html">names(d)</a></code> corresponds to the tip names. For example, d=c(2011,2010,2012)<code>with names(d)=c('B','A','C')</code> would have the same meaning as in the previous example.</p>
-<p>If some isolation dates are unknown, this can be indicated using <code>NA</code> in the vector, in which case the date is considered unknown but within the range of known dates, ie with the range return by the command <code><a href="https://rdrr.io/r/base/range.html">range(d,na.rm=T)</a></code>.</p>
+<p>Alternatively, the vector <code>d</code> does not have to be ordered if <code>names(d)</code> corresponds to the tip names. For example, d=c(2011,2010,2012)<code>with names(d)=c('B','A','C')</code> would have the same meaning as in the previous example.</p>
+<p>If some isolation dates are unknown, this can be indicated using <code>NA</code> in the vector, in which case the date is considered unknown but within the range of known dates, ie with the range return by the command <code>range(d,na.rm=T)</code>.</p>
 <p>Finally, the isolation dates can be specified as an interval rather than an exact value. This is useful for example if the isolation year is 2015 but with unknown month or day. To do so, <code>d</code> needs to be a matrix with two columns, with the first column indicating the lower bound and the second column indicating the upper bound of the interval. For example, if <code>year</code> is the vector of isolation years, but the exact date in each year is unknown, you can specify this by building the matrix <code>d</code> as follows:</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">d</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="no">year</span>,<span class="no">year</span>+<span class="fl">1</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">d</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">year</span>,<span class="va">year</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="running-commands" class="section level2">
-<h2 class="hasAnchor">
-<a href="#running-commands" class="anchor"></a>Running commands</h2>
+<div class="section level2">
+<h2 id="running-commands">Running commands<a class="anchor" aria-label="anchor" href="#running-commands"></a>
+</h2>
 <p>Once the two inputs <code>t</code> and <code>d</code> described above are in the correct format, you are ready to run BactDating using the main command:</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">res</span><span class="kw">=</span><span class="fu"><a href="../reference/bactdate.html">bactdate</a></span>(<span class="no">t</span>,<span class="no">d</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res</span><span class="op">=</span><span class="fu"><a href="../reference/bactdate.html">bactdate</a></span><span class="op">(</span><span class="va">t</span>,<span class="va">d</span><span class="op">)</span></span></code></pre></div>
 <p>See other vignettes for additional functionality. In particular, if your tree is unrooted you can find an optimal root using:</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">rooted</span><span class="kw">=</span><span class="fu"><a href="../reference/initRoot.html">initRoot</a></span>(<span class="no">t</span>,<span class="no">d</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">rooted</span><span class="op">=</span><span class="fu"><a href="../reference/initRoot.html">initRoot</a></span><span class="op">(</span><span class="va">t</span>,<span class="va">d</span><span class="op">)</span></span></code></pre></div>
 <p>Before running the main <code>bactdate</code> analysis, it is also a good idea to assess the strength of the temporal signal using a root-to-tip linear regression:</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">r</span><span class="kw">=</span><span class="fu"><a href="../reference/roottotip.html">roottotip</a></span>(<span class="no">t</span>,<span class="no">d</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">r</span><span class="op">=</span><span class="fu"><a href="../reference/roottotip.html">roottotip</a></span><span class="op">(</span><span class="va">t</span>,<span class="va">d</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="checking-for-mcmc-convergence" class="section level2">
-<h2 class="hasAnchor">
-<a href="#checking-for-mcmc-convergence" class="anchor"></a>Checking for MCMC convergence</h2>
+<div class="section level2">
+<h2 id="checking-for-mcmc-convergence">Checking for MCMC convergence<a class="anchor" aria-label="anchor" href="#checking-for-mcmc-convergence"></a>
+</h2>
 <p>BactDating is a MCMC algorithm which needs to be run for long enough to ensure that the results are meaningful. The length of the algorithm can be controlled using the <code>nbIts</code> argument of the <code>bactdate</code> function, which by default is 10e4 but may need increasing for example ten folds:</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">res</span><span class="kw">=</span><span class="fu"><a href="../reference/bactdate.html">bactdate</a></span>(<span class="no">t</span>,<span class="no">d</span>,<span class="kw">nbIts</span><span class="kw">=</span><span class="fl">1e5</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res</span><span class="op">=</span><span class="fu"><a href="../reference/bactdate.html">bactdate</a></span><span class="op">(</span><span class="va">t</span>,<span class="va">d</span>,nbIts<span class="op">=</span><span class="fl">1e5</span><span class="op">)</span></span></code></pre></div>
 <p>To test the MCMC convergence, a good start is to check that the traces of the parameters look stable using the command:</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'trace'</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>,<span class="st">'trace'</span><span class="op">)</span></span></code></pre></div>
 <p>For further testing of convergence, you can export the BactDating result to the format required by the <code>coda</code> package using the command:</p>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">mcmc</span><span class="kw">=</span><span class="fu">as.mcmc</span>(<span class="no">res</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mcmc</span><span class="op">=</span><span class="fu">as.mcmc</span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
 <p>You can then compute for example the effective sample size of the parameters which should be at least 100 for each paramater, using:</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu">effectiveSize</span>(<span class="no">mcmc</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">effectiveSize</span><span class="op">(</span><span class="va">mcmc</span><span class="op">)</span></span></code></pre></div>
 </div>
   </div>
 
@@ -167,11 +174,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Xavier Didelot.</p>
+  <p></p>
+<p>Developed by Xavier Didelot.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -179,6 +188,8 @@
 
   
 
+
+  
 
   </body>
 </html>

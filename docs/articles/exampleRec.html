@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,23 +33,17 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">BactDating</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -76,8 +72,8 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/xavierdidelot/BactDating/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/xavierdidelot/BactDating/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -91,58 +87,65 @@
 
       
 
-      </header><script src="exampleRec_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Using BactDating after recombination analysis</h1>
-                        <h4 class="author">Xavier Didelot</h4>
+                        <h4 data-toc-skip class="author">Xavier Didelot</h4>
             
-            <h4 class="date">2021-02-17</h4>
+            <h4 data-toc-skip class="date">2023-11-16</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/xavierdidelot/BactDating/blob/master/vignettes/exampleRec.Rmd"><code>vignettes/exampleRec.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/xavierdidelot/BactDating/blob/HEAD/vignettes/exampleRec.Rmd" class="external-link"><code>vignettes/exampleRec.Rmd</code></a></small>
       <div class="hidden name"><code>exampleRec.Rmd</code></div>
 
     </div>
 
     
     
-<div id="initialisation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#initialisation" class="anchor"></a>Initialisation</h2>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">BactDating</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ape</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">0</span>)</pre></body></html></div>
+<div class="section level2">
+<h2 id="initialisation">Initialisation<a class="anchor" aria-label="anchor" href="#initialisation"></a>
+</h2>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/xavierdidelot/BactDating" class="external-link">BactDating</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://ape-package.ird.fr/" class="external-link">ape</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#data" class="anchor"></a>Data</h2>
+<div class="section level2">
+<h2 id="data">Data<a class="anchor" aria-label="anchor" href="#data"></a>
+</h2>
 <p>A ClonalFrameML output can be read using:</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">t</span><span class="kw">=</span><span class="fu"><a href="../reference/loadCFML.html">loadCFML</a></span>(<span class="kw">prefix</span><span class="kw">=</span><span class="st">'cfml-output'</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">t</span><span class="op">=</span><span class="fu"><a href="../reference/loadCFML.html">loadCFML</a></span><span class="op">(</span>prefix<span class="op">=</span><span class="st">'cfml-output'</span><span class="op">)</span></span></code></pre></div>
 <p>A Gubbins output can be read using:</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">t</span><span class="kw">=</span><span class="fu"><a href="../reference/loadGubbins.html">loadGubbins</a></span>(<span class="kw">prefix</span><span class="kw">=</span><span class="st">'gubbins-output'</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">t</span><span class="op">=</span><span class="fu"><a href="../reference/loadGubbins.html">loadGubbins</a></span><span class="op">(</span>prefix<span class="op">=</span><span class="st">'gubbins-output'</span><span class="op">)</span></span></code></pre></div>
 <p>Instead, for the purpose of making this vignette self-contained, we will simulate an output from a recombination analysis. This is just an object of class <code>phylo</code>, unrooted and with the added field <code>unrec</code> representing the proportion that is unrecombined for each branch.</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">dates</span><span class="kw">=</span><span class="fl">1990</span>:<span class="fl">2010</span>
-<span class="no">truetree</span><span class="kw">=</span><span class="fu"><a href="../reference/simcoaltree.html">simcoaltree</a></span>(<span class="no">dates</span>)
-<span class="no">t</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/pkg/ape/man/root.html">unroot</a></span>(<span class="fu"><a href="../reference/simobsphy.html">simobsphy</a></span>(<span class="no">truetree</span>))
-<span class="no">t</span>$<span class="no">unrec</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="no">t</span>$<span class="no">edge.length</span>))
-<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">t</span>)
-<span class="fu"><a href="https://rdrr.io/pkg/ape/man/axisPhylo.html">axisPhylo</a></span>(<span class="kw">backward</span> <span class="kw">=</span> <span class="no">F</span>)
-<span class="fu"><a href="https://rdrr.io/pkg/ape/man/nodelabels.html">edgelabels</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span>(<span class="fl">100</span>*<span class="no">t</span>$<span class="no">unrec</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dates</span><span class="op">=</span><span class="fl">1990</span><span class="op">:</span><span class="fl">2010</span></span>
+<span><span class="va">truetree</span><span class="op">=</span><span class="fu"><a href="../reference/simcoaltree.html">simcoaltree</a></span><span class="op">(</span><span class="va">dates</span><span class="op">)</span></span>
+<span><span class="va">t</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/ape/man/root.html" class="external-link">unroot</a></span><span class="op">(</span><span class="fu"><a href="../reference/simobsphy.html">simobsphy</a></span><span class="op">(</span><span class="va">truetree</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">t</span><span class="op">$</span><span class="va">unrec</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">t</span><span class="op">$</span><span class="va">edge.length</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">t</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/ape/man/axisPhylo.html" class="external-link">axisPhylo</a></span><span class="op">(</span>backward <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/ape/man/nodelabels.html" class="external-link">edgelabels</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">100</span><span class="op">*</span><span class="va">t</span><span class="op">$</span><span class="va">unrec</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="exampleRec_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
 </div>
-<div id="analysis" class="section level2">
-<h2 class="hasAnchor">
-<a href="#analysis" class="anchor"></a>Analysis</h2>
+<div class="section level2">
+<h2 id="analysis">Analysis<a class="anchor" aria-label="anchor" href="#analysis"></a>
+</h2>
 <p>We run BactDating as follows:</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">res</span><span class="kw">=</span><span class="fu"><a href="../reference/bactdate.html">bactdate</a></span>(<span class="no">t</span>,<span class="no">dates</span>,<span class="kw">useRec</span><span class="kw">=</span><span class="no">T</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'treeCI'</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res</span><span class="op">=</span><span class="fu"><a href="../reference/bactdate.html">bactdate</a></span><span class="op">(</span><span class="va">t</span>,<span class="va">dates</span>,useRec<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>,<span class="st">'treeCI'</span><span class="op">)</span></span></code></pre></div>
 <p><img src="exampleRec_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 <p>We can compare with the correct tree:</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">truetree</span>)
-<span class="fu"><a href="https://rdrr.io/pkg/ape/man/axisPhylo.html">axisPhylo</a></span>(<span class="kw">backward</span> <span class="kw">=</span> <span class="no">F</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">truetree</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/ape/man/axisPhylo.html" class="external-link">axisPhylo</a></span><span class="op">(</span>backward <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
 <p><img src="exampleRec_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 <p>We can see what the MCMC traces look like:</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">res</span>,<span class="st">'trace'</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>,<span class="st">'trace'</span><span class="op">)</span></span></code></pre></div>
 <p><img src="exampleRec_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
 </div>
   </div>
@@ -158,11 +161,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Xavier Didelot.</p>
+  <p></p>
+<p>Developed by Xavier Didelot.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -170,6 +175,8 @@
 
   
 
+
+  
 
   </body>
 </html>
