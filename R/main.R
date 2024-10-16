@@ -287,6 +287,8 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
   dic=-2*likelihood(meantab,meanRec['mu'],meanRec['sigma'])+var(-2*record[bestrows,'likelihood'])
 
   tree$root.time = unname(meanRec[n + 1])#max(date)-max(leafDates(tree))
+  #Remove pre-existing order attribute as the tree is no longer ordered in any particular way
+  attributes(tree)$order <- NULL 
   CI = matrix(NA, nrow(tab), 2)
   for (i in 1:nrow(tab)) {
     s=sort(record[bestrows,i])
