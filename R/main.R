@@ -268,6 +268,7 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
     }
 
   }#End of MCMC loop
+  if (showProgress) close(pb)
 
   #Output
   inputtree = tree
