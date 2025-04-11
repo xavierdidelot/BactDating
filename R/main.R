@@ -289,7 +289,8 @@ bactdate = function(tree, date, initMu = NA, initAlpha = NA, initSigma = NA, upd
 
   tree$root.time = unname(meanRec[n + 1])#max(date)-max(leafDates(tree))
   #Remove pre-existing order attribute as the tree is no longer ordered in any particular way
-  attributes(tree)$order <- NULL 
+  attributes(tree)$order <- NULL
+  attributes(inputtree)$order <- NULL
   CI = matrix(NA, nrow(tab), 2)
   for (i in 1:nrow(tab)) {
     s=sort(record[bestrows,i])
