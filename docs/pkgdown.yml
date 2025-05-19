@@ -1,12 +1,11 @@
-pandoc: 2.14.0.3
-pkgdown: 2.0.7
+pandoc: '3.4'
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
-  Staph: Staph.html
   clustered: clustered.html
   exampleRec: exampleRec.html
   exampleRelaxed: exampleRelaxed.html
   exampleTest: exampleTest.html
+  Staph: Staph.html
   yourData: yourData.html
-last_built: 2023-11-16T10:07Z
-
+last_built: 2025-05-19T11:59Z

@@ -21,7 +21,8 @@ loadGubbins = function(prefix)
     if (j<=n) nam=tree$tip.label[j] else nam=tree$node.label[j-n]
     w2=which(t[,1]==nam)
     tree$unrec[i]=1-(t[w,6]-t[w2,6])/max(t[,9])
-    if (ncol(t)==11) tree$unrec[i]=1-t[w,6]/t[w,10]#Compatibility with newer versions of Gubbins
+    if (ncol(t)==11) tree$unrec[i]=1-t[w,6]/t[w,10]#Compatibility with ~2022 versions of Gubbins
+    if (ncol(t)==13) tree$unrec[i]=1-t[w,6]/t[w,12]#Compatibility with ~2025 versions of Gubbins
   }
   return(tree)
 }
